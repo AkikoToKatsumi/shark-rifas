@@ -387,7 +387,7 @@ export default function AdminPage() {
                     id="raffle-img-upload"
                     type="file" 
                     onChange={handleImageUpload} 
-                    className="hidden" 
+                    style={{ display: 'none' }} 
                     accept="image/*"
                   />
                   <p className="text-[10px] text-gray-500 mb-2">Sube una foto clara del premio para aumentar las ventas.</p>

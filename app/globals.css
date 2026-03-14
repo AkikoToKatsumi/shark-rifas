@@ -734,6 +734,29 @@ a {
 }
 
 /* --- Admin Panel Styles --- */
+.admin-dashboard {
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll on the main container */
+}
+
+@media (max-width: 600px) {
+  .admin-dashboard {
+    padding: 1rem !important;
+  }
+  
+  .card {
+    padding: 1.25rem !important;
+  }
+  
+  .admin-form {
+    gap: var(--spacing-sm) !important;
+  }
+
+  .admin-title {
+    font-size: 1.5rem !important;
+  }
+}
+
 .admin-login-container {
   display: flex;
   justify-content: center;
@@ -785,6 +808,37 @@ a {
 
 @media (max-width: 768px) {
   .admin-grid { grid-template-columns: 1fr; }
+  
+  .admin-dashboard .section-header h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Scroll area for tables in mobile */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.admin-table {
+  min-width: 650px; /* Minimum width to keep columns readable */
+  border-collapse: collapse;
+}
+
+@media (max-width: 600px) {
+  .admin-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .btn-primary, .btn-accent {
+    padding: 12px;
+    font-size: 14px;
+  }
 }
 
 /* --- About Us Section --- */
@@ -1265,4 +1319,8 @@ a {
   background-color: var(--primary-cyan);
   box-shadow: 0 0 8px var(--primary-cyan);
   transform: scale(1.2);
+}
+
+.hidden {
+  display: none !important;
 }

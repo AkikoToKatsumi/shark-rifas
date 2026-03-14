@@ -327,9 +327,9 @@ export default function AdminPage() {
   });
 
   return (
-    <div className="admin-dashboard p-4 md:p-8 max-w-6xl mx-auto text-white">
-      <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <h2>PANEL ADMIN - Shark Rifas</h2>
+    <div className="admin-dashboard p-2 sm:p-4 md:p-8 max-w-6xl mx-auto text-white">
+      <div className="section-header mb-6">
+        <h2 className="admin-title">PANEL ADMIN - Shark Rifas</h2>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -425,9 +425,9 @@ export default function AdminPage() {
         <div className="card mb-6 bg-gray-900 border border-gray-800 p-6 rounded-lg">
           <h3 className="text-orange-400 font-bold mb-4 text-xl">🎲 RIFAS ACTUALES</h3>
           {loading ? <p>Cargando...</p> : (
-            <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto">
+            <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
               {raffles.map(r => (
-                <div key={r.id} className="border border-gray-700 p-4 rounded bg-gray-800 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
+                <div key={r.id} className="border border-gray-700 p-3 sm:p-4 rounded bg-gray-800 flex flex-col lg:flex-row lg:justify-between items-start lg:items-center gap-4">
                   <div>
                     <h4 className="font-bold text-lg flex items-center gap-2">
                        {r.emoji} {r.title}
@@ -437,7 +437,7 @@ export default function AdminPage() {
                     </h4>
                     <p className="text-sm text-gray-400">Precio: RD${r.ticket_price} | {r.total_tickets} boletos</p>
                   </div>
-                  <div className="flex flex-wrap gap-2 text-sm w-full sm:w-auto mt-2 sm:mt-0 justify-end">
+                  <div className="flex flex-wrap gap-2 text-sm w-full lg:w-auto mt-2 lg:mt-0 justify-start sm:justify-end">
                     <button 
                       type="button" 
                       onClick={() => handleToggleRaffleStatus(r.id, r.is_active)} 
@@ -483,7 +483,8 @@ export default function AdminPage() {
           />
         </div>
         
-        <table className="w-full text-left border-collapse">
+        <div className="table-responsive">
+          <table className="admin-table w-full text-left">
           <thead>
             <tr className="border-b border-gray-700 text-gray-400 text-sm">
               <th className="py-2 px-4">Boleto</th>
@@ -562,6 +563,7 @@ export default function AdminPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
     </div>

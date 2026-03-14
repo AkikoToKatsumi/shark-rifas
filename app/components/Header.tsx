@@ -1,0 +1,90 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+
+export default function Header() {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  return (
+    <header className="header-container position-relative">
+      <button 
+        onClick={() => router.push('/admin')}
+        style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          right: '10px', 
+          padding: '6px 14px', 
+          backgroundColor: '#222', 
+          color: 'white',
+          border: '1px solid rgba(255,255,255,0.3)',
+          borderRadius: '8px',
+          fontSize: '13px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
+          zIndex: 50,
+          transition: 'all 0.2s',
+          fontWeight: 'bold',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#444';
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#222';
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+        }}
+        title="Admin Login"
+      >
+        <span>🔒</span> Admin
+      </button>
+      <div className="top-marquee">
+        <div className="marquee-content">
+          <span>⚡ SORTEOS EN VIVO TODOS LOS FINES DE SEMANA</span>
+          <span>🏆 MÁS DE 50 GANADORES ESTE MES</span>
+          <span>🎯 ¡PARTICIPA Y GANA! SHARK RD - RIFAS 100% VIRTUALES Y SEGURAS</span>
+          <span>⚡ SORTEOS EN VIVO TODOS LOS FINES DE SEMANA</span>
+          <span>🏆 MÁS DE 50 GANADORES ESTE MES</span>
+        </div>
+      </div>
+      
+      <div className="logo-section" style={{ alignItems: 'center' }}>
+        <img src="/logo.png" alt="Shark RD Logo" className="logo-img" style={{ height: '180px', objectFit: 'contain', marginBottom: '10px' }} />
+        <div className="logo-text">
+          <h1>SHARK RD RIFAS</h1>
+          <p className="subtitle">SISTEMA DE RIFAS VIRTUALES</p>
+        </div>
+      </div>
+
+      <nav className="main-nav">
+        <ul>
+          <li>
+            <Link href="/" className="nav-link active">
+              <span className="nav-icon">🎯</span> RIFAS ACTIVAS
+            </Link>
+          </li>
+          <li>
+            <Link href="/verificador" className={`nav-link ${pathname === '/verificador' ? 'active' : ''}`}>
+              <span className="nav-icon">🔍</span> VERIFICAR BOLETOS
+            </Link>
+          </li>
+          <li>
+            <Link href="/ganadores" className={`nav-link ${pathname === '/ganadores' ? 'active' : ''}`}>
+              <span className="nav-icon">🏆</span> GANADORES
+            </Link>
+          </li>
+
+          <li>
+            <Link href="/nosotros" className={`nav-link ${pathname === '/nosotros' ? 'active' : ''}`}>
+              <span className="nav-icon">🦈</span> SOBRE NOSOTROS
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  );
+}

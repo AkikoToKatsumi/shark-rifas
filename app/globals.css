@@ -314,6 +314,95 @@ a {
   }
 }
 
+/* Incentives / Instant Winners Section */
+.incentives-section {
+  margin-top: calc(var(--spacing-xl) * 2);
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.05) 0%, rgba(0, 242, 254, 0.05) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.incentives-section::after {
+  content: 'SHARK';
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  font-family: var(--font-heading);
+  font-size: 10rem;
+  color: rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.incentives-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+@media (max-width: 900px) {
+  .incentives-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.incentive-card {
+  background: var(--bg-card);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.incentive-card h3 {
+  color: var(--accent-orange);
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.winning-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: var(--spacing-lg);
+}
+
+.number-chip {
+  background: var(--bg-panel);
+  border: 1px solid var(--primary-cyan);
+  color: var(--primary-cyan);
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+  transition: all 0.3s;
+}
+
+.number-chip:hover {
+  transform: scale(1.1);
+  background: var(--primary-cyan);
+  color: #000;
+}
+
+.bonus-prize {
+  background: rgba(0, 242, 254, 0.1);
+  border-left: 4px solid var(--primary-cyan);
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.bonus-prize h4 {
+  color: var(--primary-cyan);
+  margin-bottom: 5px;
+}
+
 .raffle-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -988,6 +1077,105 @@ a {
   border-radius: var(--radius-sm);
   max-width: 600px;
   margin: 0 auto;
+}
+/* Admin Drawer Styles */
+.admin-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.admin-drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.admin-drawer {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100vh;
+  background: var(--bg-card);
+  border-left: 2px solid var(--primary-cyan);
+  z-index: 1001;
+  padding: var(--spacing-xl);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.admin-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-md);
+}
+
+.drawer-header h2 {
+  font-size: 1.5rem;
+  color: var(--primary-cyan);
+  margin: 0;
+}
+
+.close-drawer {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-drawer:hover {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.login-form-drawer .form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.login-form-drawer label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.login-form-drawer input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: #fff;
+}
+
+.login-form-drawer input:focus {
+  outline: none;
+  border-color: var(--primary-cyan);
 }
 
 .caption-content h3 {

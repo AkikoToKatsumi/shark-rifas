@@ -127,6 +127,46 @@ export default function Home() {
         )}
       </section>
 
+      {/* Incentives Section */}
+      <section className="incentives-section">
+        <div className="section-header">
+          <h2>🔥 MECÁNICA DE RIFA RÁPIDA</h2>
+          <div className="header-line"></div>
+        </div>
+
+        <div className="incentives-grid">
+          <div className="incentive-card">
+            <h3>🎰 NÚMEROS GANADORES</h3>
+            <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$8,000 en efectivo</strong> al instante!</p>
+            <div className="winning-numbers">
+              <span className="number-chip">0524</span>
+              <span className="number-chip">1992</span>
+              <span className="number-chip">7777</span>
+              <span className="number-chip">0001</span>
+              <span className="number-chip">8888</span>
+            </div>
+            <p className="mt-4 text-sm" style={{ fontStyle: 'italic', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
+              * Los premios se pagan vía transferencia inmediatamente después de verificar el pago.
+            </p>
+          </div>
+
+          <div className="incentive-card">
+            <h3>🏆 MAYOR COMPRADOR</h3>
+            <p className="text-muted">¡Premiamos tu fidelidad! La persona que más boletos acumule comprados para la rifa actual recibirá un bono especial.</p>
+            
+            <div className="bonus-prize">
+              <h4>RD$10,000 ADICIONALES</h4>
+              <p style={{ margin: 0, fontSize: '0.9rem' }}>Otorgados al final del sorteo principal.</p>
+            </div>
+
+            <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+              <p style={{ color: 'var(--accent-orange)', fontWeight: 'bold', marginBottom: '5px' }}>¿Cómo participar?</p>
+              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Solo tienes que comprar boletos. El sistema rastrea automáticamente tu cédula y suma todos tus números.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {selectedRaffle && (
         <BuyModal 
           raffle={{

@@ -20,6 +20,7 @@ CREATE TABLE public.participants (
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    cedula VARCHAR(20), -- Nueva columna para el identificador único
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

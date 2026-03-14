@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
-  const [formData, setFormData] = useState({ fullName: '', phone: '', email: '' });
+  const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', cedula: '' });
   const [paymentMethod, setPaymentMethod] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,8 +18,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
     e.preventDefault();
     setErrorMsg('');
 
-    if (!formData.fullName || !formData.phone || !formData.email) {
-      setErrorMsg("Por favor completa todos tus datos personales.");
+    if (!formData.fullName || !formData.phone || !formData.email || !formData.cedula) {
+      setErrorMsg("Por favor completa todos tus datos personales incluyendo tu cédula.");
       return;
     }
     if (quantity < 1) {
@@ -55,6 +55,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           fullName: formData.fullName,
           phone: formData.phone,
           email: formData.email,
+          cedula: formData.cedula,
           paymentMethod,
           price: raffle.price,
           raffleTitle: raffle.title,
@@ -277,6 +278,17 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               value={formData.fullName} 
               onChange={e => setFormData({...formData, fullName: e.target.value})} 
               placeholder="Ej: Juan Pérez" 
+              required
+            />
+          </div>
+          
+          <div className="form-section">
+            <label>CÉDULA DE IDENTIDAD</label>
+            <input 
+              type="text" 
+              value={formData.cedula} 
+              onChange={e => setFormData({...formData, cedula: e.target.value})} 
+              placeholder="Ej: 402-XXXXXXX-X" 
               required
             />
           </div>

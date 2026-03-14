@@ -1,16 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import AdminSidebar from './AdminSidebar';
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
+  const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState(false);
 
   return (
     <header className="header-container position-relative">
       <button 
-        onClick={() => router.push('/admin')}
+        onClick={() => setIsAdminDrawerOpen(true)}
         style={{ 
           position: 'absolute', 
           top: '10px', 
@@ -42,6 +44,12 @@ export default function Header() {
       >
         <span>🔒</span> Admin
       </button>
+
+      {/* Admin Sidebar / Drawer */}
+      <AdminSidebar 
+        isOpen={isAdminDrawerOpen} 
+        onClose={() => setIsAdminDrawerOpen(false)} 
+      />
       <div className="top-marquee">
         <div className="marquee-content">
           <span>⚡ SORTEOS EN VIVO TODOS LOS FINES DE SEMANA</span>

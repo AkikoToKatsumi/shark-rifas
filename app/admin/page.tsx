@@ -518,8 +518,20 @@ export default function AdminPage() {
                     textTransform: 'uppercase',
                     marginBottom: t.status === 'pending' ? '8px' : '0'
                   }}>
-                    {t.status === 'paid' ? 'PAGADO ✓' : 'PENDIENTE ⏳'}
+                    {t.status === 'paid' ? 'PAGADO ✓' : (t.status === 'pending' ? 'PENDIENTE ⏳' : 'RESERVADO')}
                   </span>
+                  
+                  {t.status === 'paid' && (
+                    <div className="flex gap-2 justify-end mt-1">
+                      <button 
+                        onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'cancel')}
+                        className="border border-red-600 text-red-500 hover:bg-red-900/20 px-3 py-1 rounded text-xs transition font-bold"
+                        title="Anular compra y liberar número"
+                      >
+                        ✕ Anular Compra
+                      </button>
+                    </div>
+                  )}
                   
                   {t.status === 'pending' && (
                     <div className="flex gap-2 justify-end mt-1">

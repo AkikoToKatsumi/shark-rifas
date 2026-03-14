@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { raffleId, quantity, fullName, phone, email, paymentMethod, price, raffleTitle, receiptImage } = body;
+    const { raffleId, quantity, fullName, phone, email, cedula, paymentMethod, price, raffleTitle, receiptImage } = body;
 
     // 0. Basic Validation
     if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || !email || !paymentMethod) {
@@ -68,12 +68,12 @@ export async function POST(request: Request) {
       participantId = existingParticipant.id;
       await supabaseAdmin
         .from('participants')
-        .update({ full_name: fullName, email: email.toLowerCase().trim() })
+        .update({ full_name: fullName, email: email.toLowerCase().trim(), cedula: cedula })
         .eq('id', participantId);
     } else {
       const { data: newParticipant, error: pError } = await supabaseAdmin
         .from('participants')
-        .insert([{ full_name: fullName, phone: cleanPhone, email: email.toLowerCase().trim() }])
+        .insert([{ full_name: fullName, phone: cleanPhone, email: email.toLowerCase().trim(), cedula: cedula }])
         .select('id')
         .single();
 

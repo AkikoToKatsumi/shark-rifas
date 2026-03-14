@@ -139,11 +139,11 @@ export default function Home() {
             <h3>🎰 NÚMEROS GANADORES</h3>
             <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$8,000 en efectivo</strong> al instante!</p>
             <div className="winning-numbers">
-              <span className="number-chip">0524</span>
-              <span className="number-chip">1992</span>
-              <span className="number-chip">7777</span>
-              <span className="number-chip">0001</span>
-              <span className="number-chip">8888</span>
+              <span className="number-chip">1111</span>
+              <span className="number-chip">2222</span>
+              <span className="number-chip">3333</span>
+              <span className="number-chip">4444</span>
+              <span className="number-chip">5555</span>
             </div>
             <p className="mt-4 text-sm" style={{ fontStyle: 'italic', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
               * Los premios se pagan vía transferencia inmediatamente después de verificar el pago.

@@ -1397,48 +1397,7 @@ a {
   }
 }
 
-/* --- WhatsApp Floating Button --- */
-.whatsapp-float {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  width: 60px;
-  height: 60px;
-  background-color: #25d366;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  z-index: 999;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.whatsapp-float:hover {
-  transform: scale(1.1) rotate(5deg);
-  background-color: #128c7e;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-}
-
-.whatsapp-pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: #25d366;
-  opacity: 0.5;
-  z-index: -1;
-  animation: pulseRotate 2s infinite;
-}
-
-@keyframes pulseRotate {
-  0% { transform: scale(1); opacity: 0.5; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
+/* --- FAQ Section --- */
 
 /* --- FAQ Section --- */
 .faq-section {

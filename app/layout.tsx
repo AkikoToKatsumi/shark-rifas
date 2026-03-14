@@ -4,7 +4,7 @@ import Header from "./components/Header";
 
 import Footer from "./components/Footer";
 import LoadingScreen from "./components/LoadingScreen";
-import WhatsAppButton from "./components/WhatsAppButton";
+import LoadingScreen from "./components/LoadingScreen";
 
 export const metadata: Metadata = {
   title: "Shark RD Rifas",
@@ -28,7 +28,6 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <WhatsAppButton />
       </body>
     </html>
   );

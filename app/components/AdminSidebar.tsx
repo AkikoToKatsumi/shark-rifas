@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,11 +25,12 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ username, password })
       });
       
       if (res.ok) {
         localStorage.setItem('shark_admin_auth', 'true');
+        localStorage.setItem('shark_admin_user', username);
         localStorage.setItem('shark_admin_key', password);
         setIsAuthenticated(true);
         onClose();
@@ -45,6 +47,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
 
   const handleLogout = () => {
     localStorage.removeItem('shark_admin_auth');
+    localStorage.removeItem('shark_admin_user');
     localStorage.removeItem('shark_admin_key');
     setIsAuthenticated(false);
     onClose();
@@ -104,19 +107,30 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
           ) : (
             <>
               <p className="text-muted mb-6" style={{ fontSize: '0.9rem' }}>
-                Ingresa la contraseña maestra para acceder al panel de administración de Shark Rifas.
+                Ingresa tus credenciales para acceder al panel de administración.
               </p>
 
               <form onSubmit={handleLogin} className="login-form-drawer">
                 <div className="form-group">
-                  <label>Contraseña Maestra</label>
+                  <label>Usuario</label>
+                  <input 
+                    type="text" 
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Nombre de usuario"
+                    required
+                    autoFocus={isOpen}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Contraseña</label>
                   <input 
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    autoFocus={isOpen}
                   />
                 </div>
                 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import BuyModal from './components/BuyModal';
+import { LayoutGrid, Hash, Trophy, Users, Star, Flame, Crown } from 'lucide-react';
 
 export default function Home() {
   const [raffles, setRaffles] = useState<any[]>([]);
@@ -37,15 +38,15 @@ export default function Home() {
       {/* Metrics Section */}
       <section className="metrics-grid">
         <div className="metric-card">
-          <h3>{loading ? '...' : metrics.active}</h3>
+          <h3 className="flex items-center justify-center gap-2"><LayoutGrid size={32} color="var(--primary-cyan)" /> {loading ? '...' : metrics.active}</h3>
           <p>RIFAS ACTIVAS</p>
         </div>
         <div className="metric-card">
-          <h3>{loading ? '...' : `${soldPercentage}%`}</h3>
+          <h3 className="flex items-center justify-center gap-2"><Hash size={32} color="var(--primary-cyan)" /> {loading ? '...' : `${soldPercentage}%`}</h3>
           <p>BOLETOS VENDIDOS</p>
         </div>
         <div className="metric-card">
-          <h3>{loading ? '...' : metrics.prizesTotal}</h3>
+          <h3 className="flex items-center justify-center gap-2"><Trophy size={32} color="var(--primary-cyan)" /> {loading ? '...' : metrics.prizesTotal}</h3>
           <p>EN PREMIOS</p>
         </div>
       </section>
@@ -136,7 +137,7 @@ export default function Home() {
 
         <div className="incentives-grid">
           <div className="incentive-card">
-            <h3>🎰 NÚMEROS GANADORES</h3>
+            <h3><Star className="text-orange-400" /> NÚMEROS GANADORES</h3>
             <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$8,000 en efectivo</strong> al instante!</p>
             <div className="winning-numbers">
               <span className="number-chip">1111</span>
@@ -151,7 +152,7 @@ export default function Home() {
           </div>
 
           <div className="incentive-card">
-            <h3>🏆 MAYOR COMPRADOR</h3>
+            <h3><Crown className="text-orange-400" /> MAYOR COMPRADOR</h3>
             <p className="text-muted">¡Premiamos tu fidelidad! La persona que más boletos acumule comprados para la rifa actual recibirá un bono especial.</p>
             
             <div className="bonus-prize">

@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone } from 'lucide-react';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
@@ -154,7 +155,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       <div className="modal-overlay">
         <div className="modal-content text-center" style={{ maxWidth: '400px' }}>
           <button className="modal-close" onClick={onClose}>×</button>
-          <div style={{ fontSize: '3.5rem', marginBottom: '10px' }}>⚠️</div>
+          <div className="flex justify-center mb-4">
+            <ShieldAlert size={60} color="var(--accent-orange)" />
+          </div>
           <h2 style={{ color: 'var(--accent-orange)' }}>POLÍTICA DE SEGURIDAD</h2>
           <p className="mt-4 mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
             Toda reserva de boletos está sujeta a verificación. Si el comprobante enviado es falso o el dinero no se refleja en nuestras cuentas en un plazo máximo de <strong>24 horas</strong>, tus boletos serán cancelados automáticamente y puestos a la venta nuevamente.
@@ -318,27 +321,33 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           {/* Payment Methods */}
           <div className="form-section">
             <label>MÉTODO DE PAGO</label>
-            <div className="payment-options">
+            <div className="payment-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
               <button 
                 type="button" 
                 className={`pay-btn ${paymentMethod === 'paypal' ? 'selected' : ''}`}
                 onClick={() => setPaymentMethod('paypal')}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                🌐 PAYPAL
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
+                <span style={{ fontSize: '0.7rem' }}>PAYPAL</span>
               </button>
               <button 
                 type="button" 
                 className={`pay-btn ${paymentMethod === 'reservas' ? 'selected' : ''}`}
                 onClick={() => setPaymentMethod('reservas')}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                🏦 BAN. RESERVAS
+                <img src="https://www.banreservas.com/PublishingImages/Banreservas/logo-banreservas.svg" alt="Reservas" style={{ height: '20px' }} />
+                <span style={{ fontSize: '0.65rem' }}>BANRESERVAS</span>
               </button>
               <button 
                 type="button" 
                 className={`pay-btn ${paymentMethod === 'qik' ? 'selected' : ''}`}
                 onClick={() => setPaymentMethod('qik')}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                ⚡ QIK
+                <img src="https://qik.com.do/content/themes/qik/assets/img/logo-qik.svg" alt="Qik" style={{ height: '20px' }} />
+                <span style={{ fontSize: '0.8rem' }}>QIK</span>
               </button>
             </div>
 
@@ -374,8 +383,12 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             <span className="amount">RD${(raffle.price * quantity).toLocaleString()}</span>
           </div>
 
-          <button type="submit" className="btn-accent w-full mt-4" disabled={isSubmitting}>
-            {isSubmitting ? 'PROCESANDO...' : '✅ CONFIRMAR COMPRA Y SUBIR RECIBO'}
+          <button type="submit" className="btn-accent w-full mt-4 flex items-center justify-center gap-2" disabled={isSubmitting}>
+            {isSubmitting ? 'PROCESANDO...' : (
+              <>
+                <CheckCircle size={18} /> CONFIRMAR COMPRA Y SUBIR RECIBO
+              </>
+            )}
           </button>
         </form>
       </div>

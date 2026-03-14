@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
+import { Target, Search, Trophy, Info, User } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -43,7 +44,7 @@ export default function Header() {
         }}
         title="Admin Login"
       >
-        👤
+        <User size={20} />
       </button>
 
       {/* Admin Sidebar / Drawer */}
@@ -73,23 +74,23 @@ export default function Header() {
         <ul>
           <li>
             <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
-              <span className="nav-icon">🎯</span> RIFAS ACTIVAS
+              <Target size={18} className="nav-icon" /> RIFAS ACTIVAS
             </Link>
           </li>
           <li>
             <Link href="/verificador" className={`nav-link ${pathname === '/verificador' ? 'active' : ''}`}>
-              <span className="nav-icon">🔍</span> VERIFICAR BOLETOS
+              <Search size={18} className="nav-icon" /> VERIFICAR BOLETOS
             </Link>
           </li>
           <li>
             <Link href="/ganadores" className={`nav-link ${pathname === '/ganadores' ? 'active' : ''}`}>
-              <span className="nav-icon">🏆</span> GANADORES
+              <Trophy size={18} className="nav-icon" /> GANADORES
             </Link>
           </li>
 
           <li>
             <Link href="/nosotros" className={`nav-link ${pathname === '/nosotros' ? 'active' : ''}`}>
-              <span className="nav-icon">🦈</span> SOBRE NOSOTROS
+              <Info size={18} className="nav-icon" /> SOBRE NOSOTROS
             </Link>
           </li>
         </ul>

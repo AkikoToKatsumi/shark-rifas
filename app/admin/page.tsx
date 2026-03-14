@@ -330,7 +330,6 @@ export default function AdminPage() {
     <div className="admin-dashboard p-4 md:p-8 max-w-6xl mx-auto text-white">
       <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h2>PANEL ADMIN - Shark Rifas</h2>
-        <button onClick={handleLogout} className="btn-random px-4 py-2 border rounded border-gray-600 hover:bg-gray-800">Cerrar Sesión</button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

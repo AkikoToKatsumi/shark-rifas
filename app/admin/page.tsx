@@ -406,89 +406,87 @@ export default function AdminPage() {
   });
 
   return (
-    <div className="admin-dashboard p-2 sm:p-4 md:p-8 max-w-7xl mx-auto text-white">
+    <div className="admin-dashboard">
       {/* --- DASHBOARD HEADER --- */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-gray-900/50 p-6 rounded-2xl border border-gray-800">
+      <div className="dashboard-header-card">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            Panel de Control
-          </h1>
-          <p className="text-gray-400 text-sm mt-1">Monitorea el rendimiento de Shark Rifas en tiempo real.</p>
+          <h1 className="dashboard-title">Panel de Control</h1>
+          <p className="dashboard-subtitle">Monitorea el rendimiento de Shark Rifas en tiempo real.</p>
         </div>
-        <div className="flex gap-3">
-          <button onClick={fetchData} className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-xl transition-all border border-gray-700">
-            <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} /> Actualizar
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button onClick={fetchData} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} /> ACTUALIZAR
           </button>
-          <button onClick={handleLogout} className="flex items-center gap-2 bg-red-900/20 text-red-400 hover:bg-red-900/40 px-4 py-2 rounded-xl transition-all border border-red-900/30">
-            Cerrar Sesión
+          <button onClick={handleLogout} className="btn-primary" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+            SALIR
           </button>
         </div>
       </div>
 
       {/* --- METRICS CARDS --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-cyan-500/50 transition-all group">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Ingresos Totales</p>
-              <h3 className="text-2xl font-bold mt-1 text-white">RD${dashboardData.metrics.totalIncome.toLocaleString()}</h3>
-              <p className="text-green-400 text-xs mt-2 flex items-center gap-1"><TrendingUp size={12} /> Pagados</p>
+      <div className="metrics-grid">
+        <div className="metric-card-premium cyan">
+          <div className="metric-content">
+            <p>Ingresos Totales</p>
+            <h3>RD${dashboardData.metrics.totalIncome.toLocaleString()}</h3>
+            <div className="metric-trend success">
+              <TrendingUp size={14} /> <span>Pagados</span>
             </div>
-            <div className="p-3 bg-cyan-950/30 rounded-2xl text-cyan-400 group-hover:scale-110 transition-transform">
-              <DollarSign size={24} />
-            </div>
+          </div>
+          <div className="metric-icon-box" style={{ color: 'var(--primary-cyan)' }}>
+            <DollarSign size={24} />
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-blue-500/50 transition-all group">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Boletos Pagados</p>
-              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.totalSold}</h3>
-              <p className="text-gray-500 text-xs mt-2">Tickets confirmados</p>
+        <div className="metric-card-premium blue">
+          <div className="metric-content">
+            <p>Boletos Pagados</p>
+            <h3>{dashboardData.metrics.totalSold}</h3>
+            <div className="metric-trend neutral">
+              <span>Tickets confirmados</span>
             </div>
-            <div className="p-3 bg-blue-950/30 rounded-2xl text-blue-400 group-hover:scale-110 transition-transform">
-              <Ticket size={24} />
-            </div>
+          </div>
+          <div className="metric-icon-box" style={{ color: '#4facfe' }}>
+            <Ticket size={24} />
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-orange-500/50 transition-all group">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Por Confirmar</p>
-              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.pendingTickets}</h3>
-              <p className="text-orange-400 text-xs mt-2">Esperando revisión</p>
+        <div className="metric-card-premium orange">
+          <div className="metric-content">
+            <p>Por Confirmar</p>
+            <h3>{dashboardData.metrics.pendingTickets}</h3>
+            <div className="metric-trend warning">
+              <span>Esperando revisión</span>
             </div>
-            <div className="p-3 bg-orange-950/30 rounded-2xl text-orange-400 group-hover:scale-110 transition-transform">
-              <Activity size={24} />
-            </div>
+          </div>
+          <div className="metric-icon-box" style={{ color: 'var(--accent-orange)' }}>
+            <Activity size={24} />
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-purple-500/50 transition-all group">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Conversión</p>
-              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.conversionRate.toFixed(1)}%</h3>
-              <p className="text-purple-400 text-xs mt-2">Interés vs Venta</p>
+        <div className="metric-card-premium purple">
+          <div className="metric-content">
+            <p>Conversión</p>
+            <h3>{dashboardData.metrics.conversionRate.toFixed(1)}%</h3>
+            <div className="metric-trend neutral">
+              <span>Interés vs Venta</span>
             </div>
-            <div className="p-3 bg-purple-950/30 rounded-2xl text-purple-400 group-hover:scale-110 transition-transform">
-              <Users size={24} />
-            </div>
+          </div>
+          <div className="metric-icon-box" style={{ color: '#a855f7' }}>
+            <Users size={24} />
           </div>
         </div>
       </div>
 
       {/* --- CHARTS SECTION --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <div className="charts-main-grid">
         {/* Sales Trend Line Chart */}
-        <div className="lg:col-span-2 bg-gray-900 border border-gray-800 p-6 rounded-3xl">
-          <div className="flex justify-between items-center mb-6">
-            <h4 className="font-bold flex items-center gap-2"><LineIcon size={18} className="text-cyan-400" /> Rendimiento de Ventas</h4>
-            <span className="text-xs text-gray-500">Últimos 7 días</span>
+        <div className="chart-card">
+          <div className="chart-header">
+            <h4><LineIcon size={18} style={{ color: 'var(--primary-cyan)' }} /> Rendimiento de Ventas</h4>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ÚLTIMOS 7 DÍAS</span>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="chart-container-box">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={dashboardData.salesChartData}>
                 <defs>
@@ -510,10 +508,12 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Revenue by Method Bar Chart */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl">
-          <h4 className="font-bold mb-6 flex items-center gap-2"><PieIcon size={18} className="text-blue-400" /> Popularidad de Rifas</h4>
-          <div className="h-[300px] w-full">
+        {/* Popularity Pie Chart */}
+        <div className="chart-card">
+          <div className="chart-header">
+            <h4><PieIcon size={18} style={{ color: '#4facfe' }} /> Popularidad</h4>
+          </div>
+          <div className="chart-container-box">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -537,99 +537,87 @@ export default function AdminPage() {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
 
-      {/* --- REVENUE BY BANK BARCHART (Full Width) --- */}
-      <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl mb-12">
-        <h4 className="font-bold mb-6 flex items-center gap-2"><BarChart3 size={18} className="text-green-400" /> Ingresos por Método de Pago</h4>
-        <div className="h-[250px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dashboardData.revenueChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-              <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip 
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
-              />
-              <Bar dataKey="value" fill="#4facfe" radius={[8, 8, 0, 0]} barSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Revenue Bar Chart */}
+        <div className="chart-card full-width-chart">
+          <div className="chart-header">
+            <h4><BarChart3 size={18} style={{ color: 'var(--success)' }} /> Ingresos por Método de Pago</h4>
+          </div>
+          <div className="chart-container-box" style={{ height: '250px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dashboardData.revenueChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+                <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                  contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
+                />
+                <Bar dataKey="value" fill="#4facfe" radius={[8, 8, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="management-grid">
         
         {/* Left Column: Create Raffle */}
-        <div className="card mb-6 bg-gray-900 border border-gray-800 p-6 rounded-lg">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-cyan-400 font-bold text-xl">
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.2rem', margin: 0 }}>
               {editingRaffleId ? '✏️ EDITAR RIFA' : '➕ CREAR NUEVA RIFA'}
             </h3>
             {editingRaffleId && (
-              <button type="button" onClick={cancelEdit} className="text-sm text-gray-400 hover:text-white underline">
+              <button type="button" onClick={cancelEdit} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem' }}>
                 Cancelar Edición
               </button>
             )}
           </div>
-          <form className="admin-form flex flex-col gap-4" onSubmit={handleSaveRaffle}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="form-group flex flex-col">
-                <label className="text-xs text-gray-400 mb-1">NOMBRE DEL PREMIO</label>
-                <input required value={newRaffle.title} onChange={e => setNewRaffle({...newRaffle, title: e.target.value})} type="text" className="admin-input p-2 rounded bg-gray-800 border-gray-700" placeholder="Ej: iPhone 15 Pro" />
+          <form className="admin-form-container" onSubmit={handleSaveRaffle}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <div className="form-group">
+                <label>NOMBRE DEL PREMIO</label>
+                <input required value={newRaffle.title} onChange={e => setNewRaffle({...newRaffle, title: e.target.value})} type="text" placeholder="Ej: iPhone 15 Pro" />
               </div>
-              <div className="form-group flex flex-col">
-                <label className="text-xs text-gray-400 mb-1">PRECIO POR BOLETO (RD$)</label>
-                <input required value={newRaffle.ticket_price} onChange={e => setNewRaffle({...newRaffle, ticket_price: e.target.value})} type="number" className="admin-input p-2 rounded bg-gray-800 border-gray-700" placeholder="500" />
+              <div className="form-group">
+                <label>PRECIO POR BOLETO (RD$)</label>
+                <input required value={newRaffle.ticket_price} onChange={e => setNewRaffle({...newRaffle, ticket_price: e.target.value})} type="number" placeholder="500" />
               </div>
-              <div className="form-group flex flex-col">
-                <label className="text-xs text-gray-400 mb-1">TOTAL DE BOLETOS</label>
-                <input required value={newRaffle.total_tickets} onChange={e => setNewRaffle({...newRaffle, total_tickets: e.target.value})} type="number" className="admin-input p-2 rounded bg-gray-800 border-gray-700" placeholder="10000" />
+              <div className="form-group">
+                <label>TOTAL DE BOLETOS</label>
+                <input required value={newRaffle.total_tickets} onChange={e => setNewRaffle({...newRaffle, total_tickets: e.target.value})} type="number" placeholder="10000" />
               </div>
-              <div className="form-group flex flex-col">
-                <label className="text-xs text-gray-400 mb-1">FECHA DEL SORTEO</label>
-                <input value={newRaffle.draw_date} onChange={e => setNewRaffle({...newRaffle, draw_date: e.target.value})} type="date" className="admin-input p-2 rounded bg-gray-800 border-gray-700" />
+              <div className="form-group">
+                <label>FECHA DEL SORTEO</label>
+                <input value={newRaffle.draw_date} onChange={e => setNewRaffle({...newRaffle, draw_date: e.target.value})} type="date" />
               </div>
             </div>
-            <div className="form-group flex flex-col mt-2">
-              <label className="text-xs text-gray-400 mb-1">DESCRIPCIÓN</label>
-              <input value={newRaffle.description} onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} type="text" className="admin-input p-2 rounded bg-gray-800 border-gray-700" placeholder="Descripción del premio" />
+            <div className="form-group">
+              <label>DESCRIPCIÓN</label>
+              <input value={newRaffle.description} onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} type="text" placeholder="Descripción del premio" />
             </div>
-            <div className="form-group flex flex-col mt-2 mb-4">
-              <label className="text-xs text-gray-400 mb-1">IMAGEN DEL PREMIO (Recomendado)</label>
-              <div className="flex gap-4 items-center">
+            <div className="form-group">
+              <label>IMAGEN DEL PREMIO</label>
+              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '10px' }}>
                 <div 
-                  className="image-preview w-24 h-24 bg-gray-800 border border-gray-700 rounded flex items-center justify-center overflow-hidden cursor-pointer hover:border-cyan-500 transition-all"
+                  className="image-preview-box"
                   onClick={() => document.getElementById('raffle-img-upload')?.click()}
                 >
                   {newRaffle.image_url ? (
-                    <img src={newRaffle.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={newRaffle.image_url} alt="Preview" />
                   ) : (
-                    <span className="text-2xl text-gray-600">+</span>
+                    <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>+</span>
                   )}
                 </div>
-                <div className="flex-grow">
-                  <input 
-                    id="raffle-img-upload"
-                    type="file" 
-                    onChange={handleImageUpload} 
-                    style={{ display: 'none' }} 
-                    accept="image/*"
-                  />
-                  <p className="text-[10px] text-gray-500 mb-2">Sube una foto clara del premio para aumentar las ventas.</p>
-                  <button 
-                    type="button" 
-                    onClick={() => document.getElementById('raffle-img-upload')?.click()}
-                    className="text-xs bg-gray-700 px-3 py-1 rounded hover:bg-gray-600 transition"
-                  >
+                <div style={{ flex: 1 }}>
+                  <input id="raffle-img-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} accept="image/*" />
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Sube una foto clara del premio.</p>
+                  <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.7rem' }}>
                     {uploading ? 'SUBIENDO...' : 'SUBIR FOTO'}
                   </button>
                   {newRaffle.image_url && (
-                    <button 
-                      type="button" 
-                      onClick={() => setNewRaffle({...newRaffle, image_url: ''})}
-                      className="ml-2 text-xs text-red-500 hover:underline"
-                    >
+                    <button type="button" onClick={() => setNewRaffle({...newRaffle, image_url: ''})} style={{ marginLeft: '10px', color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.7rem' }}>
                       Quitar
                     </button>
                   )}
@@ -637,55 +625,43 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="form-group flex flex-col mt-2 mb-4">
-              <label className="text-xs text-gray-400 mb-1">EMOJI / ÍCONO (Opcional)</label>
-              <input value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" className="admin-input p-2 rounded bg-gray-800 border-gray-700 w-24 text-center" placeholder="🎁" maxLength={2} />
+            <div className="form-group">
+              <label>EMOJI / ÍCONO</label>
+              <input value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ width: '60px', textAlign: 'center' }} placeholder="🎁" maxLength={2} />
             </div>
-            <button type="submit" className="btn-primary w-full bg-cyan-500 text-black font-bold py-3 rounded hover:bg-cyan-400 transition">
+            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '15px' }}>
               {editingRaffleId ? '⚡ GUARDAR CAMBIOS' : '⚡ CREAR RIFA'}
             </button>
           </form>
         </div>
 
         {/* Right Column: Active Raffles Summary */}
-        <div className="card mb-6 bg-gray-900 border border-gray-800 p-6 rounded-lg">
-          <h3 className="text-orange-400 font-bold mb-4 text-xl">🎲 RIFAS ACTUALES</h3>
+        <div className="card">
+          <h3 style={{ color: 'var(--accent-orange)', fontSize: '1.2rem', marginBottom: '1.5rem' }}>🎲 RIFAS ACTUALES</h3>
           {loading ? <p>Cargando...</p> : (
-            <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
+            <div className="raffle-list-scroll">
               {raffles.map(r => (
-                <div key={r.id} className="border border-gray-700 p-3 sm:p-4 rounded bg-gray-800 flex flex-col lg:flex-row lg:justify-between items-start lg:items-center gap-4">
+                <div key={r.id} className="raffle-item-card">
                   <div>
-                    <h4 className="font-bold text-lg flex items-center gap-2">
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                        {r.emoji} {r.title}
-                       <span className={`text-[10px] px-2 py-0.5 rounded ${r.is_active ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+                       <span style={{ 
+                         fontSize: '0.6rem', 
+                         padding: '2px 6px', 
+                         borderRadius: '4px', 
+                         backgroundColor: r.is_active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                         color: r.is_active ? 'var(--success)' : '#ef4444'
+                       }}>
                          {r.is_active ? 'ACTIVA' : 'INACTIVA'}
                        </span>
                     </h4>
-                    <p className="text-sm text-gray-400">Precio: RD${r.ticket_price} | {r.total_tickets} boletos</p>
+                    <p style={{ margin: '5px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      Precio: RD${r.ticket_price} | {r.total_tickets} boletos
+                    </p>
                   </div>
-                  <div className="flex flex-wrap gap-2 text-sm w-full lg:w-auto mt-2 lg:mt-0 justify-start sm:justify-end">
-                    <button 
-                      type="button" 
-                      onClick={() => handleToggleRaffleStatus(r.id, r.is_active)} 
-                      className={`flex-1 sm:flex-none px-4 py-2 rounded font-bold text-xs uppercase tracking-wider transition-all duration-300 border ${r.is_active ? 'border-gray-500 text-gray-400 hover:bg-gray-800 hover:text-white hover:shadow-[0_0_12px_rgba(156,163,175,0.4)]' : 'border-green-500 text-green-400 hover:bg-green-900/40 hover:text-green-300 hover:shadow-[0_0_12px_rgba(34,197,94,0.4)]'}`}
-                      title={r.is_active ? 'Desactivar' : 'Activar'}
-                    >
-                      {r.is_active ? '⏸️ Pausar' : '▶️ Activar'}
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => handleEditRaffle(r)} 
-                      className="flex-1 sm:flex-none px-4 py-2 rounded font-bold text-xs uppercase tracking-wider transition-all duration-300 border border-cyan-500 text-cyan-400 hover:bg-cyan-900/40 hover:text-cyan-300 hover:shadow-[0_0_12px_rgba(6,182,212,0.4)]"
-                    >
-                      ✏️ Editar
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => handleDeleteRaffle(r.id)} 
-                      className="flex-1 sm:flex-none px-4 py-2 rounded font-bold text-xs uppercase tracking-wider transition-all duration-300 border border-red-500 text-red-500 hover:bg-red-900/40 hover:text-red-300 hover:shadow-[0_0_12px_rgba(239,68,68,0.5)]"
-                    >
-                      🗑️ Eliminar
-                    </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleEditRaffle(r)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.7rem' }}>✏️</button>
+                    <button onClick={() => handleDeleteRaffle(r.id)} style={{ padding: '6px 10px', fontSize: '0.7rem', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', background: 'none', cursor: 'pointer' }}>🗑️</button>
                   </div>
                 </div>
               ))}
@@ -693,103 +669,73 @@ export default function AdminPage() {
             </div>
           )}
         </div>
-
       </div>
       
       {/* Consolidated Tickets Table */}
-      <div className="card mt-8 bg-gray-900 border border-gray-800 p-6 rounded-lg overflow-x-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <h3 className="text-cyan-400 font-bold text-xl">📋 REGISTRO DE BOLETOS VENDIDOS ({filteredTickets.length})</h3>
+      <div className="table-wrapper" style={{ marginTop: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3 style={{ color: 'var(--primary-cyan)', margin: 0 }}>📋 REGISTRO DE BOLETOS ({filteredTickets.length})</h3>
           <input 
             type="text" 
             placeholder="🔍 Buscar por nombre, teléfono o boleto..." 
             value={ticketSearch}
             onChange={(e) => setTicketSearch(e.target.value)}
-            className="admin-input p-2 rounded bg-gray-800 border-gray-700 w-full md:w-1/3 min-w-[250px]"
+            style={{ width: '100%', maxWidth: '350px', padding: '10px 15px', borderRadius: '12px' }}
           />
         </div>
         
-        <div className="table-responsive">
-          <table className="admin-table w-full text-left">
+        <table className="admin-table-premium">
           <thead>
-            <tr className="border-b border-gray-700 text-gray-400 text-sm">
-              <th className="py-2 px-4">Boleto</th>
-              <th className="py-2 px-4">Cliente</th>
-              <th className="py-2 px-4">Contacto</th>
-              <th className="py-2 px-4">Método de Pago</th>
-              <th className="py-2 px-4 text-right">Estado / Acciones</th>
+            <tr>
+              <th>Boleto</th>
+              <th>Cliente</th>
+              <th>Contacto</th>
+              <th>Método</th>
+              <th style={{ textAlign: 'right' }}>Estado / Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filteredTickets.map(t => {
               const participant = Array.isArray(t.participants) ? t.participants[0] : t.participants;
               return (
-              <tr key={t.id} className="border-b border-gray-800 hover:bg-gray-800 transition">
-                <td className="py-3 px-4 font-bold text-cyan-400 text-xl">{t.ticket_number}</td>
-                <td className="py-3 px-4 uppercase">{participant?.full_name || 'Desconocido'}</td>
-                <td className="py-3 px-4 text-sm text-gray-300">
+              <tr key={t.id}>
+                <td style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.2rem' }}>#{t.ticket_number}</td>
+                <td>{participant?.full_name || 'Desconocido'}</td>
+                <td style={{ fontSize: '0.8rem' }}>
                   {participant?.phone}<br/>
-                  <span className="text-xs text-gray-500">{participant?.email}</span>
+                  <span style={{ opacity: 0.5 }}>{participant?.email}</span>
                 </td>
-                <td className="py-3 px-4 text-sm uppercase">{t.payment_method}</td>
-                <td className="py-3 px-4 text-right">
-                  <span style={{ 
-                    display: 'inline-block',
-                    padding: '4px 8px', 
-                    borderRadius: '4px', 
-                    fontSize: '0.75rem', 
-                    fontWeight: 'bold',
-                    backgroundColor: t.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
-                    color: t.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)',
-                    textTransform: 'uppercase',
-                    marginBottom: t.status === 'pending' ? '8px' : '0'
-                  }}>
-                    {t.status === 'paid' ? 'PAGADO ✓' : (t.status === 'pending' ? 'PENDIENTE ⏳' : 'RESERVADO')}
-                  </span>
-                  
-                  {t.status === 'paid' && (
-                    <div className="flex gap-2 justify-end mt-1">
-                      <button 
-                        onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'cancel')}
-                        className="border border-red-600 text-red-500 hover:bg-red-900/20 px-3 py-1 rounded text-xs transition font-bold"
-                        title="Anular compra y liberar número"
-                      >
-                        ✕ Anular Compra
-                      </button>
+                <td style={{ fontSize: '0.8rem' }}>{t.payment_method}</td>
+                <td style={{ textAlign: 'right' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                    <span style={{ 
+                      padding: '4px 10px', 
+                      borderRadius: '6px', 
+                      fontSize: '0.7rem', 
+                      fontWeight: '700',
+                      backgroundColor: t.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
+                      color: t.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
+                    }}>
+                      {t.status === 'paid' ? 'PAGADO ✓' : (t.status === 'pending' ? 'PENDIENTE ⏳' : 'RESERVADO')}
+                    </span>
+                    
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {t.status === 'pending' && (
+                        <>
+                          <button onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR</button>
+                          <button onClick={() => handleUpdateTicketStatus(t.id, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
+                        </>
+                      )}
+                      {t.status === 'paid' && (
+                        <button onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'cancel')} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem' }}>Anular</button>
+                      )}
                     </div>
-                  )}
-                  
-                  {t.status === 'pending' && (
-                    <div className="flex gap-2 justify-end mt-1">
-                      <button 
-                        onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'approve')}
-                        className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs transition font-bold"
-                        title="Confirmar Pago y Notificar"
-                      >
-                        ✓ Aprobar
-                      </button>
-                      <button 
-                        onClick={() => handleUpdateTicketStatus(t.id, 'reserved', 'cancel')}
-                        className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs transition font-bold"
-                        title="Cancelar Reserva"
-                      >
-                        ✕ Cancelar
-                      </button>
-                    </div>
-                  )}
+                  </div>
                 </td>
               </tr>
             )})}
-            {filteredTickets.length === 0 && (
-              <tr>
-                <td colSpan={5} className="py-8 text-center text-gray-500">
-                  {ticketSearch ? 'No se encontraron resultados para tu búsqueda.' : 'No hay boletos vendidos aún.'}
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
-        </div>
       </div>
 
     </div>

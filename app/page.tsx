@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import BuyModal from './components/BuyModal';
+import FAQ from './components/FAQ';
+import CountdownTimer from './components/CountdownTimer';
 import { LayoutGrid, Hash, Trophy, Users, Star, Flame, Crown } from 'lucide-react';
 
 export default function Home() {
@@ -101,6 +103,7 @@ export default function Home() {
                       <div className="info-block align-right">
                         <span className="label">Sorteo</span>
                         <span className="date">{raffle.draw_date ? new Date(raffle.draw_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Próximamente'}</span>
+                        {raffle.draw_date && <CountdownTimer targetDate={raffle.draw_date} />}
                       </div>
                     </div>
 
@@ -167,6 +170,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQ />
 
       {selectedRaffle && (
         <BuyModal 

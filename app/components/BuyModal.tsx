@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
@@ -73,6 +74,12 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       setAssignedTickets(data.assignedTickets || []);
       setVerificationCode(data.verificationCode || '');
       setSuccess(true);
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#00f2fe', '#4facfe', '#ffffff']
+      });
     } catch (err: any) {
       console.error(err);
       setErrorMsg(err.message || 'Error al procesar la reserva. Por favor intenta de nuevo.');

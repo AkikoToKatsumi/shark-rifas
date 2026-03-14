@@ -284,32 +284,60 @@ export default function AdminPage() {
           },
           body: JSON.stringify({ ticketIds: [ticketId], status: 'paid' })
         });
-        if (res.ok) {
-          alert('Pago confirmado y correo enviado al cliente.');
-          fetchData();
-        }
       } catch (err) {
         console.error(err);
       }
     }
   };
 
+  // Calculate Statistics
+  const getStats = () => {
+    const paidTickets = tickets.filter(t => t.status === 'paid');
+    
+    // Revenue by Bank
+    const revenue = paidTickets.reduce((acc: any, ticket) => {
+      const method = ticket.payment_method || 'other';
+      const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
+      const price = raffle?.ticket_price || 0;
+      acc[method] = (acc[method] || 0) + price;
+      return acc;
+    }, {});
+
+    // Popular Raffles
+    const popularRaffles = raffles.map(r => ({
+      ...r,
+      soldPercent: (r as any).sold / r.total_tickets * 100
+    })).sort((a, b) => b.soldPercent - a.soldPercent);
+
+    // Top Buyer
+    const buyerTickets = paidTickets.reduce((acc: any, ticket) => {
+      const name = ticket.participants?.full_name || 'Anónimo';
+      acc[name] = (acc[name] || 0) + 1;
+      return acc;
+    }, {});
+    
+    const topBuyer = Object.entries(buyerTickets).sort((a: any, b: any) => b[1] - a[1])[0] || null;
+
+    return { revenue, popularRaffles, topBuyer };
+  };
+
+  const stats = getStats();
+
   if (!isAuthenticated) {
     return (
-      <div className="admin-login-container">
-        <div className="card login-card">
-          <h2>🔐 ACCESO ADMINISTRADOR</h2>
-          <form onSubmit={handleLogin} className="mt-4">
+      <div className="admin-login-overlay">
+        <div className="admin-login-card">
+          <h1>🔐 Admin Login</h1>
+          <form onSubmit={handleLogin}>
             <input 
               type="password" 
+              placeholder="Admin Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="admin-input flex-grow w-full" 
-              placeholder="Contraseña Maestra"
               required
             />
-            {error && <p className="text-error mt-4">{error}</p>}
-            <button type="submit" className="btn-primary w-full mt-4">INGRESAR AL PANEL</button>
+            {error && <p className="error-text">{error}</p>}
+            <button type="submit" className="btn-primary w-full">Access Panel</button>
           </form>
         </div>
       </div>

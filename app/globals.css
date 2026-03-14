@@ -1473,11 +1473,4 @@ a {
   text-transform: uppercase;
 }
 
-@media (max-width: 600px) {
-  .whatsapp-float {
-    width: 48px;
-    height: 48px;
-    bottom: 20px;
-    right: 20px;
-  }
-}
+

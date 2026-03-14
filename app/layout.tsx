@@ -4,7 +4,6 @@ import Header from "./components/Header";
 
 import Footer from "./components/Footer";
 import LoadingScreen from "./components/LoadingScreen";
-import LoadingScreen from "./components/LoadingScreen";
 
 export const metadata: Metadata = {
   title: "Shark RD Rifas",

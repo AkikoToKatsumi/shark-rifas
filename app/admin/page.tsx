@@ -37,8 +37,7 @@ type Ticket = {
       full_name: string;
       phone: string;
       email: string;
-    }[];
-  } | any;
+    }[] | any;
 };
 
 interface DashboardMetrics {

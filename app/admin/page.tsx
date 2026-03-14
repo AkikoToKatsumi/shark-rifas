@@ -1,6 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  PieChart, Pie, Cell, LineChart, Line, Legend, AreaChart, Area
+} from 'recharts';
+import { 
+  TrendingUp, Users, DollarSign, Ticket, Activity, 
+  BarChart3, PieChart as PieIcon, LineChart as LineIcon,
+  Download, Filter, RefreshCcw
+} from 'lucide-react';
 
 type Raffle = {
   id: string;
@@ -290,38 +299,60 @@ export default function AdminPage() {
     }
   };
 
-  // Calculate Statistics
-  const getStats = () => {
+  // --- Dashboard Data Processing ---
+  const dashboardData = useMemo(() => {
     const paidTickets = tickets.filter(t => t.status === 'paid');
     
-    // Revenue by Bank
-    const revenue = paidTickets.reduce((acc: any, ticket) => {
-      const method = ticket.payment_method || 'other';
+    // 1. Revenue by Bank (Bar Chart)
+    const revenueByMethod = paidTickets.reduce((acc: any, ticket) => {
+      const method = ticket.payment_method || 'otro';
       const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
       const price = raffle?.ticket_price || 0;
       acc[method] = (acc[method] || 0) + price;
       return acc;
     }, {});
+    const revenueChartData = Object.entries(revenueByMethod).map(([name, value]) => ({ 
+      name: name.toUpperCase(), 
+      value 
+    }));
 
-    // Popular Raffles
-    const popularRaffles = raffles.map(r => ({
-      ...r,
-      soldPercent: (r as any).sold / r.total_tickets * 100
-    })).sort((a, b) => b.soldPercent - a.soldPercent);
-
-    // Top Buyer
-    const buyerTickets = paidTickets.reduce((acc: any, ticket) => {
-      const name = ticket.participants?.full_name || 'Anónimo';
-      acc[name] = (acc[name] || 0) + 1;
+    // 2. Sales Over Time (Line Chart)
+    const salesByDate = paidTickets.reduce((acc: any, ticket) => {
+      const date = new Date(ticket.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+      acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {});
-    
-    const topBuyer = Object.entries(buyerTickets).sort((a: any, b: any) => b[1] - a[1])[0] || null;
+    const salesChartData = Object.entries(salesByDate)
+      .map(([date, sales]) => ({ date, sales }))
+      .sort((a, b) => {
+        const [d1, m1] = a.date.split('/').map(Number);
+        const [d2, m2] = b.date.split('/').map(Number);
+        return m1 !== m2 ? m1 - m2 : d1 - d2;
+      })
+      .slice(-7); // Last 7 days
 
-    return { revenue, popularRaffles, topBuyer };
-  };
+    // 3. Raffle Popularity (Pie Chart)
+    const raffleStats = raffles.map(r => ({
+      name: r.title.length > 15 ? r.title.substring(0, 12) + '...' : r.title,
+      value: (r as any).sold || 0,
+      total: r.total_tickets
+    })).sort((a, b) => b.value - a.value).slice(0, 5);
 
-  const stats = getStats();
+    // 4. Metrics
+    const totalIncome = Object.values(revenueByMethod).reduce((a: any, b: any) => a + b, 0);
+    const totalSold = paidTickets.length;
+    const pendingTickets = tickets.filter(t => t.status === 'pending').length;
+    const conversionRate = tickets.length > 0 ? (totalSold / tickets.length) * 100 : 0;
+
+    return { 
+      revenueChartData, 
+      salesChartData, 
+      raffleStats, 
+      metrics: { totalIncome, totalSold, pendingTickets, conversionRate } 
+    };
+  }, [tickets, raffles]);
+
+  const COLORS = ['#00f2fe', '#4facfe', '#6a11cb', '#2575fc', '#f093fb'];
 
   if (!isAuthenticated) {
     return (
@@ -355,12 +386,159 @@ export default function AdminPage() {
   });
 
   return (
-    <div className="admin-dashboard p-2 sm:p-4 md:p-8 max-w-6xl mx-auto text-white">
-      <div className="section-header mb-6">
-        <h2 className="admin-title">PANEL ADMIN - Shark Rifas</h2>
+    <div className="admin-dashboard p-2 sm:p-4 md:p-8 max-w-7xl mx-auto text-white">
+      {/* --- DASHBOARD HEADER --- */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-gray-900/50 p-6 rounded-2xl border border-gray-800">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            Panel de Control
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">Monitorea el rendimiento de Shark Rifas en tiempo real.</p>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={fetchData} className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-xl transition-all border border-gray-700">
+            <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} /> Actualizar
+          </button>
+          <button onClick={handleLogout} className="flex items-center gap-2 bg-red-900/20 text-red-400 hover:bg-red-900/40 px-4 py-2 rounded-xl transition-all border border-red-900/30">
+            Cerrar Sesión
+          </button>
+        </div>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      {/* --- METRICS CARDS --- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-cyan-500/50 transition-all group">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-gray-400 text-sm font-medium">Ingresos Totales</p>
+              <h3 className="text-2xl font-bold mt-1 text-white">RD${dashboardData.metrics.totalIncome.toLocaleString()}</h3>
+              <p className="text-green-400 text-xs mt-2 flex items-center gap-1"><TrendingUp size={12} /> Pagados</p>
+            </div>
+            <div className="p-3 bg-cyan-950/30 rounded-2xl text-cyan-400 group-hover:scale-110 transition-transform">
+              <DollarSign size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-blue-500/50 transition-all group">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-gray-400 text-sm font-medium">Boletos Pagados</p>
+              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.totalSold}</h3>
+              <p className="text-gray-500 text-xs mt-2">Tickets confirmados</p>
+            </div>
+            <div className="p-3 bg-blue-950/30 rounded-2xl text-blue-400 group-hover:scale-110 transition-transform">
+              <Ticket size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-orange-500/50 transition-all group">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-gray-400 text-sm font-medium">Por Confirmar</p>
+              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.pendingTickets}</h3>
+              <p className="text-orange-400 text-xs mt-2">Esperando revisión</p>
+            </div>
+            <div className="p-3 bg-orange-950/30 rounded-2xl text-orange-400 group-hover:scale-110 transition-transform">
+              <Activity size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl hover:border-purple-500/50 transition-all group">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-gray-400 text-sm font-medium">Conversión</p>
+              <h3 className="text-2xl font-bold mt-1 text-white">{dashboardData.metrics.conversionRate.toFixed(1)}%</h3>
+              <p className="text-purple-400 text-xs mt-2">Interés vs Venta</p>
+            </div>
+            <div className="p-3 bg-purple-950/30 rounded-2xl text-purple-400 group-hover:scale-110 transition-transform">
+              <Users size={24} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* --- CHARTS SECTION --- */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        {/* Sales Trend Line Chart */}
+        <div className="lg:col-span-2 bg-gray-900 border border-gray-800 p-6 rounded-3xl">
+          <div className="flex justify-between items-center mb-6">
+            <h4 className="font-bold flex items-center gap-2"><LineIcon size={18} className="text-cyan-400" /> Rendimiento de Ventas</h4>
+            <span className="text-xs text-gray-500">Últimos 7 días</span>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={dashboardData.salesChartData}>
+                <defs>
+                  <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#00f2fe" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#00f2fe" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+                <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
+                  itemStyle={{ color: '#00f2fe' }}
+                />
+                <Area type="monotone" dataKey="sales" stroke="#00f2fe" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Revenue by Method Bar Chart */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl">
+          <h4 className="font-bold mb-6 flex items-center gap-2"><PieIcon size={18} className="text-blue-400" /> Popularidad de Rifas</h4>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={dashboardData.raffleStats}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {dashboardData.raffleStats.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
+                />
+                <Legend iconType="circle" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* --- REVENUE BY BANK BARCHART (Full Width) --- */}
+      <div className="bg-gray-900 border border-gray-800 p-6 rounded-3xl mb-12">
+        <h4 className="font-bold mb-6 flex items-center gap-2"><BarChart3 size={18} className="text-green-400" /> Ingresos por Método de Pago</h4>
+        <div className="h-[250px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={dashboardData.revenueChartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+              <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+              <Tooltip 
+                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
+              />
+              <Bar dataKey="value" fill="#4facfe" radius={[8, 8, 0, 0]} barSize={40} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Left Column: Create Raffle */}
         <div className="card mb-6 bg-gray-900 border border-gray-800 p-6 rounded-lg">

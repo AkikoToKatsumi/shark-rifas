@@ -1324,3 +1324,66 @@ a {
 .hidden {
   display: none !important;
 }
+
+/* --- Splash Screen --- */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.splash-logo {
+  width: 200px;
+  margin-bottom: 2rem;
+  animation: logoPulse 2s infinite ease-in-out;
+}
+
+.loading-bar-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--primary-cyan);
+  box-shadow: 0 0 15px var(--primary-cyan);
+  width: 0;
+  animation: progressRun 2.5s forwards cubic-bezier(0.1, 0.7, 1.0, 0.1);
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.05); filter: brightness(1.2); }
+}
+
+@keyframes progressRun {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .splash-logo {
+    width: 150px;
+  }
+  .loading-bar-container {
+    width: 150px;
+  }
+}

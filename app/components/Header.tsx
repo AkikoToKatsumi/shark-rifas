@@ -72,7 +72,7 @@ export default function Header() {
       <nav className="main-nav">
         <ul>
           <li>
-            <Link href="/" className="nav-link active">
+            <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
               <span className="nav-icon">🎯</span> RIFAS ACTIVAS
             </Link>
           </li>

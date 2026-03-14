@@ -14,35 +14,40 @@ export default function Header() {
       <button 
         onClick={() => setIsAdminDrawerOpen(true)}
         style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          right: '10px', 
-          padding: '6px 14px', 
-          backgroundColor: '#222', 
-          color: 'white',
-          border: '1px solid rgba(255,255,255,0.3)',
-          borderRadius: '8px',
-          fontSize: '13px',
+          position: 'fixed', 
+          top: '50%', 
+          right: '0', 
+          transform: 'translateY(-50%)',
+          width: '30px',
+          height: '60px',
+          backgroundColor: 'rgba(11, 19, 30, 0.8)', 
+          color: 'var(--primary-cyan)',
+          border: '1px solid var(--border-color)',
+          borderRight: 'none',
+          borderRadius: '8px 0 0 8px',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: '6px',
+          justifyContent: 'center',
+          gap: '4px',
           cursor: 'pointer',
-          zIndex: 50,
-          transition: 'all 0.2s',
-          fontWeight: 'bold',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+          zIndex: 100,
+          transition: 'all 0.3s ease',
+          boxShadow: '-2px 0 10px rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(4px)'
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#444';
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
+          e.currentTarget.style.width = '40px';
+          e.currentTarget.style.backgroundColor = 'var(--bg-panel)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#222';
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+          e.currentTarget.style.width = '30px';
+          e.currentTarget.style.backgroundColor = 'rgba(11, 19, 30, 0.8)';
         }}
         title="Admin Login"
       >
-        <span>🔒</span> Admin
+        <span style={{ fontSize: '10px' }}>◀</span>
+        <span style={{ fontSize: '16px' }}>👤</span>
       </button>
 
       {/* Admin Sidebar / Drawer */}

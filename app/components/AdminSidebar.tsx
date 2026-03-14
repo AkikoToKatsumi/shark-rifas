@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Lock } from 'lucide-react';
 
 export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -68,7 +69,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
       <div className={`admin-drawer-overlay ${isOpen ? 'open' : ''}`} onClick={onClose}></div>
       <div className={`admin-drawer ${isOpen ? 'open' : ''}`}>
         <div className="drawer-header">
-          <h2>🔒 ADMIN ACCESS</h2>
+          <h2 className="flex items-center gap-2"><Lock size={20} /> ACCESO ADMIN</h2>
           <button className="close-drawer" onClick={onClose}>×</button>
         </div>
 

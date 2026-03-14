@@ -337,7 +337,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 onClick={() => setPaymentMethod('reservas')}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                <img src="https://www.banreservas.com/PublishingImages/Banreservas/logo-banreservas.svg" alt="Reservas" style={{ height: '20px' }} />
+                <img src="/banreservas.png" alt="Reservas" style={{ height: '30px', objectFit: 'contain' }} />
                 <span style={{ fontSize: '0.65rem' }}>BANRESERVAS</span>
               </button>
               <button 
@@ -346,7 +346,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 onClick={() => setPaymentMethod('qik')}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                <img src="https://qik.com.do/content/themes/qik/assets/img/logo-qik.svg" alt="Qik" style={{ height: '20px' }} />
+                <img src="/qik.png" alt="Qik" style={{ height: '30px', objectFit: 'contain' }} />
                 <span style={{ fontSize: '0.8rem' }}>QIK</span>
               </button>
             </div>

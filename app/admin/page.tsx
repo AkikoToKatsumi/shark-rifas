@@ -29,12 +29,31 @@ type Ticket = {
   status: string;
   payment_method: string;
   created_at: string;
-  participants: {
-    full_name: string;
-    phone: string;
-    email: string;
-  };
+    participants: {
+      full_name: string;
+      phone: string;
+      email: string;
+    } | {
+      full_name: string;
+      phone: string;
+      email: string;
+    }[];
+  } | any;
 };
+
+interface DashboardMetrics {
+  totalIncome: number;
+  totalSold: number;
+  pendingTickets: number;
+  conversionRate: number;
+}
+
+interface DashboardData {
+  revenueChartData: { name: string; value: number }[];
+  salesChartData: { date: string; sales: number }[];
+  raffleStats: { name: string; value: number; total: number }[];
+  metrics: DashboardMetrics;
+}
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -300,46 +319,48 @@ export default function AdminPage() {
   };
 
   // --- Dashboard Data Processing ---
-  const dashboardData = useMemo(() => {
+  const dashboardData: DashboardData = useMemo(() => {
     const paidTickets = tickets.filter(t => t.status === 'paid');
     
     // 1. Revenue by Bank (Bar Chart)
-    const revenueByMethod = paidTickets.reduce((acc: any, ticket) => {
+    const revenueByMethod = paidTickets.reduce((acc: Record<string, number>, ticket) => {
       const method = ticket.payment_method || 'otro';
       const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
       const price = raffle?.ticket_price || 0;
       acc[method] = (acc[method] || 0) + price;
       return acc;
     }, {});
+    
     const revenueChartData = Object.entries(revenueByMethod).map(([name, value]) => ({ 
       name: name.toUpperCase(), 
-      value 
+      value: Number(value)
     }));
 
     // 2. Sales Over Time (Line Chart)
-    const salesByDate = paidTickets.reduce((acc: any, ticket) => {
+    const salesByDate = paidTickets.reduce((acc: Record<string, number>, ticket) => {
       const date = new Date(ticket.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {});
+    
     const salesChartData = Object.entries(salesByDate)
-      .map(([date, sales]) => ({ date, sales }))
+      .map(([date, sales]) => ({ date, sales: Number(sales) }))
       .sort((a, b) => {
         const [d1, m1] = a.date.split('/').map(Number);
         const [d2, m2] = b.date.split('/').map(Number);
         return m1 !== m2 ? m1 - m2 : d1 - d2;
       })
-      .slice(-7); // Last 7 days
+      .slice(-7);
 
     // 3. Raffle Popularity (Pie Chart)
     const raffleStats = raffles.map(r => ({
       name: r.title.length > 15 ? r.title.substring(0, 12) + '...' : r.title,
-      value: (r as any).sold || 0,
-      total: r.total_tickets
+      value: Number((r as any).sold || 0),
+      total: Number(r.total_tickets)
     })).sort((a, b) => b.value - a.value).slice(0, 5);
 
     // 4. Metrics
-    const totalIncome = Object.values(revenueByMethod).reduce((a: any, b: any) => a + b, 0);
+    const totalIncome = Object.values(revenueByMethod).reduce((a, b) => a + (b as number), 0);
     const totalSold = paidTickets.length;
     const pendingTickets = tickets.filter(t => t.status === 'pending').length;
     const conversionRate = tickets.length > 0 ? (totalSold / tickets.length) * 100 : 0;

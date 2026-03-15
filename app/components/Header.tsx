@@ -54,11 +54,11 @@ export default function Header() {
       />
       <div className="top-marquee">
         <div className="marquee-content">
-          <span>⚡ SORTEOS EN VIVO TODOS LOS FINES DE SEMANA</span>
-          <span>🏆 MÁS DE 50 GANADORES ESTE MES</span>
-          <span>🎯 ¡PARTICIPA Y GANA! SHARK RD - RIFAS 100% VIRTUALES Y SEGURAS</span>
-          <span>⚡ SORTEOS EN VIVO TODOS LOS FINES DE SEMANA</span>
-          <span>🏆 MÁS DE 50 GANADORES ESTE MES</span>
+          <span>📢 ¡MANTENTE ATENTO A NUESTROS PRÓXIMOS SORTEOS!</span>
+          <span>🚀 ¡TU SUERTE PUEDE CAMBIAR HOY MISMO CON SHARK RD!</span>
+          <span>🎯 RIFAS 100% VIRTUALES, TRANSPARENTES Y SEGURAS</span>
+          <span>✨ ¡PARTICIPA Y CONVIÉRTETE EN NUESTRO PRÓXIMO GANADOR!</span>
+          <span>🏆 ÚNETE A NUESTRA COMUNIDAD DE GANADORES</span>
         </div>
       </div>
       

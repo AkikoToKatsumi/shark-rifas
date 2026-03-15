@@ -148,7 +148,7 @@ export async function POST(request: Request) {
       try {
         await Promise.all([
             sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode),
-            receiptImage ? sendAdminReceiptEmail(fullName, phone, email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
+            receiptImage ? sendAdminReceiptEmail(fullName, phone, email, cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
         ]);
       } catch (e) {
         console.error(`[${requestId}] Email sending failed:`, e);

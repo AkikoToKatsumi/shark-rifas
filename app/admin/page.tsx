@@ -36,10 +36,12 @@ type Ticket = {
       full_name: string;
       phone: string;
       email: string;
+      cedula: string;
     } | {
       full_name: string;
       phone: string;
       email: string;
+      cedula: string;
     }[] | any;
 };
 
@@ -436,8 +438,9 @@ export default function AdminPage() {
     const name = (participant?.full_name || '').toLowerCase();
     const phone = (participant?.phone || '').toLowerCase();
     const tNum = (t.ticket_number || '').toLowerCase();
+    const cedula = (participant?.cedula || '').toLowerCase();
     
-    return name.includes(searchStr) || phone.includes(searchStr) || tNum.includes(searchStr);
+    return name.includes(searchStr) || phone.includes(searchStr) || tNum.includes(searchStr) || cedula.includes(searchStr);
   });
 
   return (
@@ -736,6 +739,7 @@ export default function AdminPage() {
               <th>Boleto</th>
               <th>Cliente</th>
               <th>Contacto</th>
+              <th>Cédula</th>
               <th>Método</th>
               <th style={{ textAlign: 'right' }}>Estado / Acciones</th>
             </tr>
@@ -751,6 +755,7 @@ export default function AdminPage() {
                   {participant?.phone}<br/>
                   <span style={{ opacity: 0.5 }}>{participant?.email}</span>
                 </td>
+                <td style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '500' }}>{participant?.cedula || '-'}</td>
                 <td style={{ fontSize: '0.8rem' }}>{t.payment_method}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>

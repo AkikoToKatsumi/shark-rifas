@@ -135,6 +135,7 @@ export const sendAdminReceiptEmail = async (
   fullName: string,
   phone: string,
   email: string,
+  cedula: string,
   ticketNumber: string,
   raffleTitle: string,
   paymentMethod: string,
@@ -165,6 +166,7 @@ export const sendAdminReceiptEmail = async (
       <h3>Detalles del Cliente:</h3>
       <ul>
         <li><strong>Nombre:</strong> ${fullName}</li>
+        <li><strong>Cédula:</strong> ${cedula}</li>
         <li><strong>Teléfono:</strong> ${phone}</li>
         <li><strong>Correo:</strong> ${email}</li>
       </ul>

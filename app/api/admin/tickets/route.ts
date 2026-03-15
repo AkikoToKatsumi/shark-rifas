@@ -31,7 +31,8 @@ export async function GET(request: Request) {
           id,
           full_name,
           phone,
-          email
+          email,
+          cedula
         )
       `)
       .order('ticket_number', { ascending: true });

@@ -164,6 +164,13 @@ a {
   color: var(--accent-orange);
   text-shadow: 0 0 10px rgba(255, 140, 0, 0.4);
   margin-bottom: 0;
+  overflow-wrap: break-word; /* Ensure long words don't overflow */
+}
+
+@media (max-width: 480px) {
+  .logo-section h1 {
+    font-size: 2rem;
+  }
 }
 
 .logo-section .subtitle {
@@ -755,6 +762,12 @@ a {
   .admin-title {
     font-size: 1.5rem !important;
   }
+
+  /* Prevent overflow in buy modal numbers */
+  .ticket-input {
+    font-size: 1.2rem !important;
+    letter-spacing: 2px !important;
+  }
 }
 
 .admin-login-container {
@@ -1042,6 +1055,7 @@ a {
   border-top: 1px solid var(--border-color);
   font-size: 0.8rem;
   color: rgba(138, 155, 177, 0.6);
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 @media (max-width: 768px) {

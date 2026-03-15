@@ -8,6 +8,7 @@ export async function GET() {
       .from('raffles')
       .select('*')
       .eq('is_active', true)
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
     if (rError) throw rError;

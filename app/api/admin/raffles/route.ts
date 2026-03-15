@@ -16,6 +16,7 @@ export async function GET(request: Request) {
     const { data: raffles, error } = await supabaseAdmin
       .from('raffles')
       .select('*')
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { title, description, emoji, ticket_price, total_tickets, draw_date } = body;
+    const { title, description, emoji, ticket_price, total_tickets, draw_date, sort_order } = body;
 
     if (!title || !ticket_price || !total_tickets) {
       return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
@@ -51,6 +52,7 @@ export async function POST(request: Request) {
           ticket_price, 
           total_tickets, 
           draw_date,
+          sort_order: sort_order || 0,
           is_active: true 
         }
       ])

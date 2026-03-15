@@ -11,6 +11,7 @@ CREATE TABLE public.raffles (
     total_tickets INTEGER NOT NULL,
     draw_date DATE,
     is_active BOOLEAN DEFAULT true,
+    sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

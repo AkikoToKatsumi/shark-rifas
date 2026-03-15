@@ -22,6 +22,7 @@ type Raffle = {
   draw_date: string;
   is_active: boolean;
   image_url: string;
+  sort_order: number;
 };
 
 type Ticket = {
@@ -78,7 +79,8 @@ export default function AdminPage() {
     draw_date: '',
     description: '',
     emoji: '🎟️',
-    image_url: ''
+    image_url: '',
+    sort_order: '0'
   });
   const [uploading, setUploading] = useState(false);
 
@@ -171,7 +173,8 @@ export default function AdminPage() {
             ticket_price: Number(newRaffle.ticket_price),
             total_tickets: Number(newRaffle.total_tickets),
             draw_date: newRaffle.draw_date || null,
-            image_url: newRaffle.image_url
+            image_url: newRaffle.image_url,
+            sort_order: Number(newRaffle.sort_order)
           }}
         : {
             title: newRaffle.title,
@@ -180,7 +183,8 @@ export default function AdminPage() {
             ticket_price: Number(newRaffle.ticket_price),
             total_tickets: Number(newRaffle.total_tickets),
             draw_date: newRaffle.draw_date || null,
-            image_url: newRaffle.image_url
+            image_url: newRaffle.image_url,
+            sort_order: Number(newRaffle.sort_order)
           };
 
       const res = await fetch(url, {
@@ -193,7 +197,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '' });
+        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
         setEditingRaffleId(null);
         fetchData(); // Refresh list
         alert(editingRaffleId ? 'Rifa actualizada exitosamente' : 'Rifa creada exitosamente');
@@ -214,7 +218,8 @@ export default function AdminPage() {
       ticket_price: String(r.ticket_price),
       total_tickets: String(r.total_tickets),
       draw_date: r.draw_date ? new Date(r.draw_date).toISOString().split('T')[0] : '',
-      image_url: r.image_url || ''
+      image_url: r.image_url || '',
+      sort_order: String(r.sort_order || 0)
     });
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -222,7 +227,7 @@ export default function AdminPage() {
 
   const cancelEdit = () => {
     setEditingRaffleId(null);
-    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '' });
+    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -625,7 +630,12 @@ export default function AdminPage() {
             </div>
             <div className="form-group">
               <label>DESCRIPCIÓN</label>
-              <input value={newRaffle.description} onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} type="text" placeholder="Descripción del premio" />
+              <textarea 
+                value={newRaffle.description} 
+                onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} 
+                placeholder="Descripción detallada del premio..."
+                style={{ minHeight: '120px', padding: '12px', borderRadius: '8px' }}
+              />
             </div>
             <div className="form-group">
               <label>IMAGEN DEL PREMIO</label>
@@ -655,9 +665,15 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="form-group">
-              <label>EMOJI / ÍCONO</label>
-              <input value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ width: '60px', textAlign: 'center' }} placeholder="🎁" maxLength={2} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group">
+                <label>EMOJI / ÍCONO</label>
+                <input value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ width: '100%', textAlign: 'center' }} placeholder="🎁" maxLength={2} />
+              </div>
+              <div className="form-group">
+                <label>POSICIÓN (ORDEN)</label>
+                <input value={newRaffle.sort_order} onChange={e => setNewRaffle({...newRaffle, sort_order: e.target.value})} type="number" style={{ width: '100%' }} placeholder="0" />
+              </div>
             </div>
             <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '15px' }}>
               {editingRaffleId ? '⚡ GUARDAR CAMBIOS' : '⚡ CREAR RIFA'}
@@ -685,9 +701,9 @@ export default function AdminPage() {
                          {r.is_active ? 'ACTIVA' : 'INACTIVA'}
                        </span>
                     </h4>
-                    <p style={{ margin: '5px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      Precio: RD${r.ticket_price} | {r.total_tickets} boletos
-                    </p>
+                     <p style={{ margin: '5px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                       Posición: {r.sort_order || 0} | Precio: RD${r.ticket_price} | {r.total_tickets} boletos
+                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button onClick={() => handleEditRaffle(r)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.7rem' }}>✏️</button>

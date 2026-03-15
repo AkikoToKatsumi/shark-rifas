@@ -25,6 +25,7 @@ type Raffle = {
 
 type Ticket = {
   id: string;
+  raffle_id: string;
   ticket_number: string;
   status: string;
   payment_method: string;
@@ -311,6 +312,7 @@ export default function AdminPage() {
           },
           body: JSON.stringify({ ticketIds: [ticketId], status: 'paid' })
         });
+        if (res.ok) fetchData();
       } catch (err) {
         console.error(err);
       }

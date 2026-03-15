@@ -22,6 +22,7 @@ export async function GET(request: Request) {
       .from('tickets')
       .select(`
         id,
+        raffle_id,
         ticket_number,
         status,
         payment_method,

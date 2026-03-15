@@ -58,6 +58,7 @@ interface DashboardData {
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -134,7 +135,7 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'admin', password })
+        body: JSON.stringify({ username, password })
       });
       
       if (res.ok) {
@@ -386,8 +387,16 @@ export default function AdminPage() {
           <h1>🔐 Admin Login</h1>
           <form onSubmit={handleLogin}>
             <input 
+              type="text" 
+              placeholder="Username" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={{ marginBottom: '10px' }}
+            />
+            <input 
               type="password" 
-              placeholder="Admin Password" 
+              placeholder="Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

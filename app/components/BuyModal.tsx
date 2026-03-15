@@ -371,7 +371,16 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               accept="image/png, image/jpeg, image/jpg"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                  setReceiptFile(e.target.files[0]);
+                  const file = e.target.files[0];
+                  // 4MB limit check
+                  if (file.size > 4 * 1024 * 1024) {
+                    setErrorMsg("La imagen es demasiado grande (máximo 4MB). Por favor, intenta con una captura de menor peso o comprímela.");
+                    setReceiptFile(null);
+                    e.target.value = ''; // Clear input
+                    return;
+                  }
+                  setErrorMsg(""); // Clear error if size is okay
+                  setReceiptFile(file);
                 }
               }}
               style={{

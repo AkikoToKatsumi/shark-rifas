@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, LineChart, Line, Legend, AreaChart, Area
@@ -59,6 +60,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
 
   // Data State
   const [raffles, setRaffles] = useState<Raffle[]>([]);
@@ -132,7 +134,7 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ username: 'admin', password })
       });
       
       if (res.ok) {
@@ -152,6 +154,7 @@ export default function AdminPage() {
     localStorage.removeItem('shark_admin_key');
     setIsAuthenticated(false);
     setPassword('');
+    router.push('/');
   };
 
   const handleSaveRaffle = async (e: React.FormEvent) => {
@@ -392,6 +395,22 @@ export default function AdminPage() {
             {error && <p className="error-text">{error}</p>}
             <button type="submit" className="btn-primary w-full">Access Panel</button>
           </form>
+          <button 
+            onClick={() => router.push('/')}
+            style={{ 
+              marginTop: '15px', 
+              background: 'none', 
+              border: '1px solid var(--border-color)', 
+              color: 'var(--text-muted)', 
+              width: '100%', 
+              padding: '10px', 
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '0.9rem'
+            }}
+          >
+            ← Volver al Inicio
+          </button>
         </div>
       </div>
     );

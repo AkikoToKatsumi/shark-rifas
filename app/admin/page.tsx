@@ -113,7 +113,7 @@ export default function AdminPage() {
     setLoading(true);
     try {
       // Fetch Raffles
-      const resRaffles = await fetch('/api/admin/raffles', {
+      const resRaffles = await fetch(`/api/admin/raffles?t=${Date.now()}`, {
         headers: { 'x-admin-key': password }
       });
       if (resRaffles.ok) {
@@ -122,12 +122,12 @@ export default function AdminPage() {
       }
 
       // Fetch Tickets
-      const resTickets = await fetch('/api/admin/tickets', {
+      const resTickets = await fetch(`/api/admin/tickets?t=${Date.now()}`, {
         headers: { 'x-admin-key': password }
       });
       if (resTickets.ok) {
         const data = await resTickets.json();
-        setTickets(data.tickets || []);
+        setTickets([...(data.tickets || [])]); // Spread for fresh reference
       }
     } catch (err) {
       console.error('Error fetching data', err);
@@ -348,7 +348,10 @@ export default function AdminPage() {
           body: JSON.stringify({ verificationCode })
         });
         if (res.ok) {
-          fetchData();
+          // Breve delay para asegurar que Supabase procesó el DELETE antes del nuevo FETCH
+          setTimeout(() => {
+            fetchData();
+          }, 300);
         } else {
           const data = await res.json();
           alert(data.error || 'Error al reducir boletos');

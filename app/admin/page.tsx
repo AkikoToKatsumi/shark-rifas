@@ -37,11 +37,13 @@ type Ticket = {
       phone: string;
       email: string;
       cedula: string;
+      customer_code: string;
     } | {
       full_name: string;
       phone: string;
       email: string;
       cedula: string;
+      customer_code: string;
     }[] | any;
 };
 
@@ -56,6 +58,7 @@ interface DashboardData {
   revenueChartData: { name: string; value: number }[];
   salesChartData: { date: string; sales: number }[];
   raffleStats: { name: string; value: number; total: number }[];
+  customerStats: { name: string; code: string; tickets: number; totalPaid: number }[];
   metrics: DashboardMetrics;
 }
 
@@ -371,7 +374,33 @@ export default function AdminPage() {
       total: Number(r.total_tickets)
     })).sort((a, b) => b.value - a.value).slice(0, 5);
 
-    // 4. Metrics
+    // 4. Top Customers (Bar Chart)
+    const customerAggregates = tickets.reduce((acc: Record<string, any>, ticket) => {
+      const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
+      if (!participant) return acc;
+      
+      const code = participant.customer_code || 'S/N';
+      if (!acc[code]) {
+        acc[code] = { 
+          name: participant.full_name, 
+          code: code, 
+          tickets: 0, 
+          totalPaid: 0 
+        };
+      }
+      acc[code].tickets += 1;
+      if (ticket.status === 'paid') {
+        const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
+        acc[code].totalPaid += Number(raffle?.ticket_price || 0);
+      }
+      return acc;
+    }, {});
+
+    const customerStats = Object.values(customerAggregates)
+      .sort((a: any, b: any) => b.tickets - a.tickets)
+      .slice(0, 5) as any[];
+
+    // 5. Metrics
     const totalIncome = Object.values(revenueByMethod).reduce((a, b) => a + (b as number), 0);
     const totalSold = paidTickets.length;
     const pendingTickets = tickets.filter(t => t.status === 'pending').length;
@@ -381,6 +410,7 @@ export default function AdminPage() {
       revenueChartData, 
       salesChartData, 
       raffleStats, 
+      customerStats,
       metrics: { totalIncome, totalSold, pendingTickets, conversionRate } 
     };
   }, [tickets, raffles]);
@@ -439,8 +469,9 @@ export default function AdminPage() {
     const phone = (participant?.phone || '').toLowerCase();
     const tNum = (t.ticket_number || '').toLowerCase();
     const cedula = (participant?.cedula || '').toLowerCase();
+    const custCode = (participant?.customer_code || '').toLowerCase();
     
-    return name.includes(searchStr) || phone.includes(searchStr) || tNum.includes(searchStr) || cedula.includes(searchStr);
+    return name.includes(searchStr) || phone.includes(searchStr) || tNum.includes(searchStr) || cedula.includes(searchStr) || custCode.includes(searchStr);
   });
 
   return (
@@ -572,6 +603,28 @@ export default function AdminPage() {
                 />
                 <Legend iconType="circle" />
               </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Top Customers Chart */}
+        <div className="chart-card">
+          <div className="chart-header">
+            <h4><Users size={18} style={{ color: '#a855f7' }} /> Top Clientes</h4>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>POR CANTIDAD DE TICKETS</span>
+          </div>
+          <div className="chart-container-box">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart layout="vertical" data={dashboardData.customerStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#222" horizontal={false} />
+                <XAxis type="number" stroke="#666" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis dataKey="code" type="category" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                  contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
+                />
+                <Bar dataKey="tickets" fill="#a855f7" radius={[0, 4, 4, 0]} barSize={20} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -737,6 +790,7 @@ export default function AdminPage() {
           <thead>
             <tr>
               <th>Boleto</th>
+              <th>ID Cliente</th>
               <th>Cliente</th>
               <th>Contacto</th>
               <th>Cédula</th>
@@ -750,6 +804,7 @@ export default function AdminPage() {
               return (
               <tr key={t.id}>
                 <td style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.2rem' }}>#{t.ticket_number}</td>
+                <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
                 <td style={{ fontSize: '0.8rem' }}>
                   {participant?.phone}<br/>

@@ -71,9 +71,30 @@ export async function POST(request: Request) {
         .update({ full_name: fullName, email: email.toLowerCase().trim(), cedula: cedula })
         .eq('id', participantId);
     } else {
+      // 3.1 Generate Customer Code (sequential)
+      let customerCode = '001';
+      const { data: lastParticipant, error: lastError } = await supabaseAdmin
+        .from('participants')
+        .select('customer_code')
+        .not('customer_code', 'is', null)
+        .order('customer_code', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (lastParticipant && lastParticipant.customer_code) {
+        const lastNum = parseInt(lastParticipant.customer_code, 10);
+        customerCode = (lastNum + 1).toString().padStart(3, '0');
+      }
+
       const { data: newParticipant, error: pError } = await supabaseAdmin
         .from('participants')
-        .insert([{ full_name: fullName, phone: cleanPhone, email: email.toLowerCase().trim(), cedula: cedula }])
+        .insert([{ 
+          full_name: fullName, 
+          phone: cleanPhone, 
+          email: email.toLowerCase().trim(), 
+          cedula: cedula,
+          customer_code: customerCode
+        }])
         .select('id')
         .single();
 

@@ -22,6 +22,7 @@ CREATE TABLE public.participants (
     phone VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
     cedula VARCHAR(20), -- Nueva columna para el identificador único
+    customer_code VARCHAR(10), -- Código secuencial para administración (ej: 001)
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

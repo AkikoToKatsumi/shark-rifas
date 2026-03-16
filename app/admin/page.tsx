@@ -379,26 +379,30 @@ export default function AdminPage() {
       const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
       if (!participant) return acc;
       
-      const code = participant.customer_code || 'S/N';
-      if (!acc[code]) {
-        acc[code] = { 
+      const participantId = participant.id || 'unknown';
+      if (!acc[participantId]) {
+        acc[participantId] = { 
           name: participant.full_name, 
-          code: code, 
+          code: participant.customer_code || 'S/N', 
           tickets: 0, 
           totalPaid: 0 
         };
       }
-      acc[code].tickets += 1;
+      acc[participantId].tickets += 1;
       if (ticket.status === 'paid') {
         const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
-        acc[code].totalPaid += Number(raffle?.ticket_price || 0);
+        acc[participantId].totalPaid += Number(raffle?.ticket_price || 0);
       }
       return acc;
     }, {});
 
     const customerStats = Object.values(customerAggregates)
+      .map((c: any) => ({
+        ...c,
+        displayName: `[${c.code}] ${c.name}`
+      }))
       .sort((a: any, b: any) => b.tickets - a.tickets)
-      .slice(0, 5) as any[];
+      .slice(0, 5);
 
     // 5. Metrics
     const totalIncome = Object.values(revenueByMethod).reduce((a, b) => a + (b as number), 0);
@@ -615,17 +619,23 @@ export default function AdminPage() {
           </div>
           <div className="chart-container-box">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={dashboardData.customerStats}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#222" horizontal={false} />
-                <XAxis type="number" stroke="#666" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis dataKey="code" type="category" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip 
-                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                  contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px' }}
-                />
-                <Bar dataKey="tickets" fill="#a855f7" radius={[0, 4, 4, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
+                    <BarChart data={dashboardData.customerStats} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+                      <XAxis type="number" hide />
+                      <YAxis 
+                        dataKey="displayName" 
+                        type="category" 
+                        width={120} 
+                        tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                      />
+                      <Tooltip contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }} />
+                                <Bar dataKey="tickets" radius={[0, 4, 4, 0]}>
+                        {dashboardData.customerStats.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
           </div>
         </div>
 

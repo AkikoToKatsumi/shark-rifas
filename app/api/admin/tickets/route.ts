@@ -26,6 +26,7 @@ export async function GET(request: Request) {
         ticket_number,
         status,
         payment_method,
+        verification_code,
         created_at,
         participants (
           id,

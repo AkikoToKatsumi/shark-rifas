@@ -31,6 +31,7 @@ type Ticket = {
   ticket_number: string;
   status: string;
   payment_method: string;
+  verification_code: string;
   created_at: string;
     participants: {
       full_name: string;
@@ -294,9 +295,11 @@ export default function AdminPage() {
     }
   };
 
-  const handleUpdateTicketStatus = async (ticketId: string, status: 'paid' | 'reserved', actionType: 'approve' | 'cancel') => {
+  const handleUpdateTicketStatus = async (ticketIds: string | string[], status: 'paid' | 'reserved', actionType: 'approve' | 'cancel') => {
+    const ids = Array.isArray(ticketIds) ? ticketIds : [ticketIds];
+    
     if (actionType === 'cancel') {
-      const confirmDelete = confirm('¿Estás seguro de cancelar esta reserva? El número quedará libre.');
+      const confirmDelete = confirm(`¿Estás seguro de cancelar ${ids.length > 1 ? 'estos boletos' : 'esta reserva'}? El número quedará libre.`);
       if (!confirmDelete) return;
 
       try {
@@ -306,7 +309,7 @@ export default function AdminPage() {
             'Content-Type': 'application/json',
             'x-admin-key': password
           },
-          body: JSON.stringify({ ticketIds: [ticketId] })
+          body: JSON.stringify({ ticketIds: ids })
         });
         if (res.ok) fetchData();
       } catch (err) {
@@ -314,7 +317,7 @@ export default function AdminPage() {
       }
     } else {
       // Approve Payment
-      const confirmApprove = confirm('¿Confirmar pago y enviar recibo por correo al cliente?');
+      const confirmApprove = confirm(`¿Aprobar pago de ${ids.length} boletos y enviar recibo por correo?`);
       if (!confirmApprove) return;
 
       try {
@@ -324,9 +327,32 @@ export default function AdminPage() {
             'Content-Type': 'application/json',
             'x-admin-key': password
           },
-          body: JSON.stringify({ ticketIds: [ticketId], status: 'paid' })
+          body: JSON.stringify({ ticketIds: ids, status: 'paid' })
         });
         if (res.ok) fetchData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleReduceGroup = async (verificationCode: string) => {
+    if (confirm('¿Reducir 1 boleto de esta compra? El último número asignado será eliminado.')) {
+      try {
+        const res = await fetch('/api/admin/tickets/reduce', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-admin-key': password
+          },
+          body: JSON.stringify({ verificationCode })
+        });
+        if (res.ok) {
+          fetchData();
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Error al reducir boletos');
+        }
       } catch (err) {
         console.error(err);
       }
@@ -419,6 +445,48 @@ export default function AdminPage() {
     };
   }, [tickets, raffles]);
 
+  // Filtrado para tabla (manteniendo el buscador funcional)
+  const filteredTickets = useMemo(() => {
+    return tickets.filter(t => {
+      const p = Array.isArray(t.participants) ? t.participants[0] : t.participants;
+      const search = ticketSearch.toLowerCase();
+      return (
+        t.ticket_number.includes(search) ||
+        p?.full_name?.toLowerCase().includes(search) ||
+        p?.phone?.includes(search) ||
+        p?.cedula?.includes(search) ||
+        p?.customer_code?.includes(search) ||
+        t.verification_code?.toLowerCase().includes(search)
+      );
+    });
+  }, [tickets, ticketSearch]);
+
+  // Agrupación para tabla
+  const groupedTicketsTable = useMemo(() => {
+    const groups: Record<string, Ticket[]> = {};
+    filteredTickets.forEach(t => {
+      const code = t.verification_code || `no-code-${t.id}`;
+      if (!groups[code]) groups[code] = [];
+      groups[code].push(t);
+    });
+    
+    return Object.entries(groups).map(([code, gTickets]) => {
+      const first = gTickets[0];
+      const participant = Array.isArray(first.participants) ? first.participants[0] : first.participants;
+      const allPaid = gTickets.every(t => t.status === 'paid');
+      const somePending = gTickets.some(t => t.status === 'pending');
+      
+      return {
+        code,
+        tickets: gTickets,
+        participant,
+        status: allPaid ? 'paid' : (somePending ? 'pending' : 'reserved'),
+        totalPrice: gTickets.length * (raffles.find(r => r.id === first.raffle_id)?.ticket_price || 0),
+        createdAt: first.created_at
+      };
+    }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [filteredTickets, raffles]);
+
   const COLORS = ['#00f2fe', '#4facfe', '#6a11cb', '#2575fc', '#f093fb'];
 
   if (!isAuthenticated) {
@@ -466,17 +534,6 @@ export default function AdminPage() {
     );
   }
 
-  const filteredTickets = tickets.filter(t => {
-    const participant = Array.isArray(t.participants) ? t.participants[0] : t.participants;
-    const searchStr = ticketSearch.toLowerCase();
-    const name = (participant?.full_name || '').toLowerCase();
-    const phone = (participant?.phone || '').toLowerCase();
-    const tNum = (t.ticket_number || '').toLowerCase();
-    const cedula = (participant?.cedula || '').toLowerCase();
-    const custCode = (participant?.customer_code || '').toLowerCase();
-    
-    return name.includes(searchStr) || phone.includes(searchStr) || tNum.includes(searchStr) || cedula.includes(searchStr) || custCode.includes(searchStr);
-  });
 
   return (
     <div className="admin-dashboard">
@@ -799,21 +856,32 @@ export default function AdminPage() {
         <table className="admin-table-premium">
           <thead>
             <tr>
-              <th>Boleto</th>
+              <th>Compra / Boletos</th>
               <th>ID Cliente</th>
               <th>Cliente</th>
               <th>Contacto</th>
               <th>Cédula</th>
-              <th>Método</th>
+              <th>Precio Total</th>
               <th style={{ textAlign: 'right' }}>Estado / Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filteredTickets.map(t => {
-              const participant = Array.isArray(t.participants) ? t.participants[0] : t.participants;
+            {groupedTicketsTable.map(group => {
+              const { participant, tickets: groupTickets, code } = group;
+              const ticketIds = groupTickets.map(t => t.id);
+              const ticketNumbers = groupTickets.map(t => `#${t.ticket_number}`).join(', ');
+              
               return (
-              <tr key={t.id}>
-                <td style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.2rem' }}>#{t.ticket_number}</td>
+              <tr key={code}>
+                <td>
+                  <div style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    {groupTickets.length} Boletos
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {ticketNumbers}
+                  </div>
+                  <div style={{ fontSize: '0.6rem', opacity: 0.4, marginTop: '2px' }}>CODE: {code}</div>
+                </td>
                 <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
                 <td style={{ fontSize: '0.8rem' }}>
@@ -821,7 +889,7 @@ export default function AdminPage() {
                   <span style={{ opacity: 0.5 }}>{participant?.email}</span>
                 </td>
                 <td style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '500' }}>{participant?.cedula || '-'}</td>
-                <td style={{ fontSize: '0.8rem' }}>{t.payment_method}</td>
+                <td style={{ fontWeight: 'bold' }}>RD${group.totalPrice}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
                     <span style={{ 
@@ -829,27 +897,29 @@ export default function AdminPage() {
                       borderRadius: '6px', 
                       fontSize: '0.7rem', 
                       fontWeight: '700',
-                      backgroundColor: t.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
-                      color: t.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
+                      backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
+                      color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
                     }}>
-                      {t.status === 'paid' ? 'PAGADO ✓' : (t.status === 'pending' ? 'PENDIENTE ⏳' : 'RESERVADO')}
+                      {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO / RESERVADO')}
                     </span>
                     
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      {t.status === 'pending' && (
+                      {group.status === 'pending' && (
                         <>
-                          <button onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR</button>
-                          <button onClick={() => handleUpdateTicketStatus(t.id, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
+                          <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
+                          <button onClick={() => handleReduceGroup(code)} style={{ background: '#333', border: '1px solid #444', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}>➖ Bajar 1</button>
+                          <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
                         </>
                       )}
-                      {t.status === 'paid' && (
-                        <button onClick={() => handleUpdateTicketStatus(t.id, 'paid', 'cancel')} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem' }}>Anular</button>
+                      {group.status === 'paid' && (
+                        <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem' }}>Anular Compra</button>
                       )}
                     </div>
                   </div>
                 </td>
               </tr>
-            )})}
+              );
+            })}
           </tbody>
         </table>
       </div>

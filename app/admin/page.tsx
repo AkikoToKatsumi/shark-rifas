@@ -910,11 +910,10 @@ export default function AdminPage() {
                       {group.status === 'pending' && (
                         <>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
+                          <button onClick={() => handleReduceGroup(code)} style={{ background: 'rgba(255, 140, 0, 0.1)', border: '1px solid var(--accent-orange)', color: 'var(--accent-orange)', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>➖ Bajar 1 Boleto</button>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
                         </>
                       )}
-                      
-                      <button onClick={() => handleReduceGroup(code)} style={{ background: 'rgba(255, 140, 0, 0.1)', border: '1px solid var(--accent-orange)', color: 'var(--accent-orange)', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>➖ Bajar 1 Boleto</button>
 
                       {group.status === 'paid' && (
                         <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem' }}>Anular Compra</button>

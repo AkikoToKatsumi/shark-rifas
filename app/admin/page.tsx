@@ -910,7 +910,28 @@ export default function AdminPage() {
                       {group.status === 'pending' && (
                         <>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
-                          <button onClick={() => handleReduceGroup(code)} style={{ background: 'rgba(255, 140, 0, 0.1)', border: '1px solid var(--accent-orange)', color: 'var(--accent-orange)', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>➖ Bajar 1 Boleto</button>
+                          <button 
+                            onClick={() => handleReduceGroup(code)} 
+                            style={{ 
+                              background: 'var(--bg-panel)', 
+                              border: '1px solid rgba(255,255,255,0.1)', 
+                              color: '#fff', 
+                              width: '32px', 
+                              height: '32px', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center', 
+                              borderRadius: '6px', 
+                              cursor: 'pointer', 
+                              fontSize: '1rem',
+                              transition: 'all 0.2s'
+                            }}
+                            onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                            onMouseOut={e => e.currentTarget.style.backgroundColor = 'var(--bg-panel)'}
+                            title="Bajar 1 Boleto"
+                          >
+                            ➖
+                          </button>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
                         </>
                       )}

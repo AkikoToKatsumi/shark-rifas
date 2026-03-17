@@ -12,9 +12,15 @@ export default function Footer() {
             <img src="/logo.png" alt="Shark RD Logo" style={{ height: '80px', objectFit: 'contain', marginBottom: '15px' }} />
             <h2 className="footer-logo">SHARK RD <span>RIFAS</span></h2>
             <p className="footer-slogan">Tu plataforma de confianza para ganar grandes premios. Rifas 100% virtuales, transparentes y seguras en toda la República Dominicana.</p>
-            <div className="social-links">
-              <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="social-icon">💬</a>
-              <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-icon">📸</a>
+            <div className="social-links" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+              <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" 
+                 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1rem' }}>
+                <span style={{ fontSize: '1.2rem' }}>📸</span> @rifassharkrd
+              </a>
+              <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="social-icon" 
+                 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                <span>💬</span> Soporte WhatsApp
+              </a>
             </div>
           </div>
 

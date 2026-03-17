@@ -356,11 +356,87 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 <img src="/qik.png" alt="Qik" style={{ height: '30px', objectFit: 'contain' }} />
                 <span style={{ fontSize: '0.8rem' }}>QIK</span>
               </button>
+              <button 
+                type="button" 
+                className={`pay-btn ${paymentMethod === 'bhd' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('bhd')}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+              >
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg" alt="BHD" style={{ height: '25px', objectFit: 'contain' }} />
+                <span style={{ fontSize: '0.8rem' }}>BHD</span>
+              </button>
             </div>
 
-            {paymentMethod === 'paypal' && <div style={{marginTop: '10px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '5px', fontSize: '0.85rem', color: 'var(--text-muted)'}}>Cuenta PayPal: <strong>pagos@sharkrd.com</strong>. Al confirmar, transfiere el monto exacto y guarda tu captura.</div>}
-            {paymentMethod === 'reservas' && <div style={{marginTop: '10px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '5px', fontSize: '0.85rem', color: 'var(--text-muted)'}}>Cuenta Ban. Reservas (Ahorro): <strong>960-123456-7</strong> a nombre de Shark RD. Guarda tu comprobante de depósito.</div>}
-            {paymentMethod === 'qik' && <div style={{marginTop: '10px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '5px', fontSize: '0.85rem', color: 'var(--text-muted)'}}>Transfiere vía Qik al número: <strong>809-555-0199</strong>. Recuerda tomar captura del pago completado.</div>}
+            {paymentMethod && (
+              <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                {(() => {
+                  let details = { name: '', number: '', holder: 'SHARK RD', type: '', extra: '', isPaypal: false };
+                  
+                  if (paymentMethod === 'paypal') {
+                    details = { name: 'PAYPAL', number: 'pagos@sharkrd.com', holder: 'ALEX GUZMÁN', type: 'US$ Dólares | Confirmar ID', extra: '', isPaypal: true };
+                  } else if (paymentMethod === 'reservas') {
+                    details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARK RD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
+                  } else if (paymentMethod === 'qik') {
+                    details = { name: 'QIK (BANRESERVAS)', number: '809-555-0199', holder: 'SHARK RD', type: 'CUENTA QIK', extra: '', isPaypal: false };
+                  } else if (paymentMethod === 'bhd') {
+                    details = { name: 'BANCO BHD', number: '1234567-001-8', holder: 'SHARK RD', type: 'CUENTA CORRIENTE', extra: '', isPaypal: false };
+                  }
+
+                  const handleCopy = (text: string, id: string) => {
+                    navigator.clipboard.writeText(text);
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                      const originalText = btn.innerHTML;
+                      btn.innerHTML = 'Copiado!';
+                      btn.style.backgroundColor = 'var(--success)';
+                      setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.backgroundColor = 'var(--primary-cyan)';
+                      }, 2000);
+                    }
+                  };
+
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <p style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px', textTransform: 'uppercase' }}>{details.name}</p>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '8px' }}>
+                        <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#fff', letterSpacing: '0.5px' }}>{details.number}</span>
+                        <button 
+                          type="button"
+                          id="copy-account-btn"
+                          onClick={() => handleCopy(details.number, 'copy-account-btn')}
+                          style={{
+                            background: 'var(--primary-cyan)',
+                            color: '#000',
+                            border: 'none',
+                            padding: '6px 12px',
+                            borderRadius: '4px',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <Smartphone size={14} /> Copiar
+                        </button>
+                      </div>
+
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '3px', marginTop: '5px' }}>
+                        <p style={{ margin: 0 }}>TITULAR: <span style={{ color: 'var(--text-main)' }}>{details.holder}</span></p>
+                        <p style={{ margin: 0 }}>TIPO: <span style={{ color: 'var(--text-main)' }}>{details.type}</span></p>
+                      </div>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--accent-orange)', marginTop: '5px', fontStyle: 'italic' }}>
+                        {details.isPaypal ? 'Al confirmar, transfiere el monto exacto y guarda tu captura.' : 'Guarda tu comprobante de depósito o captura de pantalla.'}
+                      </p>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
           </div>
 
           {/* Receipt Upload Section */}

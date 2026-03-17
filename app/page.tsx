@@ -110,7 +110,6 @@ export default function Home() {
                     <div className="progress-container">
                       <div className="progress-labels">
                         <span>{progress.toFixed(0)}% Vendido</span>
-                        <span style={{ fontSize: '0.7rem' }}>{raffle.sold} / {raffle.total_tickets}</span>
                       </div>
                       <div className="progress-bar-bg">
                         <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>

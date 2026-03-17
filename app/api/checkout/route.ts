@@ -57,18 +57,33 @@ export async function POST(request: Request) {
     // 3. Find or Create Participant
     let participantId;
     const cleanPhone = phone.trim().replace(/\s+/g, '');
+    const cleanCedula = cedula ? cedula.trim().replace(/[-\s]+/g, '') : null;
 
-    const { data: existingParticipant, error: searchError } = await supabaseAdmin
-      .from('participants')
-      .select('id')
-      .eq('phone', cleanPhone)
-      .maybeSingle();
+    // Search by Cedula first (Primary ID), then by Phone (Backup)
+    let { data: existingParticipant } = cleanCedula 
+      ? await supabaseAdmin.from('participants').select('id').eq('cedula', cleanCedula).maybeSingle()
+      : { data: null };
+
+    if (!existingParticipant) {
+      const { data: phoneMatch } = await supabaseAdmin
+        .from('participants')
+        .select('id')
+        .eq('phone', cleanPhone)
+        .maybeSingle();
+      existingParticipant = phoneMatch;
+    }
 
     if (existingParticipant) {
       participantId = existingParticipant.id;
+      // Update info (phone, name, email might change, cedula might be added to old phone-only record)
       await supabaseAdmin
         .from('participants')
-        .update({ full_name: fullName, email: email.toLowerCase().trim(), cedula: cedula })
+        .update({ 
+          full_name: fullName, 
+          email: email.toLowerCase().trim(), 
+          cedula: cleanCedula || cedula, // Use cleaned if possible
+          phone: cleanPhone
+        })
         .eq('id', participantId);
     } else {
       // 3.1 Generate Customer Code (sequential)
@@ -92,7 +107,7 @@ export async function POST(request: Request) {
           full_name: fullName, 
           phone: cleanPhone, 
           email: email.toLowerCase().trim(), 
-          cedula: cedula,
+          cedula: cleanCedula || cedula,
           customer_code: customerCode
         }])
         .select('id')

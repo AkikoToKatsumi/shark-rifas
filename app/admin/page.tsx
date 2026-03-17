@@ -910,28 +910,65 @@ export default function AdminPage() {
                       {group.status === 'pending' && (
                         <>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
-                          <button 
-                            onClick={() => handleReduceGroup(code)} 
-                            style={{ 
-                              background: 'var(--bg-panel)', 
-                              border: '1px solid rgba(255,255,255,0.1)', 
-                              color: '#fff', 
-                              width: '32px', 
-                              height: '32px', 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              borderRadius: '6px', 
-                              cursor: 'pointer', 
-                              fontSize: '1rem',
-                              transition: 'all 0.2s'
-                            }}
-                            onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
-                            onMouseOut={e => e.currentTarget.style.backgroundColor = 'var(--bg-panel)'}
-                            title="Bajar 1 Boleto"
-                          >
-                            ➖
-                          </button>
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            background: 'rgba(255,255,255,0.03)', 
+                            borderRadius: '8px', 
+                            padding: '2px',
+                            border: '1px solid rgba(255,255,255,0.1)' 
+                          }}>
+                            <button 
+                              onClick={() => handleReduceGroup(code)} 
+                              style={{ 
+                                background: 'rgba(255,255,255,0.05)', 
+                                border: 'none', 
+                                color: '#fff', 
+                                width: '30px', 
+                                height: '30px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                borderRadius: '6px', 
+                                cursor: 'pointer', 
+                                fontSize: '1.2rem',
+                                transition: 'all 0.2s'
+                              }}
+                              onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'}
+                              onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                              title="Bajar 1 Boleto"
+                            >
+                              -
+                            </button>
+                            <div style={{ 
+                              width: '40px', 
+                              textAlign: 'center', 
+                              fontSize: '1.1rem', 
+                              fontWeight: 'bold', 
+                              color: 'var(--primary-cyan)' 
+                            }}>
+                              {groupTickets.length}
+                            </div>
+                            <button 
+                              disabled
+                              style={{ 
+                                background: 'transparent', 
+                                border: 'none', 
+                                color: 'rgba(255,255,255,0.2)', 
+                                width: '30px', 
+                                height: '30px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                borderRadius: '6px', 
+                                cursor: 'not-allowed', 
+                                fontSize: '1.2rem'
+                              }}
+                              title="No es posible agregar boletos manualmente"
+                            >
+                              +
+                            </button>
+                          </div>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
                         </>
                       )}

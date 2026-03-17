@@ -38,18 +38,24 @@ export default function Home() {
   return (
     <div className="home-container container">
       {/* Metrics Section */}
-      <section className="metrics-grid">
+      <section className="metrics-grid mt-8">
         <div className="metric-card">
-          <h3 className="flex items-center justify-center gap-2"><LayoutGrid size={32} color="var(--primary-cyan)" /> {loading ? '...' : metrics.active}</h3>
-          <p>RIFAS ACTIVAS</p>
+          <div className="flex flex-col items-center">
+            <h3>{loading ? '...' : metrics.active}</h3>
+            <p>RIFAS ACTIVAS</p>
+          </div>
         </div>
         <div className="metric-card">
-          <h3 className="flex items-center justify-center gap-2"><Hash size={32} color="var(--primary-cyan)" /> {loading ? '...' : `${soldPercentage}%`}</h3>
-          <p>BOLETOS VENDIDOS</p>
+          <div className="flex flex-col items-center">
+            <h3>{loading ? '...' : `${soldPercentage}%`}</h3>
+            <p>BOLETOS VENDIDOS</p>
+          </div>
         </div>
         <div className="metric-card">
-          <h3 className="flex items-center justify-center gap-2"><Trophy size={32} color="var(--primary-cyan)" /> {loading ? '...' : metrics.prizesTotal}</h3>
-          <p>EN PREMIOS</p>
+          <div className="flex flex-col items-center">
+            <h3>{loading ? '...' : metrics.prizesTotal}</h3>
+            <p>EN PREMIOS</p>
+          </div>
         </div>
       </section>
 

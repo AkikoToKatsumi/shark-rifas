@@ -13,9 +13,8 @@ export default function Footer() {
             <h2 className="footer-logo">SHARK RD <span>RIFAS</span></h2>
             <p className="footer-slogan">Tu plataforma de confianza para ganar grandes premios. Rifas 100% virtuales, transparentes y seguras en toda la República Dominicana.</p>
             <div className="social-links">
-              <a href="#" aria-label="WhatsApp" className="social-icon">💬</a>
-              <a href="#" aria-label="Instagram" className="social-icon">📸</a>
-              <a href="#" aria-label="Facebook" className="social-icon">📘</a>
+              <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="social-icon">💬</a>
+              <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-icon">📸</a>
             </div>
           </div>
 
@@ -35,8 +34,8 @@ export default function Footer() {
             <h3>ATENCIÓN AL CLIENTE</h3>
             <ul>
               <li><span>📍</span> La Vega, RD</li>
-              <li><span>📞</span> +1 (849) 394-9653</li>
-              <li><span>✉️</span> monsterwater39@gmail.com</li>
+              <li><span>📞</span> +1 (849) 578-9996</li>
+              <li><span>✉️</span> adminsharkrd@gmail.com</li>
               <li className="work-hours">Lun - Sab: 8:00 AM - 6:00 PM</li>
             </ul>
           </div>

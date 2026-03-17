@@ -19,10 +19,17 @@ export default function AboutPage() {
             <h3>💳 Métodos de Pago</h3>
             <p>Puedes pagar todos tus boletos fácil y rápido usando las plataformas de pago preferidas del país.</p>
             <div className="payment-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '1rem' }}>
+              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '4px', fontSize: '13px' }}>🏦 Reservas / QIK</span>
+              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '4px', fontSize: '13px' }}>🏦 Banco BHD</span>
               <span style={{ background: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '4px', fontSize: '13px' }}>🌐 PayPal</span>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '4px', fontSize: '13px' }}>🏦 B. Reservas</span>
-              <span style={{ background: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '4px', fontSize: '13px' }}>⚡ QIK</span>
             </div>
+          </div>
+
+          <div className="about-card">
+            <h3>📱 Contacto Oficial</h3>
+            <p><strong>Instagram:</strong> <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-cyan)' }}>@rifassharkrd</a></p>
+            <p><strong>WhatsApp:</strong> <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-cyan)' }}>849-578-9996</a></p>
+            <p><strong>Correo:</strong> <span style={{ color: 'var(--text-main)' }}>adminsharkrd@gmail.com</span></p>
           </div>
         </div>
       </section>

@@ -20,12 +20,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Código de verificación requerido' }, { status: 400 });
     }
 
-    // Find the latest pending ticket for this verification code
+    // Find the latest pending/reserved ticket for this verification code
     const { data: ticket, error: fetchError } = await supabaseAdmin
       .from('tickets')
       .select('id')
       .eq('verification_code', verificationCode)
-      .eq('status', 'pending')
+      .in('status', ['pending', 'reserved'])
       .order('created_at', { ascending: false })
       .limit(1)
       .single();

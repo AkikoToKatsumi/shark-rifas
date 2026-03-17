@@ -903,11 +903,11 @@ export default function AdminPage() {
                       backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
                       color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
                     }}>
-                      {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO / RESERVADO')}
+                      {group.status === 'paid' ? 'PAGADO ✓' : ((group.status === 'pending' || group.status === 'reserved') ? 'PENDIENTE ⏳' : 'MIXTO')}
                     </span>
                     
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      {group.status === 'pending' && (
+                      {(group.status === 'pending' || group.status === 'reserved') && (
                         <>
                           <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
                           <div style={{ 

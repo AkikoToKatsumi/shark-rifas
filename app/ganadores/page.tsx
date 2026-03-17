@@ -101,21 +101,27 @@ export default function GanadoresPage() {
           ❯
         </button>
 
-        {/* Indicators */}
-        <div className="carousel-indicators">
-          {WINNERS_DATA.map((_, index) => (
-            <button
-              key={index}
-              className={`indicator-dot ${index === currentIndex ? 'active' : ''}`}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
         </div>
+      {/* End carousel-wrapper */}
+
+      {/* Indicators (moved outside) */}
+      <div className="carousel-indicators-outer">
+        {WINNERS_DATA.map((_, index) => (
+          <button
+            key={index}
+            className={`indicator-dot ${index === currentIndex ? 'active' : ''}`}
+            onClick={() => goToSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
       
-      <div className="mt-12 mb-8">
-         <button className="btn-accent" onClick={() => window.location.href = '/'}>
+      <div className="mt-20 mb-12">
+         <button 
+           className="btn-accent" 
+           style={{ padding: '15px 30px', fontSize: '1rem', borderRadius: '12px' }}
+           onClick={() => window.location.href = '/'}
+         >
             ¡QUIERO PARTICIPAR EN LA PRÓXIMA RIFA!
          </button>
       </div>

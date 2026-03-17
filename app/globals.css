@@ -1150,7 +1150,7 @@ a {
 
 /* --- Winners Page & Carousel --- */
 .winners-container {
-  padding-bottom: var(--spacing-xl);
+  padding-bottom: calc(var(--spacing-xl) * 2);
   min-height: 60vh;
 }
 
@@ -1198,21 +1198,26 @@ a {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
-  background: linear-gradient(to top, rgba(5, 10, 16, 0.95) 0%, rgba(5, 10, 16, 0.8) 50%, transparent 100%);
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(5, 10, 16, 0.9) 0%, rgba(5, 10, 16, 0.4) 70%, transparent 100%);
   color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .caption-content {
-  background: rgba(20, 28, 39, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 242, 254, 0.2);
-  border-left: 4px solid var(--primary-cyan);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-sm);
-  max-width: 600px;
-  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--primary-cyan);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  margin: 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 /* Admin Drawer Styles */
 .admin-drawer-overlay {
@@ -1316,19 +1321,22 @@ a {
 
 .caption-content h3 {
   color: var(--primary-cyan);
-  font-size: 1.8rem;
-  margin-bottom: var(--spacing-xs);
-  text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .caption-content .winner-details {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #fff;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .caption-content .winner-date {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1387,14 +1395,11 @@ a {
 }
 
 /* Indicators */
-.carousel-indicators {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
+.carousel-indicators-outer {
   display: flex;
-  gap: 8px;
-  z-index: 10;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
 }
 
 .indicator-dot {

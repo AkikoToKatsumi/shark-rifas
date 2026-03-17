@@ -65,11 +65,23 @@ export default function Header() {
         </div>
       </div>
       
-      <div className="logo-section" style={{ alignItems: 'center' }}>
-        <img src="/logo.png" alt="Shark RD Logo" className="logo-img" style={{ height: '180px', objectFit: 'contain', marginBottom: '10px' }} />
-        <div className="logo-text">
-          <h1>SHARK RD RIFAS</h1>
-          <p className="subtitle">SISTEMA DE RIFAS VIRTUALES</p>
+      <div className="logo-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: '2rem 1rem' }}>
+        <img 
+          src="/logo.png" 
+          alt="Shark RD Logo" 
+          className="logo-img" 
+          style={{ 
+            width: '100%', 
+            maxWidth: '350px', 
+            height: 'auto', 
+            maxHeight: '200px',
+            objectFit: 'contain', 
+            marginBottom: '1rem' 
+          }} 
+        />
+        <div className="logo-text" style={{ textAlign: 'center' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', margin: 0 }}>SHARK RD RIFAS</h1>
+          <p className="subtitle" style={{ fontSize: 'clamp(0.7rem, 3vw, 0.9rem)', letterSpacing: '4px' }}>SISTEMA DE RIFAS VIRTUALES</p>
         </div>
       </div>
 

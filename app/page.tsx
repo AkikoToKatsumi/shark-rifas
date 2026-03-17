@@ -39,22 +39,42 @@ export default function Home() {
     <div className="home-container container">
       {/* Metrics Section */}
       <section className="metrics-grid mt-8">
-        <div className="metric-card">
-          <div className="flex flex-col items-center">
+        <div className="metric-card-premium cyan">
+          <div className="metric-content">
+            <p>Rifas Activas</p>
             <h3>{loading ? '...' : metrics.active}</h3>
-            <p>RIFAS ACTIVAS</p>
+            <div className="metric-trend success">
+              <span>Sorteos disponibles</span>
+            </div>
+          </div>
+          <div className="metric-icon-box">
+            <LayoutGrid size={24} />
           </div>
         </div>
-        <div className="metric-card">
-          <div className="flex flex-col items-center">
+
+        <div className="metric-card-premium blue">
+          <div className="metric-content">
+            <p>Boletos Vendidos</p>
             <h3>{loading ? '...' : `${soldPercentage}%`}</h3>
-            <p>BOLETOS VENDIDOS</p>
+            <div className="metric-trend success">
+              <span>Progreso de ventas</span>
+            </div>
+          </div>
+          <div className="metric-icon-box">
+            <Hash size={24} />
           </div>
         </div>
-        <div className="metric-card">
-          <div className="flex flex-col items-center">
+
+        <div className="metric-card-premium orange">
+          <div className="metric-content">
+            <p>En Premios</p>
             <h3>{loading ? '...' : metrics.prizesTotal}</h3>
-            <p>EN PREMIOS</p>
+            <div className="metric-trend warning">
+              <span>Acumulado total</span>
+            </div>
+          </div>
+          <div className="metric-icon-box">
+            <Trophy size={24} />
           </div>
         </div>
       </section>

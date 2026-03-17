@@ -36,7 +36,7 @@ export default function Home() {
     : 0;
 
   return (
-    <div className="home-container container">
+    <div className="home-container">
       {/* Metrics Section */}
       <section className="metrics-grid mt-8">
         <div className="metric-card-premium cyan">

@@ -58,7 +58,7 @@ export default function GanadoresPage() {
   };
 
   return (
-    <div className="winners-container container text-center">
+    <div className="winners-container text-center">
       <div className="section-header" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
         <h2 className="text-3xl">🏆 GALERÍA DE GANADORES</h2>
       </div>

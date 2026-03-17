@@ -15,7 +15,7 @@ export default function Footer() {
             <div className="social-links" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
               <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" 
                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1rem' }}>
-                <span style={{ fontSize: '1.2rem' }}>📸</span> @rifassharkrd
+                <img src="/instagram-logo.png" alt="Instagram" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> @rifassharkrd
               </a>
               <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="social-icon" 
                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}>

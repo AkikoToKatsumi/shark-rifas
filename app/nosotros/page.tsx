@@ -33,8 +33,7 @@ export default function AboutPage() {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Banco_BHD_%28logo%29.png" alt="BHD" style={{ width: '35px', height: '35px', objectFit: 'contain' }} 
-                     onError={(e) => { e.currentTarget.src = 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg'; }} />
+                <img src="/bhd-logo.png" alt="BHD" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
                 <div>
                   <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Banco BHD</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cuenta Corriente</span>
@@ -55,8 +54,8 @@ export default function AboutPage() {
             <h3>📱 Redes y Soporte</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" 
-                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
-                <span style={{ fontSize: '1.2rem' }}>📸</span> @rifassharkrd
+                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
+                <img src="/instagram-logo.png" alt="Instagram" style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> @rifassharkrd
               </a>
               
               <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" 

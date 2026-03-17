@@ -19,6 +19,7 @@ type Raffle = {
   ticket_price: number;
   total_tickets: number;
   emoji: string;
+  start_date: string;
   draw_date: string;
   is_active: boolean;
   image_url: string;
@@ -82,6 +83,7 @@ export default function AdminPage() {
     title: '',
     ticket_price: '',
     total_tickets: '10000',
+    start_date: '',
     draw_date: '',
     description: '',
     emoji: '🎟️',
@@ -178,6 +180,7 @@ export default function AdminPage() {
             emoji: newRaffle.emoji,
             ticket_price: Number(newRaffle.ticket_price),
             total_tickets: Number(newRaffle.total_tickets),
+            start_date: newRaffle.start_date || null,
             draw_date: newRaffle.draw_date || null,
             image_url: newRaffle.image_url,
             sort_order: Number(newRaffle.sort_order)
@@ -188,6 +191,7 @@ export default function AdminPage() {
             emoji: newRaffle.emoji,
             ticket_price: Number(newRaffle.ticket_price),
             total_tickets: Number(newRaffle.total_tickets),
+            start_date: newRaffle.start_date || null,
             draw_date: newRaffle.draw_date || null,
             image_url: newRaffle.image_url,
             sort_order: Number(newRaffle.sort_order)
@@ -203,7 +207,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
+        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
         setEditingRaffleId(null);
         fetchData(); // Refresh list
         alert(editingRaffleId ? 'Rifa actualizada exitosamente' : 'Rifa creada exitosamente');
@@ -223,6 +227,7 @@ export default function AdminPage() {
       emoji: r.emoji || '🎟️',
       ticket_price: String(r.ticket_price),
       total_tickets: String(r.total_tickets),
+      start_date: r.start_date ? new Date(r.start_date).toISOString().split('T')[0] : '',
       draw_date: r.draw_date ? new Date(r.draw_date).toISOString().split('T')[0] : '',
       image_url: r.image_url || '',
       sort_order: String(r.sort_order || 0)
@@ -233,7 +238,7 @@ export default function AdminPage() {
 
   const cancelEdit = () => {
     setEditingRaffleId(null);
-    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
+    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -724,85 +729,103 @@ export default function AdminPage() {
       <div className="management-grid">
         
         {/* Left Column: Create Raffle */}
-        <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.2rem', margin: 0 }}>
+        <div className="premium-form-container">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.4rem', margin: 0, letterSpacing: '1px' }}>
               {editingRaffleId ? '✏️ EDITAR RIFA' : '➕ CREAR NUEVA RIFA'}
             </h3>
             {editingRaffleId && (
-              <button type="button" onClick={cancelEdit} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem' }}>
-                Cancelar Edición
+              <button type="button" onClick={cancelEdit} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.7rem' }}>
+                CANCELAR EDICIÓN
               </button>
             )}
           </div>
+          
           <form className="admin-form-container" onSubmit={handleSaveRaffle}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              <div className="form-group">
+            <div className="admin-form-row">
+              <div className="admin-form-group">
                 <label>NOMBRE DEL PREMIO</label>
-                <input required value={newRaffle.title} onChange={e => setNewRaffle({...newRaffle, title: e.target.value})} type="text" placeholder="Ej: iPhone 15 Pro" />
+                <input className="admin-input" required value={newRaffle.title} onChange={e => setNewRaffle({...newRaffle, title: e.target.value})} type="text" placeholder="Ej: iPhone 15 Pro" />
               </div>
-              <div className="form-group">
+              <div className="admin-form-group">
                 <label>PRECIO POR BOLETO (RD$)</label>
-                <input required value={newRaffle.ticket_price} onChange={e => setNewRaffle({...newRaffle, ticket_price: e.target.value})} type="number" placeholder="500" />
-              </div>
-              <div className="form-group">
-                <label>TOTAL DE BOLETOS</label>
-                <input required value={newRaffle.total_tickets} onChange={e => setNewRaffle({...newRaffle, total_tickets: e.target.value})} type="number" placeholder="10000" />
-              </div>
-              <div className="form-group">
-                <label>FECHA DEL SORTEO</label>
-                <input value={newRaffle.draw_date} onChange={e => setNewRaffle({...newRaffle, draw_date: e.target.value})} type="date" />
+                <input className="admin-input" required value={newRaffle.ticket_price} onChange={e => setNewRaffle({...newRaffle, ticket_price: e.target.value})} type="number" placeholder="500" />
               </div>
             </div>
-            <div className="form-group">
+
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>FECHA DE INICIO</label>
+                <input className="admin-input" value={newRaffle.start_date} onChange={e => setNewRaffle({...newRaffle, start_date: e.target.value})} type="date" />
+              </div>
+              <div className="admin-form-group">
+                <label>FECHA DEL SORTEO (FIN)</label>
+                <input className="admin-input" value={newRaffle.draw_date} onChange={e => setNewRaffle({...newRaffle, draw_date: e.target.value})} type="date" />
+              </div>
+            </div>
+
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>TOTAL DE BOLETOS</label>
+                <input className="admin-input" required value={newRaffle.total_tickets} onChange={e => setNewRaffle({...newRaffle, total_tickets: e.target.value})} type="number" placeholder="10000" />
+              </div>
+              <div className="admin-form-group">
+                <label>POSICIÓN (ORDEN)</label>
+                <input className="admin-input" value={newRaffle.sort_order} onChange={e => setNewRaffle({...newRaffle, sort_order: e.target.value})} type="number" placeholder="0" />
+              </div>
+            </div>
+
+            <div className="admin-form-group">
               <label>DESCRIPCIÓN</label>
               <textarea 
+                className="admin-input admin-textarea"
                 value={newRaffle.description} 
                 onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} 
                 placeholder="Descripción detallada del premio..."
-                style={{ minHeight: '120px', padding: '12px', borderRadius: '8px' }}
               />
             </div>
-            <div className="form-group">
+
+            <div className="admin-form-group">
               <label>IMAGEN DEL PREMIO</label>
-              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '10px' }}>
+              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <div 
                   className="image-preview-box"
+                  style={{ width: '120px', height: '120px', flexShrink: 0 }}
                   onClick={() => document.getElementById('raffle-img-upload')?.click()}
                 >
                   {newRaffle.image_url ? (
                     <img src={newRaffle.image_url} alt="Preview" />
                   ) : (
-                    <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>+</span>
+                    <div style={{ textAlign: 'center' }}>
+                      <span style={{ fontSize: '2rem', display: 'block' }}>+</span>
+                      <span style={{ fontSize: '0.6rem', opacity: 0.5 }}>IMAGEN</span>
+                    </div>
                   )}
                 </div>
-                <div style={{ flex: 1 }}>
+                <div>
                   <input id="raffle-img-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} accept="image/*" />
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Sube una foto clara del premio.</p>
-                  <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.7rem' }}>
-                    {uploading ? 'SUBIENDO...' : 'SUBIR FOTO'}
-                  </button>
-                  {newRaffle.image_url && (
-                    <button type="button" onClick={() => setNewRaffle({...newRaffle, image_url: ''})} style={{ marginLeft: '10px', color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.7rem' }}>
-                      Quitar
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Formatos aceptados: JPG, PNG, WEBP. Máximo 5MB.</p>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.75rem' }}>
+                      {uploading ? 'SUBIENDO...' : 'SELECCIONAR FOTO'}
                     </button>
-                  )}
+                    {newRaffle.image_url && (
+                      <button type="button" onClick={() => setNewRaffle({...newRaffle, image_url: ''})} style={{ color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', background: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.75rem' }}>
+                        ELIMINAR
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div className="form-group">
-                <label>EMOJI / ÍCONO</label>
-                <input value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ width: '100%', textAlign: 'center' }} placeholder="🎁" maxLength={2} />
-              </div>
-              <div className="form-group">
-                <label>POSICIÓN (ORDEN)</label>
-                <input value={newRaffle.sort_order} onChange={e => setNewRaffle({...newRaffle, sort_order: e.target.value})} type="number" style={{ width: '100%' }} placeholder="0" />
-              </div>
+            <div className="admin-form-group" style={{ maxWidth: '150px' }}>
+              <label>EMOJI / ÍCONO</label>
+              <input className="admin-input" value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ textAlign: 'center', fontSize: '1.5rem' }} placeholder="🎁" maxLength={2} />
             </div>
-            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '15px' }}>
-              {editingRaffleId ? '⚡ GUARDAR CAMBIOS' : '⚡ CREAR RIFA'}
+
+            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1.5rem', padding: '18px', fontSize: '1.1rem', borderRadius: '16px', boxShadow: '0 10px 20px rgba(0, 242, 254, 0.2)' }}>
+              {editingRaffleId ? '⚡ ACTUALIZAR RIFA' : '⚡ CREAR RIFA AHORA'}
             </button>
           </form>
         </div>

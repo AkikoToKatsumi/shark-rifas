@@ -362,7 +362,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 onClick={() => setPaymentMethod('bhd')}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
               >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg" alt="BHD" style={{ height: '25px', objectFit: 'contain' }} />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Banco_BHD_%28logo%29.png" alt="BHD" style={{ height: '25px', objectFit: 'contain' }}
+                     onError={(e) => { e.currentTarget.src = 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg'; }} />
                 <span style={{ fontSize: '0.8rem' }}>BHD</span>
               </button>
             </div>

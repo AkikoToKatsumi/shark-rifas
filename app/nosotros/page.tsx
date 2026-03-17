@@ -33,7 +33,8 @@ export default function AboutPage() {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg" alt="BHD" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Banco_BHD_%28logo%29.png" alt="BHD" style={{ width: '35px', height: '35px', objectFit: 'contain' }} 
+                     onError={(e) => { e.currentTarget.src = 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Banco_BHD_logo.svg'; }} />
                 <div>
                   <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Banco BHD</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cuenta Corriente</span>

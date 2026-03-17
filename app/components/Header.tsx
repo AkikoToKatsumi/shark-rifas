@@ -15,22 +15,25 @@ export default function Header() {
       <button 
         onClick={() => setIsAdminDrawerOpen(true)}
         style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          right: '10px', 
-          width: '40px',
-          height: '40px',
-          backgroundColor: 'rgba(255, 255, 255, 0.05)', 
-          color: 'var(--text-muted)',
-          border: '1px solid var(--border-color)',
+          position: 'fixed', 
+          top: '15px', 
+          right: '15px', 
+          width: '45px',
+          height: '45px',
+          backgroundColor: 'rgba(5, 10, 16, 0.8)', 
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          color: 'var(--primary-cyan)',
+          border: '1px solid var(--primary-cyan)',
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          zIndex: 50,
+          zIndex: 1000,
           transition: 'all 0.2s ease',
-          fontSize: '1.2rem'
+          fontSize: '1.2rem',
+          boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.1)';

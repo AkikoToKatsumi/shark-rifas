@@ -68,7 +68,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Datos incompletos.' }, { status: 400 });
     }
 
-    // If marking as paid, fetch ticket details beforehand to send emails
+    // If marking as paid, fetch ticket details beforehand to send ONE email per purchase group
     let ticketsToEmail: any[] = [];
     if (status === 'paid' && process.env.EMAIL_SERVER_USER) {
       const { data: fetchedTickets, error: fetchError } = await supabaseAdmin
@@ -94,24 +94,55 @@ export async function PATCH(request: Request) {
 
     if (error) throw error;
 
-    // Send asynchronous confirmation emails
+    // Group tickets by (email + raffle title + verification_code) to send ONE email per group
     if (ticketsToEmail.length > 0) {
-      ticketsToEmail.forEach(ticket => {
-        // Suppress TS warnings safely by casting or optional chaining; Supabase joins return arrays or objects
+      // Map: groupKey -> { email, raffleTitle, paymentMethod, ticketPrice, verificationCode, ticketNumbers[] }
+      const groups = new Map<string, {
+        email: string;
+        raffleTitle: string;
+        paymentMethod: string;
+        ticketPrice: number;
+        verificationCode: string;
+        ticketNumbers: string[];
+      }>();
+
+      for (const ticket of ticketsToEmail) {
         const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
         const raffle = Array.isArray(ticket.raffles) ? ticket.raffles[0] : ticket.raffles;
-        
-        if (participant?.email && raffle?.title) {
-          sendPaymentConfirmedEmail(
-            participant.email,
-            ticket.ticket_number,
-            raffle.title,
-            ticket.payment_method || 'transferencia',
-            raffle.ticket_price || 0,
-            ticket.verification_code
-          );
+
+        if (!participant?.email || !raffle?.title) continue;
+
+        // Group key: same customer + same raffle + same purchase batch (verification_code)
+        const groupKey = `${participant.email}|${raffle.title}|${ticket.verification_code || 'none'}`;
+
+        if (!groups.has(groupKey)) {
+          groups.set(groupKey, {
+            email: participant.email,
+            raffleTitle: raffle.title,
+            paymentMethod: ticket.payment_method || 'transferencia',
+            ticketPrice: raffle.ticket_price || 0,
+            verificationCode: ticket.verification_code,
+            ticketNumbers: [],
+          });
         }
-      });
+
+        groups.get(groupKey)!.ticketNumbers.push(ticket.ticket_number);
+      }
+
+      // Send one email per group (one per purchase batch)
+      for (const group of Array.from(groups.values())) {
+        const allTicketNumbers = group.ticketNumbers.join(', ');
+        const totalPrice = group.ticketPrice * group.ticketNumbers.length;
+
+        sendPaymentConfirmedEmail(
+          group.email,
+          allTicketNumbers,
+          group.raffleTitle,
+          group.paymentMethod,
+          totalPrice,
+          group.verificationCode
+        );
+      }
     }
 
     return NextResponse.json({ success: true, message: `Tickets actualizados a ${status}` });

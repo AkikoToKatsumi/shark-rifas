@@ -408,24 +408,30 @@ export default function AdminPage() {
       total: Number(r.total_tickets)
     })).sort((a, b) => b.value - a.value).slice(0, 5);
 
-    // 4. Top Customers (Bar Chart)
+    // 4. Top Customers (Bar Chart) — agrupado por cédula para consolidar múltiples compras
     const customerAggregates = tickets.reduce((acc: Record<string, any>, ticket) => {
       const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
       if (!participant) return acc;
       
-      const participantId = participant.id || 'unknown';
-      if (!acc[participantId]) {
-        acc[participantId] = { 
+      // Usar cédula como clave única; si no tiene, usar nombre+teléfono como fallback
+      const cedula = participant.cedula?.trim();
+      const groupKey = cedula && cedula !== '-' && cedula !== ''
+        ? `cedula_${cedula}`
+        : `name_${participant.full_name}_${participant.phone}`;
+
+      if (!acc[groupKey]) {
+        acc[groupKey] = { 
           name: participant.full_name, 
+          cedula: cedula || '---',
           code: participant.customer_code || 'S/N', 
           tickets: 0, 
           totalPaid: 0 
         };
       }
-      acc[participantId].tickets += 1;
+      acc[groupKey].tickets += 1;
       if (ticket.status === 'paid') {
         const raffle = raffles.find(r => r.id === (ticket as any).raffle_id);
-        acc[participantId].totalPaid += Number(raffle?.ticket_price || 0);
+        acc[groupKey].totalPaid += Number(raffle?.ticket_price || 0);
       }
       return acc;
     }, {});
@@ -433,7 +439,9 @@ export default function AdminPage() {
     const customerStats = Object.values(customerAggregates)
       .map((c: any) => ({
         ...c,
-        displayName: `[${c.code}] ${c.name}`
+        displayName: c.cedula && c.cedula !== '---'
+          ? `${c.name} (${c.cedula})`
+          : `[${c.code}] ${c.name}`
       }))
       .sort((a: any, b: any) => b.tickets - a.tickets)
       .slice(0, 5);

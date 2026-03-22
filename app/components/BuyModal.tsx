@@ -377,7 +377,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   } else if (paymentMethod === 'reservas') {
                     details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARK RD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
                   } else if (paymentMethod === 'qik') {
-                    details = { name: 'QIK (BANRESERVAS)', number: '1009585431', holder: 'SHARK RD', type: 'CUENTA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
+                    details = { name: 'QIK', number: '1009585431', holder: 'SHARK RD', type: 'CUENTA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
                   } else if (paymentMethod === 'bhd') {
                     details = { name: 'BANCO BHD', number: '1234567-001-8', holder: 'SHARK RD', type: 'CUENTA CORRIENTE', extra: '', isPaypal: false };
                   }

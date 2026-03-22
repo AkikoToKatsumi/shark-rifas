@@ -808,8 +808,8 @@ export default function AdminPage() {
               <div className="admin-form-group">
                 <label>TIPO DE RIFA</label>
                 <select className="admin-input" value={newRaffle.raffle_type} onChange={e => setNewRaffle({...newRaffle, raffle_type: e.target.value})}>
-                  <option value="estandar">Normal (Mín. 1 boleto)</option>
-                  <option value="personalizada">Oferta Flash (Compra mínima obligatoria)</option>
+                  <option value="estandar" style={{ color: '#000' }}>Normal (Mín. 1 boleto)</option>
+                  <option value="personalizada" style={{ color: '#000' }}>Oferta Flash (Compra mínima obligatoria)</option>
                 </select>
               </div>
               {newRaffle.raffle_type === 'personalizada' ? (

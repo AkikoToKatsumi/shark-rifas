@@ -25,6 +25,7 @@ type Raffle = {
   image_url: string;
   sort_order: number;
   is_paused?: boolean;
+  min_tickets?: number;
 };
 
 type Ticket = {
@@ -89,7 +90,9 @@ export default function AdminPage() {
     description: '',
     emoji: '🎟️',
     image_url: '',
-    sort_order: '0'
+    sort_order: '0',
+    raffle_type: 'estandar',
+    min_tickets: '1'
   });
   const [uploading, setUploading] = useState(false);
 
@@ -184,7 +187,8 @@ export default function AdminPage() {
             start_date: newRaffle.start_date || null,
             draw_date: newRaffle.draw_date || null,
             image_url: newRaffle.image_url,
-            sort_order: Number(newRaffle.sort_order)
+            sort_order: Number(newRaffle.sort_order),
+            min_tickets: newRaffle.raffle_type === 'personalizada' ? Number(newRaffle.min_tickets) : 1
           }}
         : {
             title: newRaffle.title,
@@ -195,7 +199,8 @@ export default function AdminPage() {
             start_date: newRaffle.start_date || null,
             draw_date: newRaffle.draw_date || null,
             image_url: newRaffle.image_url,
-            sort_order: Number(newRaffle.sort_order)
+            sort_order: Number(newRaffle.sort_order),
+            min_tickets: newRaffle.raffle_type === 'personalizada' ? Number(newRaffle.min_tickets) : 1
           };
 
       const res = await fetch(url, {
@@ -208,7 +213,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
+        setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0', raffle_type: 'estandar', min_tickets: '1' });
         setEditingRaffleId(null);
         fetchData(); // Refresh list
         alert(editingRaffleId ? 'Rifa actualizada exitosamente' : 'Rifa creada exitosamente');
@@ -231,7 +236,9 @@ export default function AdminPage() {
       start_date: r.start_date ? new Date(r.start_date).toISOString().split('T')[0] : '',
       draw_date: r.draw_date ? new Date(r.draw_date).toISOString().split('T')[0] : '',
       image_url: r.image_url || '',
-      sort_order: String(r.sort_order || 0)
+      sort_order: String(r.sort_order || 0),
+      raffle_type: (r.min_tickets && r.min_tickets > 1) ? 'personalizada' : 'estandar',
+      min_tickets: String(r.min_tickets || 1)
     });
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -239,7 +246,7 @@ export default function AdminPage() {
 
   const cancelEdit = () => {
     setEditingRaffleId(null);
-    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0' });
+    setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0', raffle_type: 'estandar', min_tickets: '1' });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -795,6 +802,24 @@ export default function AdminPage() {
                 <label>POSICIÓN (ORDEN)</label>
                 <input className="admin-input" value={newRaffle.sort_order} onChange={e => setNewRaffle({...newRaffle, sort_order: e.target.value})} type="number" placeholder="0" />
               </div>
+            </div>
+
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>TIPO DE RIFA</label>
+                <select className="admin-input" value={newRaffle.raffle_type} onChange={e => setNewRaffle({...newRaffle, raffle_type: e.target.value})}>
+                  <option value="estandar">Normal (Mín. 1 boleto)</option>
+                  <option value="personalizada">Oferta Flash (Compra mínima obligatoria)</option>
+                </select>
+              </div>
+              {newRaffle.raffle_type === 'personalizada' ? (
+                <div className="admin-form-group">
+                  <label>MÍNIMO DE BOLETOS POR COMPRA</label>
+                  <input className="admin-input" value={newRaffle.min_tickets} onChange={e => setNewRaffle({...newRaffle, min_tickets: e.target.value})} type="number" min="2" placeholder="Ej: 3" />
+                </div>
+              ) : (
+                <div className="admin-form-group"></div>
+              )}
             </div>
 
             <div className="admin-form-group">

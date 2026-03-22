@@ -4,7 +4,7 @@ import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone } from 
 import confetti from 'canvas-confetti';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(raffle.min_tickets || 1);
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', cedula: '' });
   const [paymentMethod, setPaymentMethod] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
@@ -24,8 +24,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       setErrorMsg("Por favor completa todos tus datos personales incluyendo tu cédula.");
       return;
     }
-    if (quantity < 1) {
-      setErrorMsg("La cantidad mínima es 1 boleto.");
+    if (quantity < (raffle.min_tickets || 1)) {
+      setErrorMsg(`La cantidad mínima es ${raffle.min_tickets || 1} boletos.`);
       return;
     }
     if (!paymentMethod) {
@@ -226,14 +226,14 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   }}
                   onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
                   onMouseOut={e => e.currentTarget.style.backgroundColor = 'var(--bg-panel)'}
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(raffle.min_tickets || 1, quantity - 1))}
                 >
                   -
                 </button>
                 <input 
                   type="number" 
                   value={quantity} 
-                  onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))} 
+                  onChange={e => setQuantity(Math.max(raffle.min_tickets || 1, parseInt(e.target.value) || (raffle.min_tickets || 1)))} 
                   style={{ 
                     fontSize: '1.8rem', 
                     fontFamily: 'var(--font-heading)',
@@ -247,7 +247,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                     margin: '0',
                     boxShadow: 'none'
                   }}
-                  min="1"
+                  min={raffle.min_tickets || 1}
                 />
                 <button 
                   type="button" 
@@ -278,6 +278,11 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               </div>
             </div>
             <p className="status-msg text-cyan" style={{ fontSize: '0.8rem' }}>Los números serán asignados automáticamente por el sistema.</p>
+            {raffle.min_tickets > 1 && (
+              <p className="status-msg" style={{ fontSize: '0.8rem', color: 'var(--accent-orange)' }}>
+                ⚠️ Compra mínima de {raffle.min_tickets} boletos para esta oferta.
+              </p>
+            )}
           </div>
 
           {/* User Data Section */}

@@ -142,12 +142,30 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <button 
-                      className="btn-primary w-full mt-auto"
-                      onClick={() => setSelectedRaffle(raffle)}
-                    >
-                      ⚡ COMPRAR BOLETOS
-                    </button>
+                    {progress >= 100 ? (
+                      <button 
+                        className="btn-primary w-full mt-auto"
+                        style={{ backgroundColor: 'var(--success)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
+                        disabled
+                      >
+                        🎉 COMPLETADA
+                      </button>
+                    ) : raffle.is_paused ? (
+                      <button 
+                        className="btn-primary w-full mt-auto"
+                        style={{ backgroundColor: 'var(--accent-orange)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
+                        disabled
+                      >
+                        ⏸️ VENTAS PAUSADAS
+                      </button>
+                    ) : (
+                      <button 
+                         className="btn-primary w-full mt-auto"
+                         onClick={() => setSelectedRaffle(raffle)}
+                      >
+                        ⚡ COMPRAR BOLETOS
+                      </button>
+                    )}
                   </div>
                 </div>
               );

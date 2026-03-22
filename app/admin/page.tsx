@@ -24,6 +24,7 @@ type Raffle = {
   is_active: boolean;
   image_url: string;
   sort_order: number;
+  is_paused?: boolean;
 };
 
 type Ticket = {
@@ -274,6 +275,19 @@ export default function AdminPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
         body: JSON.stringify({ id, updates: { is_active: !currentStatus } })
+      });
+      if (res.ok) fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleTogglePause = async (id: string, currentStatus: boolean) => {
+    try {
+      const res = await fetch('/api/admin/raffles', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        body: JSON.stringify({ id, updates: { is_paused: !currentStatus } })
       });
       if (res.ok) fetchData();
     } catch (err) {
@@ -855,14 +869,31 @@ export default function AdminPage() {
                          backgroundColor: r.is_active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                          color: r.is_active ? 'var(--success)' : '#ef4444'
                        }}>
-                         {r.is_active ? 'ACTIVA' : 'INACTIVA'}
+                         {r.is_active ? 'ACTIVA' : 'OCULTA'}
                        </span>
+                       {r.is_paused && (
+                         <span style={{ 
+                           fontSize: '0.6rem', 
+                           padding: '2px 6px', 
+                           borderRadius: '4px', 
+                           backgroundColor: 'rgba(255, 140, 0, 0.1)',
+                           color: 'var(--accent-orange)'
+                         }}>
+                           PAUSADA
+                         </span>
+                       )}
                     </h4>
                      <p style={{ margin: '5px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                        Posición: {r.sort_order || 0} | Precio: RD${r.ticket_price} | {r.total_tickets} boletos
                      </p>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleToggleRaffleStatus(r.id, r.is_active)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.7rem' }} title={r.is_active ? 'Ocultar' : 'Mostrar'}>
+                      {r.is_active ? '👁️' : '🙈'}
+                    </button>
+                    <button onClick={() => handleTogglePause(r.id, !!r.is_paused)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.7rem' }} title={r.is_paused ? 'Reanudar Ventas' : 'Pausar Ventas'}>
+                      {r.is_paused ? '▶️' : '⏸️'}
+                    </button>
                     <button onClick={() => handleEditRaffle(r)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.7rem' }}>✏️</button>
                     <button onClick={() => handleDeleteRaffle(r.id)} style={{ padding: '6px 10px', fontSize: '0.7rem', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', background: 'none', cursor: 'pointer' }}>🗑️</button>
                   </div>

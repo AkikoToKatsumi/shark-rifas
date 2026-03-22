@@ -1,131 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
-// Mock Data for Winners
-const WINNERS_DATA = [
-  {
-    id: 1,
-    name: 'José Martínez',
-    prize: 'Gipeta Honda CR-V 2023',
-    ticket: '7492',
-    date: '15 de Diciembre, 2025',
-    image: '/YZ AZUL.jpg', // Reusing available assets for mock
-    description: '¡Felicidades a José de Santiago por llevarse el gran premio de la noche!'
-  },
-  {
-    id: 2,
-    name: 'Carmen Rosario',
-    prize: 'iPhone 15 Pro Max',
-    ticket: '1058',
-    date: '28 de Noviembre, 2025',
-    image: '/IPHONE.jpg', // Reusing available assets for mock
-    description: 'Nuestra ganadora del combo tecnológico. ¡Gracias por confiar en Shark RD!'
-  },
-  {
-    id: 3,
-    name: 'Luis Almonte',
-    prize: 'RD$ 500,000 en Efectivo',
-    ticket: '5533',
-    date: '10 de Noviembre, 2025',
-    image: '/YZ AZUL.jpg', // Reusing available assets
-    description: 'Medio millón de pesos entregados en efectivo. ¡Shark RD sí cumple!'
-  }
-];
+import { Trophy, Clock } from 'lucide-react';
 
 export default function GanadoresPage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Auto-slide effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % WINNERS_DATA.length);
-    }, 5000); // Change slide every 5 seconds
-    
-    return () => clearInterval(timer);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % WINNERS_DATA.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + WINNERS_DATA.length) % WINNERS_DATA.length);
-  };
-
   return (
-    <div className="winners-container text-center">
+    <div className="winners-container text-center" style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <div className="section-header" style={{ justifyContent: 'center', marginBottom: '2rem' }}>
         <h2 className="text-3xl">🏆 GALERÍA DE GANADORES</h2>
       </div>
       
-      <p className="text-muted mb-8 max-w-2xl mx-auto">
-        Conoce a las personas que ya han cambiado su suerte con Shark RD. ¡El próximo podrías ser tú! 
-        Aquí mostramos las entregas oficiales de nuestros premios más recientes.
-      </p>
-
-      {/* Carousel Section */}
-      <div className="carousel-wrapper">
-        <div 
-          className="carousel-inner"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {WINNERS_DATA.map((winner) => (
-            <div key={winner.id} className="carousel-slide">
-              <img src={winner.image} alt={winner.prize} className="carousel-img" />
-              
-              <div className="carousel-caption">
-                <div className="caption-content text-left">
-                  <h3>{winner.prize}</h3>
-                  <p className="winner-details">
-                    <strong>Ganador:</strong> {winner.name} <br/>
-                    <strong>Boleto:</strong> #{winner.ticket}
-                  </p>
-                  <p className="text-gray-300 text-sm mb-2">{winner.description}</p>
-                  <p className="winner-date">{winner.date}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+      <div style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px dashed rgba(0, 242, 254, 0.3)',
+        borderRadius: '16px',
+        padding: '3rem 2rem',
+        maxWidth: '600px',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1.5rem',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+      }}>
+        <div style={{ 
+          background: 'rgba(0, 242, 254, 0.1)', 
+          padding: '20px', 
+          borderRadius: '50%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'var(--primary-cyan)'
+        }}>
+          <Clock size={48} />
         </div>
-
-        {/* Navigation Controls */}
-        <button className="carousel-control prev" onClick={prevSlide}>
-          ❮
-        </button>
-        <button className="carousel-control next" onClick={nextSlide}>
-          ❯
-        </button>
-
-        </div>
-      {/* End carousel-wrapper */}
-
-      {/* Indicators (moved outside) */}
-      <div className="carousel-indicators-outer">
-        {WINNERS_DATA.map((_, index) => (
-          <button
-            key={index}
-            className={`indicator-dot ${index === currentIndex ? 'active' : ''}`}
-            onClick={() => goToSlide(index)}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
+        
+        <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#fff', fontWeight: 'bold' }}>
+          AÚN NO TENEMOS GANADORES DISPONIBLES
+        </h3>
+        
+        <p className="text-muted" style={{ fontSize: '1.1rem', lineHeight: '1.6', margin: 0 }}>
+          ESTAMOS PREPARANDO TODO. CUANDO EFECTUEMOS NUESTRA PRIMERA RIFA, LES DAREMOS A CONOCER LOS AGRACIADOS POR ESTE MEDIO.
+        </p>
       </div>
       
-      <div className="mt-20 mb-12">
+      <div className="mt-12 mb-12">
          <button 
            className="btn-accent" 
-           style={{ padding: '15px 30px', fontSize: '1rem', borderRadius: '12px' }}
+           style={{ padding: '15px 30px', fontSize: '1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto' }}
            onClick={() => window.location.href = '/'}
          >
-            ¡QUIERO PARTICIPAR EN LA PRÓXIMA RIFA!
+            <Trophy size={18} /> ¡QUIERO PARTICIPAR EN LA PRÓXIMA RIFA!
          </button>
       </div>
-      
     </div>
   );
 }

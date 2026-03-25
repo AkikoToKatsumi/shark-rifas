@@ -49,10 +49,10 @@ export default function VerificadorPage() {
                 type="text" 
                 value={verifyQuery}
                 onChange={(e) => setVerifyQuery(e.target.value.toUpperCase())}
-                placeholder="Ej. SHK-0101 O #telefonico"
-                className="ticket-input"
+                placeholder="EJ. SHK-0101 O #TELÉFONO"
                 style={{ 
-                  fontSize: '1.2rem', 
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '1.4rem', 
                   padding: '15px', 
                   width: '100%',
                   maxWidth: '400px', 

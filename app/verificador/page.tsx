@@ -6,7 +6,7 @@ export default function VerificadorPage() {
   const [verifyQuery, setVerifyQuery] = useState('');
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
-  const [verifyResult, setVerifyResult] = useState<{ participantName: string, tickets: any[] } | null>(null);
+  const [verifyResult, setVerifyResult] = useState<{ participantName: string, participantEmail?: string, tickets: any[] } | null>(null);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,9 +83,16 @@ export default function VerificadorPage() {
 
           {verifyResult && (
             <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
-              <h3 style={{ color: 'var(--primary-cyan)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '1.5rem' }}>👤</span> {verifyResult.participantName}
-              </h3>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ color: 'var(--primary-cyan)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
+                  <span style={{ fontSize: '1.5rem' }}>👤</span> {verifyResult.participantName}
+                </h3>
+                {verifyResult.participantEmail && (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginLeft: '38px', letterSpacing: '0.5px' }}>
+                    ✉️ {verifyResult.participantEmail}
+                  </p>
+                )}
+              </div>
               
               {verifyResult.tickets.length === 0 ? (
                 <p className="text-muted">No tienes boletos registrados.</p>

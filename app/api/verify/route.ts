@@ -24,7 +24,8 @@ export async function POST(request: Request) {
         participants!inner (
           id,
           full_name,
-          phone
+          phone,
+          email
         ),
         raffles (
           title
@@ -46,7 +47,8 @@ export async function POST(request: Request) {
           participants!inner (
             id,
             full_name,
-            phone
+            phone,
+            email
           ),
           raffles (
             title
@@ -64,13 +66,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Código o número de teléfono no encontrado.' }, { status: 404 });
     }
 
-    // 2. Extract participant name (they will all have the same participant in this group)
+    // 2. Extract participant name and email (they will all have the same participant in this group)
     const pData: any = tickets[0].participants;
     const participantName = Array.isArray(pData) ? pData[0]?.full_name : pData?.full_name;
+    const participantEmail = Array.isArray(pData) ? pData[0]?.email : pData?.email;
 
     return NextResponse.json({ 
       success: true, 
       participantName: participantName,
+      participantEmail: participantEmail,
       tickets 
     });
 

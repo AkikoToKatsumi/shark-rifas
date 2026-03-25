@@ -86,6 +86,9 @@ export default function AdminPage() {
   const [participantResult, setParticipantResult] = useState<any>(null);
   const [searchParticipantError, setSearchParticipantError] = useState('');
 
+  // Ticket Detail Modal State
+  const [viewingTickets, setViewingTickets] = useState<{ code: string, numbers: string[], quantity: number } | null>(null);
+
   // New Raffle Form State
   const [editingRaffleId, setEditingRaffleId] = useState<string | null>(null);
   const [newRaffle, setNewRaffle] = useState({
@@ -1037,26 +1040,31 @@ export default function AdminPage() {
               return (
               <tr key={code}>
                 <td>
-                  <div style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                    {groupTickets.length} Boletos
-                  </div>
-                  <div 
+                  <button 
+                    onClick={() => setViewingTickets({ code, numbers: groupTickets.map(t => t.ticket_number), quantity: groupTickets.length })}
                     style={{ 
-                      fontSize: '0.75rem', 
-                      color: 'var(--text-muted)', 
-                      maxWidth: '200px', 
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      lineHeight: '1.4',
-                      marginTop: '4px'
-                    }} 
-                    title={ticketNumbers}
+                      color: 'var(--primary-cyan)', 
+                      fontWeight: 'bold', 
+                      fontSize: '1.1rem',
+                      background: 'rgba(0, 242, 254, 0.05)',
+                      border: '1px solid rgba(0, 242, 254, 0.2)',
+                      cursor: 'pointer',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.15)'}
+                    onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.05)'}
+                    title="Ver detalle de todos los boletos"
                   >
-                    {ticketNumbers}
+                    <span>👀</span> {groupTickets.length} Boletos
+                  </button>
+                  <div style={{ fontSize: '0.65rem', opacity: 0.5, marginTop: '6px', paddingLeft: '4px', letterSpacing: '1px' }}>
+                    CODE: {code}
                   </div>
-                  <div style={{ fontSize: '0.6rem', opacity: 0.4, marginTop: '4px' }}>CODE: {code}</div>
                 </td>
                 <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
@@ -1158,6 +1166,67 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Ticket List Modal for Table */}
+      {viewingTickets && (
+        <div className="modal-overlay" style={{ zIndex: 1100 }}>
+          <div className="modal-content" style={{ maxWidth: '450px', backgroundColor: 'var(--bg-panel)', border: '1px solid rgba(0, 242, 254, 0.2)', borderRadius: '16px', boxShadow: '0 15px 40px rgba(0,0,0,0.8)' }}>
+            <button className="modal-close" onClick={() => setViewingTickets(null)}>×</button>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <h3 style={{ color: 'var(--primary-cyan)', margin: '0 0 5px 0', fontSize: '1.4rem' }}>Boletos Asignados</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0, letterSpacing: '1px' }}>
+                CÓDIGO: <strong style={{ color: '#fff' }}>{viewingTickets.code}</strong>
+              </p>
+            </div>
+            
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              padding: '12px 20px', 
+              background: 'rgba(0, 242, 254, 0.05)', 
+              borderRadius: '8px',
+              marginBottom: '20px',
+              border: '1px dashed rgba(0, 242, 254, 0.2)'
+            }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>TOTAL COMPRADO:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--primary-cyan)', fontSize: '1.1rem' }}>{viewingTickets.quantity}</span>
+            </div>
+
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(75px, 1fr))', 
+              gap: '10px',
+              maxHeight: '350px',
+              overflowY: 'auto',
+              padding: '15px',
+              background: 'rgba(0,0,0,0.4)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.05)'
+            }}>
+              {viewingTickets.numbers.sort((a,b) => parseInt(a) - parseInt(b)).map((num, idx) => (
+                <div key={idx} style={{ 
+                  background: 'rgba(255, 255, 255, 0.03)', 
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  textAlign: 'center',
+                  padding: '8px 4px',
+                  borderRadius: '6px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  letterSpacing: '1px',
+                  boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)'
+                }}>
+                  {num}
+                </div>
+              ))}
+            </div>
+            
+            <button className="btn-primary w-full mt-6" onClick={() => setViewingTickets(null)} style={{ borderRadius: '12px' }}>
+              CERRAR LISTA
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

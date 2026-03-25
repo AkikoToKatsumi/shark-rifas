@@ -81,9 +81,8 @@ export default function Home() {
 
       {/* Raffles Section */}
       <section className="raffles-section">
-        <div className="section-header">
-          <h2>RIFAS DISPONIBLES</h2>
-          <div className="header-line"></div>
+        <div className="section-header" style={{ justifyContent: 'center' }}>
+          <h2>🎟️ RIFAS DISPONIBLES 🎟️</h2>
         </div>
 
         {loading ? (
@@ -176,9 +175,8 @@ export default function Home() {
 
       {/* Incentives Section */}
       <section className="incentives-section">
-        <div className="section-header">
-          <h2>🔥 RIFAS RÁPIDAS</h2>
-          <div className="header-line"></div>
+        <div className="section-header" style={{ justifyContent: 'center' }}>
+          <h2>🔥 RIFAS RÁPIDAS 🔥</h2>
         </div>
 
         <div className="incentives-grid">

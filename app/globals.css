@@ -521,11 +521,7 @@ a {
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  .raffle-image {
-    height: 250px; /* Even taller on mobile for cinematic feel */
-  }
-}
+/* Removido el height fijo en moviles para que la imagen se vea completa */
 
 .raffle-content {
   padding: var(--spacing-lg);
@@ -545,9 +541,7 @@ a {
   font-size: 0.9rem;
   margin-bottom: var(--spacing-md);
   line-height: 1.4;
-  height: 60px; /* Fixed height for consistency */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Removido texto cortado para que se lea todo */
 }
 
 .raffle-info-row {

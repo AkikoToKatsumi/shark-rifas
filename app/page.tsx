@@ -177,7 +177,7 @@ export default function Home() {
       {/* Incentives Section */}
       <section className="incentives-section">
         <div className="section-header">
-          <h2>🔥 MECÁNICA DE RIFA RÁPIDA</h2>
+          <h2>🔥 RIFAS RÁPIDAS</h2>
           <div className="header-line"></div>
         </div>
 

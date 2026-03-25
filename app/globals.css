@@ -625,9 +625,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 2000;
   padding: var(--spacing-md);
   backdrop-filter: blur(5px);
+  overscroll-behavior: contain;
 }
 
 .modal-content {
@@ -641,6 +642,7 @@ a {
   box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
   max-height: 90vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .modal-close {

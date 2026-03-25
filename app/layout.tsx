@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 import LoadingScreen from "./components/LoadingScreen";
 
 export const metadata: Metadata = {
-  title: "Shark RD Rifas",
+  title: "SHARKRD",
   description: "Sistema de Rifas Virtuales en República Dominicana",
   icons: {
     icon: '/logo.png',

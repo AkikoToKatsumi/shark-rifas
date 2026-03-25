@@ -5,8 +5,8 @@ import { Plus, Minus, HelpCircle, ShieldCheck, Wallet, Trophy } from 'lucide-rea
 
 const faqData = [
   {
-    question: "¿Es seguro participar en Shark RD?",
-    answer: "¡Totalmente! Shark RD es una plataforma transparente con más de 50 ganadores reales cada mes. Los sorteos se realizan con base en los resultados oficiales de las loterías nacionales para garantizar imparcialidad total.",
+    question: "¿Es seguro participar en SHARKRD?",
+    answer: "¡Totalmente! SHARKRD es una plataforma transparente con más de 50 ganadores reales cada mes. Los sorteos se realizan con base en los resultados oficiales de las loterías nacionales para garantizar imparcialidad total.",
     icon: <ShieldCheck size={20} className="text-cyan-400" />
   },
   {

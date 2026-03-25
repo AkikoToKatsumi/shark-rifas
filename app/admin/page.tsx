@@ -1040,10 +1040,23 @@ export default function AdminPage() {
                   <div style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '1.1rem' }}>
                     {groupTickets.length} Boletos
                   </div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div 
+                    style={{ 
+                      fontSize: '0.75rem', 
+                      color: 'var(--text-muted)', 
+                      maxWidth: '200px', 
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      lineHeight: '1.4',
+                      marginTop: '4px'
+                    }} 
+                    title={ticketNumbers}
+                  >
                     {ticketNumbers}
                   </div>
-                  <div style={{ fontSize: '0.6rem', opacity: 0.4, marginTop: '2px' }}>CODE: {code}</div>
+                  <div style={{ fontSize: '0.6rem', opacity: 0.4, marginTop: '4px' }}>CODE: {code}</div>
                 </td>
                 <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
                 <td>{participant?.full_name || 'Desconocido'}</td>

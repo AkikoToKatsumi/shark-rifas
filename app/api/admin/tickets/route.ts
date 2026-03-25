@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { sendPaymentConfirmedEmail } from '@/lib/email';
+import { sendPaymentConfirmedEmail, sendPaymentRejectedEmail } from '@/lib/email';
 
 // Helper to validate admin key
 const validateAdminKey = (request: Request) => {
@@ -166,6 +166,25 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Datos incompletos.' }, { status: 400 });
     }
 
+    // 1. Fetch ticket details before deleting to send cancellation email
+    let ticketsToEmail: any[] = [];
+    if (process.env.EMAIL_SERVER_USER) {
+      const { data: fetchedTickets, error: fetchError } = await supabaseAdmin
+        .from('tickets')
+        .select(`
+          ticket_number,
+          verification_code,
+          participants ( email ),
+          raffles ( title )
+        `)
+        .in('id', ticketIds);
+        
+      if (!fetchError && fetchedTickets) {
+        ticketsToEmail = fetchedTickets;
+      }
+    }
+
+    // 2. Delete tickets
     const { error } = await supabaseAdmin
       .from('tickets')
       .delete()
@@ -173,7 +192,47 @@ export async function DELETE(request: Request) {
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true, message: 'Reservas eliminadas.' });
+    // 3. Group and send cancellation emails
+    if (ticketsToEmail.length > 0) {
+      const groups = new Map<string, {
+        email: string;
+        raffleTitle: string;
+        verificationCode: string;
+        ticketNumbers: string[];
+      }>();
+
+      for (const ticket of ticketsToEmail) {
+        const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
+        const raffle = Array.isArray(ticket.raffles) ? ticket.raffles[0] : ticket.raffles;
+
+        if (!participant?.email || !raffle?.title) continue;
+
+        const groupKey = `${participant.email}|${raffle.title}|${ticket.verification_code || 'none'}`;
+
+        if (!groups.has(groupKey)) {
+          groups.set(groupKey, {
+            email: participant.email,
+            raffleTitle: raffle.title,
+            verificationCode: ticket.verification_code,
+            ticketNumbers: [],
+          });
+        }
+
+        groups.get(groupKey)!.ticketNumbers.push(ticket.ticket_number);
+      }
+
+      for (const group of Array.from(groups.values())) {
+        const allTicketNumbers = group.ticketNumbers.join(', ');
+        sendPaymentRejectedEmail(
+          group.email,
+          allTicketNumbers,
+          group.raffleTitle,
+          group.verificationCode
+        );
+      }
+    }
+
+    return NextResponse.json({ success: true, message: 'Reservas eliminadas y correo de cancelación enviado.' });
   } catch (error: any) {
     console.error('Admin API DELETE Error:', error);
     return NextResponse.json({ error: 'Error eliminando tickets' }, { status: 500 });

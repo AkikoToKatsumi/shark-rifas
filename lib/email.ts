@@ -189,3 +189,54 @@ export const sendAdminReceiptEmail = async (
     console.error('Error sending admin receipt email:', error);
   }
 };
+
+export const sendPaymentRejectedEmail = async (
+  email: string,
+  ticketNumber: string,
+  raffleTitle: string,
+  verificationCode?: string
+) => {
+  const mailOptions = {
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
+    to: email,
+    subject: `❌ Reserva Cancelada / Rechazada - ${raffleTitle}`,
+    html: `
+      <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
+          <div style="background-color: #ef4444; padding: 20px; text-align: center;">
+            <h1 style="margin: 0; color: #fff; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
+          </div>
+          <div style="padding: 30px;">
+            <h2 style="color: #ef4444; margin-top: 0; font-size: 24px; text-align: center;">Reserva Cancelada / Anulada</h2>
+            <p style="text-align: center; color: #94a3b8; line-height: 1.6;">Lamentamos informarte que tu solicitud de compra ha sido rechazada o anulada por la administración. Los siguientes números han sido liberados y ya no te pertenecen:</p>
+
+            <div style="background-color: #020617; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #334155; text-align: center;">
+              <p style="margin: 0 0 10px 0; color: #ef4444; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Boletos Liberados:</p>
+              <div style="display: inline-block; background-color: #ef4444; color: #fff; padding: 8px 16px; border-radius: 12px; font-weight: bold; font-size: 18px; letter-spacing: 2px;">
+                ${ticketNumber}
+              </div>
+              <p style="color: #94a3b8; font-size: 14px; margin-top: 15px;">Rifa: <strong>${raffleTitle}</strong></p>
+            </div>
+
+            <div style="background-color: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #7f1d1d; text-align: center;">
+              <p style="margin: 0; color: #fca5a5; font-size: 14px;">
+                Si crees que esto es un error, si ya realizaste el pago y se te rechazó por error, por favor comunícate urgentemente a nuestro número de WhatsApp o correo electrónico oficial.
+              </p>
+            </div>
+
+            <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">Gracias por tu comprensión.</p>
+          </div>
+          <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Shark RD Rifas
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending rejection email:', error);
+  }
+};

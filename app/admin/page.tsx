@@ -250,8 +250,16 @@ export default function AdminPage() {
       raffle_type: (r.min_tickets && r.min_tickets > 1) ? 'personalizada' : 'estandar',
       min_tickets: String(r.min_tickets || 1)
     });
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Scroll to the form
+    setTimeout(() => {
+      const formElement = document.getElementById('raffle-form-container');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const cancelEdit = () => {
@@ -791,7 +799,7 @@ export default function AdminPage() {
       <div className="management-grid">
         
         {/* Left Column: Create Raffle */}
-        <div className="premium-form-container">
+        <div id="raffle-form-container" className="premium-form-container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.4rem', margin: 0, letterSpacing: '1px' }}>
               {editingRaffleId ? '✏️ EDITAR RIFA' : '➕ CREAR NUEVA RIFA'}

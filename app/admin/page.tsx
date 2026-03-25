@@ -1060,7 +1060,7 @@ export default function AdminPage() {
                     onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.05)'}
                     title="Ver detalle de todos los boletos"
                   >
-                    <span>👀</span> {groupTickets.length} Boletos
+                    {groupTickets.length} Boletos
                   </button>
                   <div style={{ fontSize: '0.65rem', opacity: 0.5, marginTop: '6px', paddingLeft: '4px', letterSpacing: '1px' }}>
                     CODE: {code}

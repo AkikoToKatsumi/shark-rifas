@@ -42,20 +42,40 @@ export default function VerificadorPage() {
 
         <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRadius: '10px', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <form onSubmit={handleVerify} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-            <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-              Ingresa el <strong>Código Secreto de Verificación</strong> que recibiste en tu correo electrónico al realizar la compra.
+            <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', textAlign: 'center', display: 'block' }}>
+              Ingresa el <strong>Código Secreto de Verificación</strong> que recibiste a tu correo o tu <strong>Número de Teléfono</strong>.
             </label>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', marginTop: '10px' }}>
               <input 
                 type="text" 
                 value={verifyQuery}
                 onChange={(e) => setVerifyQuery(e.target.value.toUpperCase())}
-                placeholder="Ej. SHK-A1B2C3"
-                className="ticket-input flex-grow"
-                style={{ fontSize: '1.2rem', padding: '12px', minWidth: '200px', letterSpacing: '2px', textAlign: 'center' }}
+                placeholder="Ej. SHK-A1B2 o 8091234567"
+                className="ticket-input"
+                style={{ 
+                  fontSize: '1.2rem', 
+                  padding: '15px', 
+                  width: '100%',
+                  maxWidth: '400px', 
+                  letterSpacing: '2px', 
+                  textAlign: 'center',
+                  color: '#000',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '10px',
+                  border: '2px solid var(--primary-cyan)'
+                }}
                 required
               />
-              <button type="submit" className="btn-accent" disabled={verifyLoading} style={{ padding: '0 25px', minWidth: '150px' }}>
+              <button type="submit" className="btn-accent" disabled={verifyLoading} style={{ 
+                padding: '15px 40px', 
+                fontSize: '1.2rem', 
+                borderRadius: '30px', 
+                minWidth: '250px',
+                width: '100%',
+                maxWidth: '300px',
+                letterSpacing: '1px',
+                boxShadow: '0 4px 15px rgba(255, 140, 0, 0.4)'
+              }}>
                 {verifyLoading ? 'BUSCANDO...' : '🔍 BUSCAR'}
               </button>
             </div>

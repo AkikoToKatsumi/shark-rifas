@@ -16,6 +16,15 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
   const [showWarning, setShowWarning] = useState(true);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+
+  useEffect(() => {
+    // Lock body scroll
+    document.body.style.overflow = 'hidden';
+    return () => {
+      // Restore body scroll
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
   // Ticket management functions removed - now automated by backend
 
   const handleSubmit = async (e: React.FormEvent) => {

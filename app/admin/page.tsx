@@ -125,6 +125,16 @@ export default function AdminPage() {
     }
   }, [isAuthenticated]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (viewingTickets) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [viewingTickets]);
+
   const fetchData = async () => {
     setLoading(true);
     try {

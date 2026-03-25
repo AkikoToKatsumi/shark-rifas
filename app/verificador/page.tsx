@@ -93,11 +93,11 @@ export default function VerificadorPage() {
                           borderRadius: '4px', 
                           fontSize: '0.75rem', 
                           fontWeight: 'bold',
-                          backgroundColor: t.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 60, 172, 0.1)',
-                          color: t.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)',
+                          backgroundColor: t.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : t.status === 'pending' ? 'rgba(255, 140, 0, 0.1)' : 'rgba(255, 60, 172, 0.1)',
+                          color: t.status === 'paid' ? 'var(--success)' : t.status === 'pending' ? 'var(--accent-orange)' : 'var(--error)',
                           textTransform: 'uppercase'
                         }}>
-                          {t.status === 'paid' ? 'PAGADO ✓' : t.status}
+                          {t.status === 'paid' ? 'PAGADO ✓' : t.status === 'pending' ? 'PENDIENTE ⏳' : 'CANCELADO ❌'}
                         </span>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px', textTransform: 'uppercase' }}>{t.payment_method}</div>
                       </div>

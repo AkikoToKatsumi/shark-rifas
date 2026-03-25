@@ -176,7 +176,7 @@ export default function Home() {
       {/* Incentives Section */}
       <section className="incentives-section">
         <div className="section-header" style={{ justifyContent: 'center' }}>
-          <h2>🔥 RIFAS RÁPIDAS 🔥</h2>
+          <h2>🔥 PREMIOS RÁPIDOS 🔥</h2>
         </div>
 
         <div className="incentives-grid">

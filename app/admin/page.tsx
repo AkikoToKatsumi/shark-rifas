@@ -9,8 +9,9 @@ import {
 import { 
   TrendingUp, Users, DollarSign, Ticket, Activity, 
   BarChart3, PieChart as PieIcon, LineChart as LineIcon,
-  Download, Filter, RefreshCcw
+  Download, Filter, RefreshCcw, Search
 } from 'lucide-react';
+import DigitalTicket from '../components/DigitalTicket';
 
 type Raffle = {
   id: string;
@@ -78,6 +79,12 @@ export default function AdminPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(false);
   const [ticketSearch, setTicketSearch] = useState('');
+
+  // Participant Search State
+  const [searchParticipantQuery, setSearchParticipantQuery] = useState('');
+  const [isSearchingParticipant, setIsSearchingParticipant] = useState(false);
+  const [participantResult, setParticipantResult] = useState<any>(null);
+  const [searchParticipantError, setSearchParticipantError] = useState('');
 
   // New Raffle Form State
   const [editingRaffleId, setEditingRaffleId] = useState<string | null>(null);
@@ -385,6 +392,29 @@ export default function AdminPage() {
       } catch (err) {
         console.error(err);
       }
+    }
+  };
+
+  const handleSearchParticipant = async () => {
+    setSearchParticipantError('');
+    setParticipantResult(null);
+    if (!searchParticipantQuery.trim()) return;
+
+    setIsSearchingParticipant(true);
+    try {
+      const res = await fetch('/api/verify-participant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        body: JSON.stringify({ query: searchParticipantQuery })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Error al buscar boletos');
+      setParticipantResult(data);
+    } catch (err: any) {
+      setSearchParticipantError(err.message);
+    } finally {
+      setIsSearchingParticipant(false);
     }
   };
 
@@ -930,6 +960,49 @@ export default function AdminPage() {
         </div>
       </div>
       
+      {/* Participant Digital Ticket Search */}
+      <div className="card" style={{ marginTop: '2.5rem' }}>
+        <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Search size={20} /> BUSCADOR DE BOLETOS VIRTUALES (EN VIVO)
+        </h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+          Utiliza esta herramienta durante las transmisiones en vivo para buscar todos los boletos de un participante por su teléfono o cédula y mostrarlos en formato de comprobante digital.
+        </p>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <input 
+            type="text" 
+            placeholder="Ingresa Teléfono o Cédula (Ej. 8090000000)" 
+            value={searchParticipantQuery}
+            onChange={(e) => setSearchParticipantQuery(e.target.value)}
+            className="admin-input flex-grow"
+            style={{ maxWidth: '400px' }}
+          />
+          <button onClick={handleSearchParticipant} className="btn-accent" disabled={isSearchingParticipant} style={{ padding: '0 25px' }}>
+            {isSearchingParticipant ? 'BUSCANDO...' : 'BUSCAR COMPROBANTE'}
+          </button>
+        </div>
+        {searchParticipantError && <p className="error-text mb-4" style={{ color: '#ff6b6b' }}>{searchParticipantError}</p>}
+        {participantResult && (
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+            {participantResult.raffles?.length === 0 ? (
+              <p className="text-muted">No se encontraron boletos para este participante.</p>
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
+                {participantResult.raffles?.map((raffle: any, idx: number) => (
+                  <div key={idx} style={{ flex: '1 1 400px', maxWidth: '500px' }}>
+                    <DigitalTicket 
+                      participantName={participantResult.participantName}
+                      participantPhone={participantResult.participantPhone}
+                      raffleData={raffle}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Consolidated Tickets Table */}
       <div className="table-wrapper" style={{ marginTop: '2.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>

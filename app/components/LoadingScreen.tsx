@@ -27,7 +27,7 @@ export default function LoadingScreen() {
 
   return (
     <div className={`splash-screen ${!isVisible ? 'fade-out' : ''}`}>
-      <img src="/logo.png" alt="SHARKRD" className="splash-logo" />
+      <img src="/logo.png" alt="Shark RD" className="splash-logo" />
       <div className="loading-bar-container">
         <div className="loading-bar-fill"></div>
       </div>

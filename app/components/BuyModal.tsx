@@ -176,7 +176,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             Toda reserva de boletos está sujeta a verificación. Si el comprobante enviado es falso o el dinero no se refleja en nuestras cuentas en un plazo máximo de <strong>24 horas</strong>, tus boletos serán cancelados automáticamente y puestos a la venta nuevamente.
           </p>
           <p className="mt-2 mb-6" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Verifica siempre que la cuenta esté a nombre de <strong>SHARKRD</strong> antes de realizar transferencias.
+            Verifica siempre que la cuenta esté a nombre de <strong>Shark RD</strong> antes de realizar transferencias.
           </p>
           <button className="btn-primary w-full" onClick={() => setShowWarning(false)}>
             ENTENDIDO, CONTINUAR
@@ -412,17 +412,12 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   
                   if (paymentMethod === 'paypal') {
                     details = { name: 'PAYPAL', number: 'pagos@sharkrd.com', holder: 'ALEX GUZMÁN', type: 'US$ Dólares | Confirmar ID', extra: '', isPaypal: true };
-                  }
-                  switch (paymentMethod) {
-                  case 'reservas':
-                    details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARKRD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
-                    break;
-                  case 'qik':
-                    details = { name: 'QIK', number: '1009585431', holder: 'SHARKRD', type: 'CUENTA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
-                    break;
-                  case 'bhd':
-                    details = { name: 'BANCO BHD', number: '1234567-001-8', holder: 'SHARKRD', type: 'CUENTA CORRIENTE', extra: '', isPaypal: false };
-                    break;
+                  } else if (paymentMethod === 'reservas') {
+                    details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARK RD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
+                  } else if (paymentMethod === 'qik') {
+                    details = { name: 'QIK', number: '1009585431', holder: 'SHARK RD', type: 'CUENTA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
+                  } else if (paymentMethod === 'bhd') {
+                    details = { name: 'BANCO BHD', number: '1234567-001-8', holder: 'SHARK RD', type: 'CUENTA CORRIENTE', extra: '', isPaypal: false };
                   }
 
                   const handleCopy = (text: string, id: string) => {

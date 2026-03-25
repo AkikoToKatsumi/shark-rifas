@@ -58,7 +58,7 @@ export default function Header() {
       <div className="top-marquee">
         <div className="marquee-content">
           <span>📢 ¡MANTENTE ATENTO A NUESTROS PRÓXIMOS SORTEOS!</span>
-          <span>🚀 ¡TU SUERTE PUEDE CAMBIAR HOY MISMO CON SHARKRD!</span>
+          <span>🚀 ¡TU SUERTE PUEDE CAMBIAR HOY MISMO CON SHARK RD!</span>
           <span>🎯 RIFAS 100% VIRTUALES, TRANSPARENTES Y SEGURAS</span>
           <span>✨ ¡PARTICIPA Y CONVIÉRTETE EN NUESTRO PRÓXIMO GANADOR!</span>
           <span>🏆 ÚNETE A NUESTRA COMUNIDAD DE GANADORES</span>
@@ -68,7 +68,7 @@ export default function Header() {
       <div className="logo-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: '2rem 1rem' }}>
         <img 
           src="/logo.png" 
-          alt="SHARKRD Logo" 
+          alt="Shark RD Logo" 
           className="logo-img" 
           style={{ 
             width: '100%', 
@@ -80,7 +80,7 @@ export default function Header() {
           }} 
         />
         <div className="logo-text" style={{ textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', margin: 0 }}>SHARKRD</h1>
+          <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', margin: 0 }}>SHARK RD RIFAS</h1>
           <p className="subtitle" style={{ fontSize: 'clamp(0.7rem, 3vw, 0.9rem)', letterSpacing: '4px' }}>SISTEMA DE RIFAS VIRTUALES</p>
         </div>
       </div>

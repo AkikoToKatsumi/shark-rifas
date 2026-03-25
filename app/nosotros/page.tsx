@@ -9,7 +9,7 @@ export default function AboutPage() {
         <div className="about-content">
           <div className="about-card">
             <h3>🦈 ¿Quiénes Somos?</h3>
-            <p>Somos <strong>SHARKRD</strong>, tu portal seguro para participar en las mejores rifas del país. Garantizamos sorteos en vivo y transparentes con entrega inmediata de premios.</p>
+            <p>Somos <strong>Shark RD Rifas</strong>, tu portal seguro para participar en las mejores rifas del país. Garantizamos sorteos en vivo y transparentes con entrega inmediata de premios.</p>
           </div>
           <div className="about-card">
             <h3>💳 Métodos de Pago</h3>

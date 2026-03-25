@@ -64,9 +64,9 @@ export default function DigitalTicket({ participantName, participantPhone, raffl
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '25px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
-            <img src="/logo.png" alt="SHARKRD" style={{ height: '50px', objectFit: 'contain' }} />
+            <img src="/logo.png" alt="Shark RD" style={{ height: '50px', objectFit: 'contain' }} />
             <div>
-              <h2 style={{ color: '#fff', margin: 0, fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>SHARKRD</h2>
+              <h2 style={{ color: '#fff', margin: 0, fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>SHARK RD RIFAS</h2>
               <p style={{ color: 'var(--primary-cyan)', margin: 0, fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '1px' }}>COMPROBANTE VIRTUAL</p>
             </div>
           </div>

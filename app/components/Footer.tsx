@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="footer-grid">
           {/* Brand Column */}
           <div className="footer-brand">
-            <img src="/logo.png" alt="SHARKRD Logo" style={{ height: '80px', objectFit: 'contain', marginBottom: '15px' }} />
-            <h2 className="footer-logo">SHARKRD</h2>
+            <img src="/logo.png" alt="Shark RD Logo" style={{ height: '80px', objectFit: 'contain', marginBottom: '15px' }} />
+            <h2 className="footer-logo">SHARK RD <span>RIFAS</span></h2>
             <p className="footer-slogan">Tu plataforma de confianza para ganar grandes premios. Rifas 100% virtuales, transparentes y seguras en toda la República Dominicana.</p>
             <div className="social-links" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
               <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" 
@@ -48,7 +48,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {currentYear} SHARKRD. Todos los derechos reservados.</p>
+          <p>&copy; {currentYear} Shark RD Rifas. Todos los derechos reservados.</p>
           <div className="footer-badges">
             <span className="badge">100% SEGURO 🔒</span>
             <span className="badge">PAGOS VERIFICADOS ✓</span>

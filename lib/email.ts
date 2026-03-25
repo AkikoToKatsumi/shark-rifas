@@ -19,14 +19,14 @@ export const sendPaymentPendingEmail = async (
   verificationCode: string
 ) => {
   const mailOptions = {
-    from: `"SHARKRD" <${process.env.EMAIL_FROM}>`,
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
     to: email,
     subject: `💰 Reserva Recibida - ${raffleTitle}`,
     html: `
       <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
           <div style="background-color: #f97316; padding: 20px; text-align: center;">
-            <h1 style="margin: 0; color: #000; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">SHARKRD</h1>
+            <h1 style="margin: 0; color: #000; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
           </div>
           <div style="padding: 30px;">
             <h2 style="color: #f97316; margin-top: 0; font-size: 24px;">¡Tus boletos ya están apartados!</h2>
@@ -54,7 +54,7 @@ export const sendPaymentPendingEmail = async (
             <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">Recibirás un nuevo correo tan pronto el dinero se refleje en nuestras cuentas.</p>
           </div>
           <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
-            © SHARKRD - Sistema Automatizado de Comprobantes.
+            © Shark RD Rifas - Sistema Automatizado de Comprobantes.
           </div>
         </div>
       </div>
@@ -77,14 +77,14 @@ export const sendPaymentConfirmedEmail = async (
   verificationCode?: string
 ) => {
   const mailOptions = {
-    from: `"SHARKRD" <${process.env.EMAIL_FROM}>`,
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
     to: email,
     subject: `🏆 ¡Pago Confirmado! - Boletos para ${raffleTitle}`,
     html: `
       <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
           <div style="background-color: #38bdf8; padding: 20px; text-align: center;">
-            <h1 style="margin: 0; color: #000; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">SHARKRD</h1>
+            <h1 style="margin: 0; color: #000; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
           </div>
           <div style="padding: 30px;">
             <h2 style="color: #38bdf8; margin-top: 0; font-size: 24px; text-align: center;">¡Felicidades, pago aceptado!</h2>
@@ -117,7 +117,7 @@ export const sendPaymentConfirmedEmail = async (
             <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">Guarda este correo, es tu comprobante de participación. ¡Muchísima suerte!</p>
           </div>
           <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
-            © SHARKRD - ¡Rifas 100% Seguras!
+            © Shark RD Rifas - ¡Rifas 100% Seguras!
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@ export const sendAdminReceiptEmail = async (
   }
 
   const mailOptions = {
-    from: `"SHARKRD Notificaciones" <${process.env.EMAIL_FROM}>`,
+    from: `"Shark RD Notificaciones" <${process.env.EMAIL_FROM}>`,
     to: process.env.EMAIL_FROM, // Send to the admin's own email
     subject: `💰 Nuevo Pago Registrado - ${raffleTitle}`,
     html: `
@@ -197,14 +197,14 @@ export const sendPaymentRejectedEmail = async (
   verificationCode?: string
 ) => {
   const mailOptions = {
-    from: `"SHARKRD" <${process.env.EMAIL_FROM}>`,
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
     to: email,
     subject: `❌ Reserva Cancelada / Rechazada - ${raffleTitle}`,
     html: `
       <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
           <div style="background-color: #ef4444; padding: 20px; text-align: center;">
-            <h1 style="margin: 0; color: #fff; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">SHARKRD</h1>
+            <h1 style="margin: 0; color: #fff; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
           </div>
           <div style="padding: 30px;">
             <h2 style="color: #ef4444; margin-top: 0; font-size: 24px; text-align: center;">Reserva Cancelada / Anulada</h2>
@@ -227,7 +227,7 @@ export const sendPaymentRejectedEmail = async (
             <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">Gracias por tu comprensión.</p>
           </div>
           <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
-            © SHARKRD
+            © Shark RD Rifas
           </div>
         </div>
       </div>

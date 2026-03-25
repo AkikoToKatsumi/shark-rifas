@@ -242,7 +242,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             </div>
           )}
           <h2>{raffle.title}</h2>
-          <p className="subtitle">Boletos Lotería Pega 4 Real</p>
+          <p className="subtitle">Boletos Pega 4 Real</p>
         </div>
 
         <form onSubmit={handleSubmit} className="buy-form">

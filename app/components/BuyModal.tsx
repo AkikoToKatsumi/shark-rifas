@@ -205,7 +205,14 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             <p><strong>6. Uso de Imagen:</strong> Al participar y ganar, el usuario autoriza a Shark Rifas a utilizar su imagen (fotos/videos del momento de entrega) exclusivamente con fines de transparencia y publicidad en redes sociales.</p>
           </div>
           
-          <button className="btn-primary w-full mt-6" onClick={() => { setAcceptedTerms(true); setShowTermsModal(false); }}>
+          <button className="btn-primary w-full mt-6" onClick={() => { 
+            setAcceptedTerms(true); 
+            setShowTermsModal(false); 
+            setTimeout(() => {
+              const modalEl = document.querySelector('.modal-content');
+              if (modalEl) modalEl.scrollTo({ top: modalEl.scrollHeight, behavior: 'smooth' });
+            }, 50);
+          }}>
             ACEPTAR TÉRMINOS Y CONTINUAR
           </button>
         </div>
@@ -466,6 +473,14 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '3px', marginTop: '5px' }}>
                         <p style={{ margin: 0 }}>TITULAR: <span style={{ color: 'var(--text-main)' }}>{details.holder}</span></p>
                         <p style={{ margin: 0 }}>TIPO: <span style={{ color: 'var(--text-main)' }}>{details.type}</span></p>
+                        {!details.isPaypal && (
+                          <div style={{ margin: '8px 0 0 0', padding: '8px 10px', background: 'rgba(255, 140, 0, 0.1)', borderLeft: '3px solid var(--accent-orange)', borderRadius: '4px' }}>
+                            <p style={{ margin: 0, color: 'var(--accent-orange)', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '3px' }}>⚠️ NOTA IMPORTANTE:</p>
+                            <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '0.75rem', lineHeight: '1.4' }}>
+                              En el concepto de tu transferencia debes poner <strong>exclusivamente</strong> alguna de estas frases: <strong style={{color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px'}}>PAGO DE BOLETO</strong> o <strong style={{color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px'}}>PAGO RIFA</strong>.
+                            </p>
+                          </div>
+                        )}
                       </div>
                       <p style={{ fontSize: '0.75rem', color: 'var(--accent-orange)', marginTop: '5px', fontStyle: 'italic' }}>
                         {details.isPaypal ? 'Al confirmar, transfiere el monto exacto y guarda tu captura.' : 'Guarda tu comprobante de depósito o captura de pantalla.'}

@@ -242,7 +242,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             </div>
           )}
           <h2>{raffle.title}</h2>
-          <p className="subtitle">Boletos Pega 4 (0000 - 9999)</p>
+          <p className="subtitle">Boletos Lotería Pega 4 Real</p>
         </div>
 
         <form onSubmit={handleSubmit} className="buy-form">
@@ -329,9 +329,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             </div>
             <p className="status-msg text-cyan" style={{ fontSize: '0.8rem' }}>Los números serán asignados automáticamente por el sistema.</p>
             {raffle.min_tickets > 1 && (
-              <p className="raffle-subtitle" style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--text-muted)' }}>
-              Boletos Lotería Pega 4 Real
-            </p>
+              <p className="status-msg" style={{ fontSize: '0.8rem', color: 'var(--accent-orange)' }}>
+                ⚠️ Compra mínima de {raffle.min_tickets} boletos para esta oferta.
+              </p>
             )}
           </div>
 

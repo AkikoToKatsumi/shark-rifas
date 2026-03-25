@@ -35,9 +35,8 @@ export default function VerificadorPage() {
   return (
     <div className="home-container" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <section className="raffles-section" style={{ width: '100%', maxWidth: '800px', margin: '2rem auto' }}>
-        <div className="section-header">
+        <div className="section-header" style={{ justifyContent: 'center' }}>
           <h2>VERIFICA TU BOLETO</h2>
-          <div className="header-line"></div>
         </div>
 
         <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRadius: '10px', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
@@ -50,7 +49,7 @@ export default function VerificadorPage() {
                 type="text" 
                 value={verifyQuery}
                 onChange={(e) => setVerifyQuery(e.target.value.toUpperCase())}
-                placeholder="Ej. SHK-A1B2 o 8091234567"
+                placeholder="Ej. SHK-0101 O #telefonico"
                 className="ticket-input"
                 style={{ 
                   fontSize: '1.2rem', 

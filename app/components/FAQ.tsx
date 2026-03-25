@@ -15,7 +15,7 @@ const faqData = [
     icon: <Wallet size={20} className="text-cyan-400" />
   },
   {
-    question: "¿Qué pasa si gano un premio rápido (RD$5,000)?",
+    question: "¿Qué pasa si gano un premio rápido (RD$3,000)?",
     answer: "Si tu número coincide con uno de nuestros 'Números Ganadores' al momento de la compra, te contactamos vía WhatsApp inmediatamente para realizarte la transferencia del premio tras validar tu pago.",
     icon: <Trophy size={20} className="text-cyan-400" />
   },

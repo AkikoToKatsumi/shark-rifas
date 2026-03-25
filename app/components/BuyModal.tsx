@@ -14,6 +14,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
   const [assignedTickets, setAssignedTickets] = useState<string[]>([]);
   const [verificationCode, setVerificationCode] = useState('');
   const [showWarning, setShowWarning] = useState(true);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   // Ticket management functions removed - now automated by backend
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,6 +24,10 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
 
     if (!formData.fullName || !formData.phone || !formData.email || !formData.cedula) {
       setErrorMsg("Por favor completa todos tus datos personales incluyendo tu cédula.");
+      return;
+    }
+    if (!acceptedTerms) {
+      setErrorMsg("Debe leer y aceptar los Términos y Condiciones para continuar.");
       return;
     }
     if (quantity < (raffle.min_tickets || 1)) {
@@ -174,6 +180,33 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           </p>
           <button className="btn-primary w-full" onClick={() => setShowWarning(false)}>
             ENTENDIDO, CONTINUAR
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (showTermsModal) {
+    return (
+      <div className="modal-overlay" style={{ zIndex: 1000 }}>
+        <div className="modal-content" style={{ maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <button className="modal-close" onClick={() => setShowTermsModal(false)}>×</button>
+          <div className="flex justify-center mb-4">
+            <ShieldAlert size={50} className="text-cyan-400" />
+          </div>
+          <h2 style={{ color: 'var(--primary-cyan)', marginBottom: '15px' }}>Términos y Condiciones</h2>
+          
+          <div style={{ textAlign: 'left', fontSize: '0.9rem', lineHeight: '1.6', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <p><strong>1. Dinámica del Sorteo:</strong> La rifa se efectuará cuando se alcance el 40% de boletos vendidos; en caso contrario, se anunciará el cambio del premio o modalidad.</p>
+            <p><strong>2. Veracidad de Datos:</strong> Los datos proporcionados (Nombre, Cédula y Teléfono/WhatsApp) deben ser reales y exactos. El premio solo se entregará al titular de la cédula registrada en la compra. Si los datos son falsos, el boleto ganador será invalidado.</p>
+            <p><strong>3. Validación del Pago:</strong> En los pagos mediante transferencia bancaria, el boleto no será válido ni estará asegurado hasta que la administración confirme la recepción de los fondos. Enviar el comprobante no asegura los números si el pago es rechazado.</p>
+            <p><strong>4. Política de Reembolso:</strong> Las ventas de boletos son finales. No se aceptan cancelaciones, devoluciones ni reembolsos de dinero bajo ninguna circunstancia (salvo cancelación total del evento por parte de los organizadores).</p>
+            <p><strong>5. Reclamación:</strong> El ganador dispondrá de un plazo máximo de <strong>15 días</strong> a partir de la fecha del sorteo para reclamar su premio presentando físicamente la cédula original registrada en la compra.</p>
+            <p><strong>6. Uso de Imagen:</strong> Al participar y ganar, el usuario autoriza a Shark Rifas a utilizar su imagen (fotos/videos del momento de entrega) exclusivamente con fines de transparencia y publicidad en redes sociales.</p>
+          </div>
+          
+          <button className="btn-primary w-full mt-6" onClick={() => { setAcceptedTerms(true); setShowTermsModal(false); }}>
+            ACEPTAR TÉRMINOS Y CONTINUAR
           </button>
         </div>
       </div>
@@ -471,6 +504,19 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               }}
             />
             {receiptFile && <p className="status-msg text-success mt-1">✓ Comprobante subido ({receiptFile.name})</p>}
+          </div>
+
+          <div className="form-section mt-4" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <input 
+              type="checkbox" 
+              id="terms-checkbox" 
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: 'var(--primary-cyan)', marginTop: '2px' }}
+            />
+            <label htmlFor="terms-checkbox" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, cursor: 'pointer', lineHeight: '1.4' }}>
+              He leído y acepto los <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} style={{ color: 'var(--primary-cyan)', textDecoration: 'underline' }}>Términos y Condiciones</span> de la rifa.
+            </label>
           </div>
 
           {errorMsg && <div style={{ background: 'rgba(220,53,69,0.1)', border: '1px solid var(--error)', padding: '10px', color: '#ff6b6b', borderRadius: '5px', marginBottom: '15px', fontSize: '0.9rem', textAlign: 'center' }}>{errorMsg}</div>}

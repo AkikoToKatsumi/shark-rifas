@@ -184,7 +184,7 @@ export default function Home() {
         <div className="incentives-grid">
           <div className="incentive-card">
             <h3><Star className="text-orange-400" /> NÚMEROS GANADORES</h3>
-            <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$5,000 en efectivo</strong> al instante!</p>
+            <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$3,000 en efectivo</strong> al instante!</p>
             <div className="winning-numbers">
               <span className="number-chip">1111</span>
               <span className="number-chip">2222</span>

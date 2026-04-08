@@ -17,43 +17,102 @@ export default function Header() {
   return (
     <header className="header-container position-relative">
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-      <button 
-        onClick={() => setIsAdminDrawerOpen(true)}
-        style={{ 
-          position: 'fixed', 
-          top: '15px', 
-          right: '15px', 
-          width: '45px',
-          height: '45px',
-          backgroundColor: 'rgba(5, 10, 16, 0.8)', 
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          color: 'var(--primary-cyan)',
-          border: '1px solid var(--primary-cyan)',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          zIndex: 1000,
-          transition: 'all 0.2s ease',
-          fontSize: '1.2rem',
-          boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.1)';
-          e.currentTarget.style.borderColor = 'var(--primary-cyan)';
-          e.currentTarget.style.color = 'var(--primary-cyan)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-          e.currentTarget.style.borderColor = 'var(--border-color)';
-          e.currentTarget.style.color = 'var(--text-muted)';
-        }}
-        title="Admin Login"
-      >
-        <User size={20} />
-      </button>
+      <div style={{ position: 'fixed', top: '15px', right: '15px', zIndex: 1000, display: 'flex', gap: '10px', alignItems: 'center' }}>
+        
+        {/* User Account / Profile */}
+        {user ? (
+          <div style={{ 
+            backgroundColor: 'rgba(5, 10, 16, 0.8)', 
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid var(--primary-cyan)',
+            borderRadius: '30px',
+            padding: '6px 15px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            boxShadow: '0 0 15px rgba(0, 242, 254, 0.2)'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
+              <span style={{ fontSize: '0.8rem', color: '#fff', fontWeight: 'bold' }}>{user.full_name.split(' ')[0]}</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Gift size={12} /> {user.points} pts
+              </span>
+            </div>
+            <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--border-color)' }}></div>
+            <button 
+              onClick={logout}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 0, display: 'flex', alignItems: 'center' }}
+              title="Cerrar Sesión"
+              onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={() => setIsAuthModalOpen(true)}
+            style={{ 
+              backgroundColor: 'rgba(5, 10, 16, 0.8)', 
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              color: '#fff',
+              border: '1px solid var(--primary-cyan)',
+              borderRadius: '30px',
+              padding: '8px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              fontSize: '0.85rem',
+              fontWeight: 'bold',
+              boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--primary-cyan)';
+              e.currentTarget.style.color = '#000';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(5, 10, 16, 0.8)';
+              e.currentTarget.style.color = '#fff';
+            }}
+          >
+            <LogIn size={16} /> MI CUENTA
+          </button>
+        )}
+
+        {/* Admin Icon */}
+        <button 
+          onClick={() => setIsAdminDrawerOpen(true)}
+          style={{ 
+            width: '38px',
+            height: '38px',
+            backgroundColor: 'rgba(5, 10, 16, 0.5)', 
+            backdropFilter: 'blur(10px)',
+            color: 'var(--text-muted)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            e.currentTarget.style.color = '#fff';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(5, 10, 16, 0.5)';
+            e.currentTarget.style.color = 'var(--text-muted)';
+          }}
+          title="Admin Panel"
+        >
+          <User size={16} />
+        </button>
+      </div>
 
       {/* Admin Sidebar / Drawer */}
       <AdminSidebar 
@@ -119,34 +178,6 @@ export default function Header() {
             </Link>
           </li>
           
-          {user ? (
-            <li style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto', paddingLeft: '1rem', borderLeft: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: 'bold' }}>{user.full_name.split(' ')[0]}</span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                  <Gift size={12} /> {user.points} pts
-                </span>
-              </div>
-              <button 
-                onClick={logout}
-                className="nav-link"
-                style={{ padding: '5px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-                title="Cerrar Sesión"
-              >
-                <LogOut size={18} />
-              </button>
-            </li>
-          ) : (
-            <li style={{ marginLeft: 'auto' }}>
-              <button 
-                onClick={() => setIsAuthModalOpen(true)}
-                className="nav-link"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <LogIn size={18} className="nav-icon" /> INICIAR SESIÓN
-              </button>
-            </li>
-          )}
         </ul>
       </nav>
     </header>

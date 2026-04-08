@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { sendPaymentPendingEmail, sendAdminReceiptEmail } from '@/lib/email';
+import { getSession } from '@/lib/session';
 
 export const config = {
   api: {
@@ -17,6 +18,17 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { raffleId, quantity, fullName, phone, email, cedula, paymentMethod, price, raffleTitle, receiptImage } = body;
+
+    const POINTS_PER_TICKET = 500;
+    const requiredPoints = quantity * POINTS_PER_TICKET;
+    let session = null;
+
+    if (paymentMethod === 'points') {
+      session = await getSession();
+      if (!session) {
+        return NextResponse.json({ error: 'Debes iniciar sesión para usar puntos.' }, { status: 401 });
+      }
+    }
 
     // 0. Basic Validation
     if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || !email || !paymentMethod) {
@@ -115,6 +127,30 @@ export async function POST(request: Request) {
 
       if (pError) throw pError;
       participantId = newParticipant.id;
+      existingParticipant = newParticipant;
+    }
+
+    if (paymentMethod === 'points') {
+      if (session && session.participant.id !== participantId && session.participant.phone !== cleanPhone) {
+        return NextResponse.json({ error: 'El usuario de la sesión no coincide.' }, { status: 403 });
+      }
+      
+      const { data: pData } = await supabaseAdmin.from('participants').select('points').eq('id', participantId).single();
+      const userPoints = pData?.points || 0;
+      
+      if (userPoints < requiredPoints) {
+        return NextResponse.json({ error: `Puntos insuficientes. Necesitas ${requiredPoints} puntos.` }, { status: 400 });
+      }
+      
+      // Deduct points
+      const { error: deductError } = await supabaseAdmin
+        .from('participants')
+        .update({ points: userPoints - requiredPoints })
+        .eq('id', participantId);
+        
+      if (deductError) {
+        return NextResponse.json({ error: 'Error al deducir los puntos.' }, { status: 500 });
+      }
     }
 
     // 4. Assign Tickets with Retry Logic (Deterministic check + random pick)
@@ -152,11 +188,12 @@ export async function POST(request: Request) {
     const verificationCode = code;
 
     // 5. Insert Tickets
+    const isPaid = paymentMethod === 'points';
     const ticketsData = assignedTickets.map(num => ({
       raffle_id: raffleId,
       participant_id: participantId,
       ticket_number: num,
-      status: 'pending',
+      status: isPaid ? 'paid' : 'pending',
       payment_method: paymentMethod,
       verification_code: verificationCode
     }));

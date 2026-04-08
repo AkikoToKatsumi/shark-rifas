@@ -15,14 +15,20 @@ CREATE TABLE public.raffles (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Tabla Participantes (quienes compran)
+-- Tabla Participantes (quienes compran y cuentas de usuarios)
 CREATE TABLE public.participants (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    cedula VARCHAR(20), -- Nueva columna para el identificador único
+    cedula VARCHAR(20), -- Identificador único
     customer_code VARCHAR(10), -- Código secuencial para administración (ej: 001)
+    
+    -- Campos del Sistema de Recompensas y Login
+    password_hash VARCHAR(255), -- Si es null, es un participante "invitado"
+    points INTEGER DEFAULT 0, -- Puntos para canjear por boletos
+    last_spin_date DATE, -- Para controlar el premio diario de la ruleta
+    
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

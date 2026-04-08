@@ -4,14 +4,19 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
-import { Target, Search, Trophy, Info, User } from 'lucide-react';
+import { Target, Search, Trophy, Info, User, Gift, LogIn, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 
 export default function Header() {
   const pathname = usePathname();
   const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <header className="header-container position-relative">
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       <button 
         onClick={() => setIsAdminDrawerOpen(true)}
         style={{ 
@@ -108,6 +113,40 @@ export default function Header() {
               <Info size={18} className="nav-icon" /> SOBRE NOSOTROS
             </Link>
           </li>
+          <li>
+            <Link href="/recompensas" className={`nav-link ${pathname === '/recompensas' ? 'active' : ''}`} style={{ color: 'var(--primary-cyan)' }}>
+              <Gift size={18} className="nav-icon" /> RECOMPENSAS
+            </Link>
+          </li>
+          
+          {user ? (
+            <li style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto', paddingLeft: '1rem', borderLeft: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: 'bold' }}>{user.full_name.split(' ')[0]}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                  <Gift size={12} /> {user.points} pts
+                </span>
+              </div>
+              <button 
+                onClick={logout}
+                className="nav-link"
+                style={{ padding: '5px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                title="Cerrar Sesión"
+              >
+                <LogOut size={18} />
+              </button>
+            </li>
+          ) : (
+            <li style={{ marginLeft: 'auto' }}>
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="nav-link"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <LogIn size={18} className="nav-icon" /> INICIAR SESIÓN
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

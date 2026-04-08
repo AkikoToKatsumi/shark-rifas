@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone } from 'lucide-react';
+import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone, Gift } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useAuth } from '../context/AuthContext';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
   const [quantity, setQuantity] = useState(raffle.min_tickets || 1);
@@ -16,6 +17,22 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
   const [showWarning, setShowWarning] = useState(true);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const { user } = useAuth();
+  
+  const POINTS_PER_TICKET = 500;
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: user.full_name || prev.fullName,
+        phone: user.phone || prev.phone,
+        email: user.email || prev.email,
+        // using optional chaining for cedula if it exists
+        cedula: (user as any).cedula || prev.cedula
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     // Lock body scroll
@@ -47,19 +64,33 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       setErrorMsg("Seleccione un método de pago.");
       return;
     }
-    if (!receiptFile) {
-      setErrorMsg("Debes subir tu comprobante de pago para confirmar la compra.");
-      return;
+    
+    if (paymentMethod === 'points') {
+      if (!user) {
+        setErrorMsg("Debes iniciar sesión para usar puntos.");
+        return;
+      }
+      if (user.points < quantity * POINTS_PER_TICKET) {
+        setErrorMsg(`Puntos insuficientes. Necesitas ${quantity * POINTS_PER_TICKET} puntos.`);
+        return;
+      }
+    } else {
+      if (!receiptFile) {
+        setErrorMsg("Debes subir tu comprobante de pago para confirmar la compra.");
+        return;
+      }
     }
     
     setIsSubmitting(true);
     
     try {
-      // Convert file to base64
-      const buffer = await receiptFile.arrayBuffer();
-      const base64String = Buffer.from(buffer).toString('base64');
-      const mimeType = receiptFile.type;
-      const receiptDataUrl = `data:${mimeType};base64,${base64String}`;
+      let receiptDataUrl = null;
+      if (receiptFile) {
+        const buffer = await receiptFile.arrayBuffer();
+        const base64String = Buffer.from(buffer).toString('base64');
+        const mimeType = receiptFile.type;
+        receiptDataUrl = `data:${mimeType};base64,${base64String}`;
+      }
 
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -500,36 +531,57 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 })()}
               </div>
             )}
+            
+            {user && (
+              <div style={{ marginTop: '15px' }}>
+                <button
+                  type="button"
+                  className={`pay-btn flex items-center justify-center gap-2 w-full ${paymentMethod === 'points' ? 'selected' : ''}`}
+                  style={{ border: paymentMethod === 'points' ? '2px solid var(--primary-cyan)' : '1px solid rgba(0,242,254,0.3)', background: paymentMethod === 'points' ? 'rgba(0,242,254,0.1)' : 'transparent', padding: '12px' }}
+                  onClick={() => setPaymentMethod('points')}
+                >
+                  <Gift size={20} color="var(--primary-cyan)" />
+                  <span>Pagar con Puntos (Total: {quantity * POINTS_PER_TICKET} pts)</span>
+                </button>
+                {paymentMethod === 'points' && (
+                   <p className="mt-2 text-center" style={{fontSize: '0.8rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)'}}>
+                     Balance disponible: {user.points} pts
+                   </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Receipt Upload Section */}
-          <div className="form-section mt-4">
-            <label>Sube tu captura de pago (JPG, PNG)</label>
-            <input 
-              type="file" 
-              accept="image/png, image/jpeg, image/jpg"
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  const file = e.target.files[0];
-                  // 4MB limit check
-                  if (file.size > 4 * 1024 * 1024) {
-                    setErrorMsg("La imagen es demasiado grande (máximo 4MB). Por favor, intenta con una captura de menor peso o comprímela.");
-                    setReceiptFile(null);
-                    e.target.value = ''; // Clear input
-                    return;
+          {paymentMethod !== 'points' && (
+            <div className="form-section mt-4">
+              <label>Sube tu captura de pago (JPG, PNG)</label>
+              <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/jpg"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    // 4MB limit check
+                    if (file.size > 4 * 1024 * 1024) {
+                      setErrorMsg("La imagen es demasiado grande (máximo 4MB). Por favor, intenta con una captura de menor peso o comprímela.");
+                      setReceiptFile(null);
+                      e.target.value = ''; // Clear input
+                      return;
+                    }
+                    setErrorMsg(""); // Clear error if size is okay
+                    setReceiptFile(file);
                   }
-                  setErrorMsg(""); // Clear error if size is okay
-                  setReceiptFile(file);
-                }
-              }}
-              style={{
-                backgroundColor: 'rgba(0,0,0,0.5)', 
-                border: receiptFile ? '1px solid var(--success)' : '1px dashed var(--primary-cyan)',
-                padding: '10px'
-              }}
-            />
-            {receiptFile && <p className="status-msg text-success mt-1">✓ Comprobante subido ({receiptFile.name})</p>}
-          </div>
+                }}
+                style={{
+                  backgroundColor: 'rgba(0,0,0,0.5)', 
+                  border: receiptFile ? '1px solid var(--success)' : '1px dashed var(--primary-cyan)',
+                  padding: '10px'
+                }}
+              />
+              {receiptFile && <p className="status-msg text-success mt-1">✓ Comprobante subido ({receiptFile.name})</p>}
+            </div>
+          )}
 
           <div className="form-section mt-4" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
             <input 

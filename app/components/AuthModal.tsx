@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Mail, Phone, Lock, User, RefreshCw } from 'lucide-react';
+import { X, Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 type AuthModalProps = {
@@ -13,6 +13,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   // Login fields
   const [loginId, setLoginId] = useState(''); // Email or Phone
@@ -145,12 +146,34 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <div className="input-group">
             <Lock size={18} className="input-icon" />
             <input 
-              type="password" 
+              type={showPassword ? "text" : "password"} 
               placeholder="Contraseña" 
               required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              style={{ paddingRight: '45px' }} // extra padding so text doesn't hide behind the button
             />
+            <button 
+              type="button" 
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '15px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'color 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-cyan)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+              title={showPassword ? "Ocultar Contraseña" : "Ver Contraseña"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <button 

@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import path from 'path';
+import fs from 'fs';
 
 export const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_SERVER_HOST,
@@ -246,16 +248,24 @@ export const sendWelcomeEmail = async (
   fullName: string,
   points: number
 ) => {
+  const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+  const hasLogo = fs.existsSync(logoPath);
+
   const mailOptions = {
     from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
     to: email,
     subject: `👋 ¡Bienvenido a Shark RD Rifas, ${fullName}!`,
+    attachments: hasLogo ? [{
+      filename: 'logo.png',
+      path: logoPath,
+      cid: 'sharklogo'
+    }] : [],
     html: `
       <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
           
           <div style="background-color: #000; padding: 30px 20px; text-align: center; border-bottom: 2px solid #00f2fe;">
-            <img src="https://raw.githubusercontent.com/AkikoToKatsumi/shark-rifas/main/public/logo.png" width="180" alt="Shark RD Rifas" style="display: block; margin: 0 auto;" />
+            ${hasLogo ? `<img src="cid:sharklogo" width="180" alt="Shark RD Rifas" style="display: block; margin: 0 auto;" />` : ''}
             <h1 style="margin: 20px 0 0 0; color: #00f2fe; font-size: 22px; text-transform: uppercase; letter-spacing: 2px;">¡Cuenta Creada Exitosamente!</h1>
           </div>
 

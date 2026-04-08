@@ -93,44 +93,69 @@ export default function RouletteWheel({ onSpinEnd, disabled }: RouletteProps) {
           background: 'radial-gradient(circle, #1a1a1a 0%, #000 100%)'
         }}
       >
-        {ROULETTE_OPTIONS.map((opt, i) => {
-          const rotationAngle = i * (360 / ROULETTE_OPTIONS.length);
-          const skewAngle = 90 - (360 / ROULETTE_OPTIONS.length);
+        {/* Pie Slices Backgrounds */}
+        <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', overflow: 'hidden' }}>
+          {ROULETTE_OPTIONS.map((opt, i) => {
+            const rotationAngle = i * (360 / ROULETTE_OPTIONS.length);
+            const skewAngle = 90 - (360 / ROULETTE_OPTIONS.length);
 
+            return (
+              <div 
+                key={i} 
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '50%',
+                  height: '50%',
+                  transformOrigin: '0% 100%',
+                  transform: `rotate(${rotationAngle}deg) skewY(-${skewAngle}deg)`,
+                  backgroundColor: opt.color,
+                  border: '1px solid rgba(0,0,0,0.2)',
+                  boxShadow: 'inset 0 0 15px rgba(255,255,255,0.1)'
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Text Labels Overlay */}
+        {ROULETTE_OPTIONS.map((opt, i) => {
+          // Center of the slice
+          const centerAngle = i * (360 / ROULETTE_OPTIONS.length) + (360 / ROULETTE_OPTIONS.length / 2);
+          
           return (
             <div 
-              key={i} 
+              key={`text-${i}`} 
               style={{
                 position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '50%',
-                height: '50%',
-                transformOrigin: '0% 100%',
-                transform: `rotate(${rotationAngle}deg) skewY(-${skewAngle}deg)`,
-                backgroundColor: opt.color,
-                border: '2px solid rgba(0,0,0,0.3)',
-                boxShadow: 'inset 0 0 15px rgba(255,255,255,0.1)'
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: `skewY(${skewAngle}deg) rotate(${360 / ROULETTE_OPTIONS.length / 2}deg) translate(-50%, -50%)`,
-                textAlign: 'center',
-                color: opt.textColor,
-                fontWeight: '900',
-                fontSize: opt.value === 0 ? '0.9rem' : '1.4rem',
-                textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
-                minWidth: '60px',
+                top: 0, left: 0, right: 0, bottom: 0,
+                transform: `rotate(${centerAngle}deg)`,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '2px'
+                paddingTop: '25px', // Distance from the top edge of the wheel
+                pointerEvents: 'none' // Let clicks pass through if any
+              }}
+            >
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: '2px',
+                textAlign: 'center'
               }}>
-                <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))' }}>{opt.emoji}</span>
-                <span>{opt.label}{opt.value > 0 ? ' pts' : ''}</span>
+                <span style={{ fontSize: '1.8rem', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.5))', lineHeight: '1' }}>{opt.emoji}</span>
+                <span style={{ 
+                  color: opt.textColor, 
+                  fontWeight: '900', 
+                  fontSize: opt.value === 0 ? '1rem' : '1.3rem', 
+                  textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
+                  lineHeight: '1'
+                }}>
+                  {opt.label}{opt.value > 0 ? ' pts' : ''}
+                </span>
               </div>
             </div>
           );

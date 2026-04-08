@@ -11,13 +11,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Faltan credenciales' }, { status: 400 });
     }
 
-    const cleanLoginId = loginId.toLowerCase().trim().replace(/\s+/g, '');
+    const cleanLoginId = loginId.toLowerCase().trim().replace(/[-\s]+/g, '');
 
-    // The user might login with email or phone
+    // The user might login with cedula or phone
     const { data: participant } = await supabaseAdmin
       .from('participants')
       .select('*')
-      .or(`email.eq.${cleanLoginId},phone.eq.${cleanLoginId}`)
+      .or(`cedula.eq.${cleanLoginId},phone.eq.${cleanLoginId}`)
       .not('password_hash', 'is', null)
       .order('created_at', { ascending: false })
       .limit(1)

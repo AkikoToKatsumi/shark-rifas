@@ -87,10 +87,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {isLogin ? (
             <>
               <div className="input-group">
-                <Mail size={18} className="input-icon" />
+                <User size={18} className="input-icon" />
                 <input 
                   type="text" 
-                  placeholder="Correo o Teléfono" 
+                  placeholder="Cédula o Teléfono" 
                   required 
                   value={loginId}
                   onChange={(e) => setLoginId(e.target.value)}

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import bcrypt from 'bcryptjs';
 import { setSession } from '@/lib/session';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -93,6 +94,11 @@ export async function POST(request: Request) {
       phone: participant.phone,
       points: participant.points || 0
     });
+
+    // Send Welcome Email
+    if (participant.email) {
+      await sendWelcomeEmail(participant.email, participant.full_name, participant.points || 0);
+    }
 
     return NextResponse.json({ success: true, message: 'Registro exitoso' });
   } catch (error: any) {

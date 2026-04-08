@@ -240,3 +240,65 @@ export const sendPaymentRejectedEmail = async (
     console.error('Error sending rejection email:', error);
   }
 };
+
+export const sendWelcomeEmail = async (
+  email: string,
+  fullName: string,
+  points: number
+) => {
+  const mailOptions = {
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
+    to: email,
+    subject: `👋 ¡Bienvenido a Shark RD Rifas, ${fullName}!`,
+    html: `
+      <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
+          
+          <div style="background-color: #000; padding: 30px 20px; text-align: center; border-bottom: 2px solid #00f2fe;">
+            <img src="https://raw.githubusercontent.com/AkikoToKatsumi/shark-rifas/main/public/logo.png" width="180" alt="Shark RD Rifas" style="display: block; margin: 0 auto;" />
+            <h1 style="margin: 20px 0 0 0; color: #00f2fe; font-size: 22px; text-transform: uppercase; letter-spacing: 2px;">¡Cuenta Creada Exitosamente!</h1>
+          </div>
+
+          <div style="padding: 30px;">
+            <h2 style="color: #fff; margin-top: 0; font-size: 24px;">Hola, ${fullName}</h2>
+            <p style="line-height: 1.6; color: #94a3b8; font-size: 15px;">
+              ¡Gracias por registrarte en el sistema oficial de <strong>Shark RD Rifas</strong>! Nos alegra mucho verte formar parte de nuestra comunidad de ganadores.
+            </p>
+            
+            <div style="background-color: #020617; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #334155; text-align: center;">
+              <p style="margin: 0 0 10px 0; color: #00f2fe; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Tu Balance Actual de Puntos:</p>
+              <div style="display: inline-block; background-color: rgba(0, 242, 254, 0.1); color: #00f2fe; padding: 10px 25px; border-radius: 50px; border: 1px solid rgba(0, 242, 254, 0.3); font-weight: bold; font-size: 24px; letter-spacing: 2px;">
+                💎 ${points} pts
+              </div>
+              <p style="color: #94a3b8; font-size: 14px; margin-top: 15px;">
+                <em>¡Recuerda entrar todos los días para girar la ruleta y ganar puntos gratis!</em>
+              </p>
+            </div>
+
+            <div style="background-color: #111827; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f97316;">
+              <h3 style="margin: 0 0 10px 0; color: #f97316; font-size: 14px; text-transform: uppercase;">Beneficios de tu Cuenta:</h3>
+              <ul style="color: #cbd5e1; font-size: 14px; line-height: 1.6; padding-left: 20px; margin: 0;">
+                <li style="margin-bottom: 5px;"><strong>Autocompletado Rápido</strong> al comprar boletos.</li>
+                <li style="margin-bottom: 5px;"><strong>Historial Instantáneo</strong> en el verificador, sin necesidad de códigos.</li>
+                <li style="margin-bottom: 0;">Opción de <strong>Pagar Boletos Gratis</strong> canjeando tus puntos acumulados.</li>
+              </ul>
+            </div>
+
+            <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">
+              Si tienes alguna pregunta, no dudes en contactarnos vía WhatsApp o respondiendo a este correo.
+            </p>
+          </div>
+          <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Shark RD Rifas - Tu Suerte, Tu Destino.
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending welcome email:', error);
+  }
+};

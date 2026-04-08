@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import BuyModal from './components/BuyModal';
 import FAQ from './components/FAQ';
 import CountdownTimer from './components/CountdownTimer';
+import RouletteModal from './components/RouletteModal';
 import { LayoutGrid, Hash, Trophy, Users, Star, Flame, Crown } from 'lucide-react';
 
 export default function Home() {
@@ -37,6 +38,9 @@ export default function Home() {
 
   return (
     <div className="home-container">
+      {/* Daily Roulette Pop-up */}
+      <RouletteModal />
+
       {/* Metrics Section */}
       <section className="metrics-grid mt-8">
         <div className="metric-card-premium cyan">

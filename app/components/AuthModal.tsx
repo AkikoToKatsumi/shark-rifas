@@ -133,7 +133,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <User size={18} className="input-icon" />
                 <input 
                   type="text" 
-                  placeholder="Cédula (Opcional)" 
+                  placeholder="Cédula de Identidad" 
+                  required
                   value={cedula}
                   onChange={(e) => setCedula(e.target.value)}
                 />

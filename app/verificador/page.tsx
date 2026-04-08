@@ -1,25 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export default function VerificadorPage() {
   const [verifyQuery, setVerifyQuery] = useState('');
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
   const [verifyResult, setVerifyResult] = useState<{ participantName: string, participantEmail?: string, tickets: any[] } | null>(null);
+  const { user } = useAuth();
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (user && user.phone) {
+      setVerifyQuery(user.phone);
+      autoVerify(user.phone);
+    }
+  }, [user]);
+
+  const autoVerify = async (query: string) => {
     setVerifyError('');
-    setVerifyResult(null);
-    if (!verifyQuery.trim()) return;
-
     setVerifyLoading(true);
     try {
       const res = await fetch('/api/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: verifyQuery })
+        body: JSON.stringify({ query })
       });
       const data = await res.json();
       
@@ -32,6 +37,12 @@ export default function VerificadorPage() {
     }
   };
 
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!verifyQuery.trim()) return;
+    autoVerify(verifyQuery);
+  };
+
   return (
     <div className="home-container" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <section className="raffles-section" style={{ width: '100%', maxWidth: '800px', margin: '2rem auto' }}>
@@ -40,46 +51,54 @@ export default function VerificadorPage() {
         </div>
 
         <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRadius: '10px', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-          <form onSubmit={handleVerify} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-            <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', textAlign: 'center', display: 'block' }}>
-              Ingresa el <strong>Código Secreto de Verificación</strong> que recibiste a tu correo o tu <strong>Número de Teléfono</strong>.
-            </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', marginTop: '10px' }}>
-              <input 
-                type="text" 
-                value={verifyQuery}
-                onChange={(e) => setVerifyQuery(e.target.value.toUpperCase())}
-                placeholder="EJ. SHK-0101 O #TELÉFONO"
-                style={{ 
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.4rem', 
-                  padding: '15px', 
+          {!user ? (
+            <form onSubmit={handleVerify} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+              <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', textAlign: 'center', display: 'block' }}>
+                Ingresa el <strong>Código Secreto de Verificación</strong> que recibiste a tu correo o tu <strong>Número de Teléfono</strong>.
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', marginTop: '10px' }}>
+                <input 
+                  type="text" 
+                  value={verifyQuery}
+                  onChange={(e) => setVerifyQuery(e.target.value.toUpperCase())}
+                  placeholder="EJ. SHK-0101 O #TELÉFONO"
+                  style={{ 
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1.4rem', 
+                    padding: '15px', 
+                    width: '100%',
+                    maxWidth: '400px', 
+                    letterSpacing: '2px', 
+                    textAlign: 'center',
+                    color: '#000',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '10px',
+                    border: '2px solid var(--primary-cyan)'
+                  }}
+                  required
+                />
+                <button type="submit" className="btn-accent" disabled={verifyLoading} style={{ 
+                  padding: '15px 40px', 
+                  fontSize: '1.2rem', 
+                  borderRadius: '30px', 
+                  minWidth: '250px',
                   width: '100%',
-                  maxWidth: '400px', 
-                  letterSpacing: '2px', 
-                  textAlign: 'center',
-                  color: '#000',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '10px',
-                  border: '2px solid var(--primary-cyan)'
-                }}
-                required
-              />
-              <button type="submit" className="btn-accent" disabled={verifyLoading} style={{ 
-                padding: '15px 40px', 
-                fontSize: '1.2rem', 
-                borderRadius: '30px', 
-                minWidth: '250px',
-                width: '100%',
-                maxWidth: '300px',
-                letterSpacing: '1px',
-                boxShadow: '0 4px 15px rgba(255, 140, 0, 0.4)'
-              }}>
-                {verifyLoading ? 'BUSCANDO...' : '🔍 BUSCAR'}
-              </button>
+                  maxWidth: '300px',
+                  letterSpacing: '1px',
+                  boxShadow: '0 4px 15px rgba(255, 140, 0, 0.4)'
+                }}>
+                  {verifyLoading ? 'BUSCANDO...' : '🔍 BUSCAR'}
+                </button>
+              </div>
+              {verifyError && <p style={{ color: '#ff6b6b', fontSize: '0.9rem', marginTop: '10px', textAlign: 'center' }}>{verifyError}</p>}
+            </form>
+          ) : (
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ color: 'var(--primary-cyan)', marginBottom: '0.5rem' }}>Tus Boletos Registrados</h3>
+              <p className="text-muted" style={{ fontSize: '0.9rem' }}>Mostrando los boletos asociados a tu cuenta ({user.phone}).</p>
+              {verifyLoading && <p style={{ marginTop: '10px', color: 'var(--accent-orange)' }}>Cargando tus boletos...</p>}
             </div>
-            {verifyError && <p style={{ color: '#ff6b6b', fontSize: '0.9rem', marginTop: '10px', textAlign: 'center' }}>{verifyError}</p>}
-          </form>
+          )}
 
           {verifyResult && (
             <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>

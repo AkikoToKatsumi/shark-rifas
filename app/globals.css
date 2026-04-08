@@ -253,8 +253,8 @@ a {
 
 @media (max-width: 768px) {
   .main-nav ul {
-    gap: 0;
-    padding: 0;
+    gap: 8px;
+    padding: 0 var(--spacing-sm);
   }
 }
 
@@ -274,10 +274,11 @@ a {
 
 @media (max-width: 768px) {
   .nav-link {
-    font-size: 1rem;
-    padding: var(--spacing-sm) var(--spacing-md);
-    flex-grow: 1; /* Make tabs fill available space */
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    flex-grow: 0; /* Changed from 1 so they don't stretch weirdly */
     justify-content: center;
+    border-radius: var(--radius-sm); /* Full radius looks better when wrapping */
   }
 }
 

@@ -174,7 +174,7 @@ export default function Header() {
           </li>
           <li>
             <Link href="/recompensas" className={`nav-link ${pathname === '/recompensas' ? 'active' : ''}`} style={{ color: 'var(--primary-cyan)' }}>
-              <Gift size={18} className="nav-icon" /> RECOMPENSAS
+              <Gift size={18} className="nav-icon" /> RECOMPENSAS DIARIAS
             </Link>
           </li>
           

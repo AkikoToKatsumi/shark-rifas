@@ -14,7 +14,7 @@ export default function RouletteModal() {
     // Determine if we should open the modal automatically
     if (!loading && user) {
       const today = new Date().toISOString().split('T')[0];
-      const hasSpunToday = (user as any).last_spin_date === today;
+      const hasSpunToday = user.last_spin_date === today;
       
       // If haven't spun today, show modal automatically on load
       if (!hasSpunToday) {

@@ -3,14 +3,6 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { sendPaymentPendingEmail, sendAdminReceiptEmail } from '@/lib/email';
 import { getSession } from '@/lib/session';
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb', // Adjust size limit as needed (e.g., 10mb for large screenshots)
-    },
-  },
-};
-
 export async function POST(request: Request) {
   const requestId = Math.random().toString(36).substring(7);
   console.log(`[${requestId}] Checkout attempt started`);

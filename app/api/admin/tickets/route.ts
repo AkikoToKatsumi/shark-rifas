@@ -159,7 +159,7 @@ export async function PATCH(request: Request) {
         }
       }
 
-      for (const pJson of participantsToNotify) {
+      for (const pJson of Array.from(participantsToNotify)) {
         const p = JSON.parse(pJson);
         sendSecondSpinUnlockedEmail(p.email, p.fullName);
       }

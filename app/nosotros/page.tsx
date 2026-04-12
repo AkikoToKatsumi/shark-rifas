@@ -47,6 +47,16 @@ export default function AboutPage() {
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pagos internacionales (USD)</span>
                 </div>
               </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0, 242, 254, 0.05)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(0, 242, 254, 0.2)' }}>
+                <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>🎡</span>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--primary-cyan)' }}>Ruleta de Suerte</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.2', display: 'block' }}>
+                    Acumula puntos con tus giros diarios. Al alcanzar 500 puntos, puedes canjearlos por un boleto para cualquier rifa.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 

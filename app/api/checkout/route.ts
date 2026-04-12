@@ -211,10 +211,17 @@ export async function POST(request: Request) {
 
     if (process.env.EMAIL_SERVER_USER) {
       try {
-        await Promise.all([
-            sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode),
-            receiptImage ? sendAdminReceiptEmail(fullName, phone, email, cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
-        ]);
+        if (paymentMethod === 'points') {
+          // Send confirmed email immediately for points purchases
+          const { sendPaymentConfirmedEmail } = await import('@/lib/email');
+          await sendPaymentConfirmedEmail(email, ticketNumbersFormatted, raffleTitle, 'CANJE DE PUNTOS', totalPrice, verificationCode);
+        } else {
+          // Standard pending email for bank transfers
+          await Promise.all([
+              sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode),
+              receiptImage ? sendAdminReceiptEmail(fullName, phone, email, cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
+          ]);
+        }
       } catch (e) {
         console.error(`[${requestId}] Email sending failed:`, e);
       }

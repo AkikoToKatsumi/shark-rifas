@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { loginId } = await request.json();
 
     if (!loginId) {
-      return NextResponse.json({ error: 'Falta identificación' }, { status: 400 });
+      return NextResponse.json({ error: 'Falta correo electrónico' }, { status: 400 });
     }
 
     const cleanLoginId = loginId.toLowerCase().trim().replace(/[-\s]+/g, '');

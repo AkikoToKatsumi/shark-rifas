@@ -100,7 +100,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     switch(view) {
       case 'login': return { title: 'Iniciar Sesión', sub: 'Accede para ver tus puntos y recompensas.' };
       case 'register': return { title: 'Crear Cuenta', sub: 'Únete para ganar puntos diarios y canjear boletos gratis.' };
-      case 'forgot-request': return { title: 'Recuperar Contraseña', sub: 'Ingresa tu identificación para recibir un código.' };
+      case 'forgot-request': return { title: 'Recuperar Contraseña', sub: 'Ingresa tu correo electrónico para recibir un código.' };
       case 'forgot-confirm': return { title: 'Verificar Código', sub: `Ingresa el código enviado a ${emailHint || 'tu correo'}.` };
     }
   };
@@ -160,12 +160,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
-          {(view === 'login' || view === 'forgot-request') && (
+          {view === 'login' && (
             <div className="input-group">
               <User size={18} className="input-icon" />
               <input 
                 type="text" 
                 placeholder="Cédula, Teléfono o Correo" 
+                required 
+                value={loginId}
+                onChange={(e) => setLoginId(e.target.value)}
+              />
+            </div>
+          )}
+
+          {view === 'forgot-request' && (
+            <div className="input-group">
+              <Mail size={18} className="input-icon" />
+              <input 
+                type="email" 
+                placeholder="ejemplo@correo.com" 
                 required 
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}

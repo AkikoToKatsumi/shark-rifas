@@ -68,6 +68,11 @@ export default function AboutPage() {
                 <img src="/instagram-logo.png" alt="Instagram" style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> @rifassharkrd
               </a>
               
+              <a href="https://www.tiktok.com/@rifassharkrd" target="_blank" rel="noopener noreferrer" 
+                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
+                <span style={{ fontSize: '1.2rem', width: '24px', textAlign: 'center' }}>📱</span> TikTok @rifassharkrd
+              </a>
+              
               <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" 
                  style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#25D366', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
                 <span style={{ fontSize: '1.2rem' }}>💬</span> WhatsApp Soporte

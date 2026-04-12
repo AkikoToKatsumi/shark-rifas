@@ -278,7 +278,7 @@ export default function AdminPage() {
         showToast(editingRaffleId ? 'Error al actualizar la rifa' : 'Error al crear la rifa', 'error');
       }
     } catch (err) {
-      alert('Error de conexión');
+      showToast('Error de conexión', 'error');
     }
   };
 
@@ -398,40 +398,60 @@ export default function AdminPage() {
     const ids = Array.isArray(ticketIds) ? ticketIds : [ticketIds];
     
     if (actionType === 'cancel') {
-      const confirmDelete = confirm(`¿Estás seguro de cancelar ${ids.length > 1 ? 'estos boletos' : 'esta reserva'}? El número quedará libre.`);
-      if (!confirmDelete) return;
-
-      try {
-        const res = await fetch('/api/admin/tickets', {
-          method: 'DELETE',
-          headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': password
-          },
-          body: JSON.stringify({ ticketIds: ids })
-        });
-        if (res.ok) fetchData();
-      } catch (err) {
-        console.error(err);
-      }
+      showConfirm(
+        'Cancelar Boletos', 
+        `¿Estás seguro de cancelar ${ids.length > 1 ? 'estos boletos' : 'esta reserva'}? El número quedará libre.`,
+        async () => {
+          try {
+            const res = await fetch('/api/admin/tickets', {
+              method: 'DELETE',
+              headers: { 
+                'Content-Type': 'application/json',
+                'x-admin-key': password
+              },
+              body: JSON.stringify({ ticketIds: ids })
+            });
+            if (res.ok) {
+              await fetchData();
+              showToast('Boletos cancelados correctamente', 'success');
+            } else {
+              showToast('Error al cancelar boletos', 'error');
+            }
+          } catch (err) {
+            console.error(err);
+            showToast('Error de conexión', 'error');
+          }
+        },
+        'Confirmar Cancelación'
+      );
     } else {
       // Approve Payment
-      const confirmApprove = confirm(`¿Aprobar pago de ${ids.length} boletos y enviar recibo por correo?`);
-      if (!confirmApprove) return;
-
-      try {
-        const res = await fetch('/api/admin/tickets', {
-          method: 'PATCH',
-          headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': password
-          },
-          body: JSON.stringify({ ticketIds: ids, status: 'paid' })
-        });
-        if (res.ok) fetchData();
-      } catch (err) {
-        console.error(err);
-      }
+      showConfirm(
+        'Aprobar Pago', 
+        `¿Aprobar pago de ${ids.length} boletos y enviar recibo por correo?`,
+        async () => {
+          try {
+            const res = await fetch('/api/admin/tickets', {
+              method: 'PATCH',
+              headers: { 
+                'Content-Type': 'application/json',
+                'x-admin-key': password
+              },
+              body: JSON.stringify({ ticketIds: ids, status: 'paid' })
+            });
+            if (res.ok) {
+              await fetchData();
+              showToast('Pago aprobado y recibo enviado', 'success');
+            } else {
+              showToast('Error al aprobar el pago', 'error');
+            }
+          } catch (err) {
+            console.error(err);
+            showToast('Error de conexión', 'error');
+          }
+        },
+        'Aprobar Todo'
+      );
     }
   };
 
@@ -506,8 +526,10 @@ export default function AdminPage() {
       
       if (!res.ok) throw new Error(data.error || 'Error al buscar boletos');
       setParticipantResult(data);
+      showToast('Búsqueda completada', 'success');
     } catch (err: any) {
       setSearchParticipantError(err.message);
+      showToast(err.message, 'error');
     } finally {
       setIsSearchingParticipant(false);
     }
@@ -1291,13 +1313,42 @@ export default function AdminPage() {
                             </button>
                           </div>
                           {(group.status !== 'paid' || editingGroupCode === code) && (
-                            <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
+                            <button 
+                              disabled={isRowActionLoading[code]}
+                              onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} 
+                              style={{ 
+                                background: '#ef4444', 
+                                border: 'none', 
+                                color: '#fff', 
+                                padding: '5px 10px', 
+                                borderRadius: '4px', 
+                                cursor: isRowActionLoading[code] ? 'not-allowed' : 'pointer', 
+                                fontSize: '0.7rem', 
+                                fontWeight: 'bold' 
+                              }}
+                            >
+                              ✕
+                            </button>
                           )}
                         </>
                       )}
 
                       {group.status === 'paid' && (
-                        <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem' }}>Anular Compra</button>
+                        <button 
+                          disabled={isRowActionLoading[code]}
+                          onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} 
+                          style={{ 
+                            background: 'none', 
+                            border: '1px solid #ef4444', 
+                            color: '#ef4444', 
+                            padding: '4px 8px', 
+                            borderRadius: '4px', 
+                            cursor: isRowActionLoading[code] ? 'not-allowed' : 'pointer', 
+                            fontSize: '0.65rem' 
+                          }}
+                        >
+                          {isRowActionLoading[code] ? '...' : 'Anular Compra'}
+                        </button>
                       )}
                     </div>
                   </div>

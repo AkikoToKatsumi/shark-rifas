@@ -459,7 +459,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   let details = { name: '', number: '', holder: 'SHARK RD', type: '', extra: '', isPaypal: false };
                   
                   if (paymentMethod === 'paypal') {
-                    details = { name: 'PAYPAL', number: 'pagos@sharkrd.com', holder: 'ALEX GUZMÁN', type: 'US$ Dólares | Confirmar ID', extra: '', isPaypal: true };
+                    details = { name: 'PAYPAL', number: 'adminsharkrd@gmail.com', holder: 'SharkRDrifas', type: 'US$ Dólares | Confirmar ID', extra: '', isPaypal: true };
                   } else if (paymentMethod === 'reservas') {
                     details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARK RD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
                   } else if (paymentMethod === 'qik') {

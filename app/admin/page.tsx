@@ -107,6 +107,42 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false);
   const [editingGroupCode, setEditingGroupCode] = useState<string | null>(null);
 
+  // Custom UI State
+  const [isRowActionLoading, setIsRowActionLoading] = useState<Record<string, boolean>>({});
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [confirmConfig, setConfirmConfig] = useState<{ 
+    isOpen: boolean; 
+    title: string; 
+    message: string; 
+    onConfirm: () => void; 
+    onCancel?: () => void;
+    confirmText?: string;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {}
+  });
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void, confirmText = 'Confirmar') => {
+    setConfirmConfig({
+      isOpen: true,
+      title,
+      message,
+      onConfirm: () => {
+        onConfirm();
+        setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+      },
+      onCancel: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
+      confirmText
+    });
+  };
+
   // Login Check
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -237,9 +273,9 @@ export default function AdminPage() {
         setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0', raffle_type: 'estandar', min_tickets: '1' });
         setEditingRaffleId(null);
         fetchData(); // Refresh list
-        alert(editingRaffleId ? 'Rifa actualizada exitosamente' : 'Rifa creada exitosamente');
+        showToast(editingRaffleId ? 'Rifa actualizada exitosamente' : 'Rifa creada exitosamente', 'success');
       } else {
-        alert(editingRaffleId ? 'Error al actualizar la rifa' : 'Error al crear la rifa');
+        showToast(editingRaffleId ? 'Error al actualizar la rifa' : 'Error al crear la rifa', 'error');
       }
     } catch (err) {
       alert('Error de conexión');
@@ -295,11 +331,12 @@ export default function AdminPage() {
       const data = await res.json();
       if (data.success) {
         setNewRaffle(prev => ({ ...prev, image_url: data.publicUrl }));
+        showToast('Imagen subida correctamente', 'success');
       } else {
-        alert('Error al subir imagen');
+        showToast('Error al subir imagen', 'error');
       }
     } catch (err) {
-      alert('Error de conexión al subir imagen');
+      showToast('Error de conexión al subir imagen', 'error');
     } finally {
       setUploading(false);
     }
@@ -332,22 +369,29 @@ export default function AdminPage() {
   };
 
   const handleDeleteRaffle = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar esta rifa? Esta acción no se puede deshacer y fallará si la rifa ya tiene boletos comprados/reservados.')) return;
-    try {
-      const res = await fetch('/api/admin/raffles', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
-        body: JSON.stringify({ id })
-      });
-      if (res.ok) {
-        fetchData();
-        if (editingRaffleId === id) cancelEdit();
-      } else {
-        alert('Error al eliminar. Es posible que la rifa tenga boletos asociados.');
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    showConfirm(
+      '¿Eliminar Rifa?', 
+      '¿Estás seguro de eliminar esta rifa? Esta acción no se puede deshacer y fallará si la rifa ya tiene boletos comprados.',
+      async () => {
+        try {
+          const res = await fetch('/api/admin/raffles', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+            body: JSON.stringify({ id })
+          });
+          if (res.ok) {
+            fetchData();
+            if (editingRaffleId === id) cancelEdit();
+            showToast('Rifa eliminada', 'success');
+          } else {
+            showToast('Error al eliminar. Es posible que la rifa tenga boletos asociados.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      'Eliminar Rifa'
+    );
   };
 
   const handleUpdateTicketStatus = async (ticketIds: string | string[], status: 'paid' | 'reserved', actionType: 'approve' | 'cancel') => {
@@ -392,32 +436,36 @@ export default function AdminPage() {
   };
 
   const handleReduceGroup = async (verificationCode: string) => {
-    if (confirm('¿Reducir 1 boleto de esta compra? El último número asignado será eliminado.')) {
-      try {
-        const res = await fetch('/api/admin/tickets/reduce', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': password
-          },
-          body: JSON.stringify({ verificationCode })
-        });
-        if (res.ok) {
-          // Breve delay para asegurar que Supabase procesó el DELETE antes del nuevo FETCH
-          setTimeout(() => {
-            fetchData();
-          }, 300);
-        } else {
-          const data = await res.json();
-          alert(data.error || 'Error al reducir boletos');
+    showConfirm(
+      'Reducir Boletos', 
+      '¿Reducir 1 boleto de esta compra? El último número asignado será eliminado.',
+      async () => {
+        setIsRowActionLoading(prev => ({ ...prev, [verificationCode]: true }));
+        try {
+          const res = await fetch('/api/admin/tickets/reduce', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+            body: JSON.stringify({ verificationCode })
+          });
+          if (res.ok) {
+            await fetchData();
+            showToast('Boleto reducido', 'success');
+          } else {
+            const data = await res.json();
+            showToast(data.error || 'Error al reducir boletos', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setIsRowActionLoading(prev => ({ ...prev, [verificationCode]: false }));
         }
-      } catch (err) {
-        console.error(err);
-      }
-    }
+      },
+      'Reducir 1'
+    );
   };
 
   const handleAddTicketToGroup = async (verificationCode: string, raffleId: string) => {
+    setIsRowActionLoading(prev => ({ ...prev, [verificationCode]: true }));
     try {
       const res = await fetch('/api/admin/tickets/add', {
         method: 'POST',
@@ -428,17 +476,17 @@ export default function AdminPage() {
         body: JSON.stringify({ verificationCode, raffleId })
       });
       if (res.ok) {
-        // Breve delay para asegurar que Supabase procesó el INSERT antes del nuevo FETCH
-        setTimeout(() => {
-          fetchData();
-        }, 300);
+        await fetchData();
+        showToast('Boleto sumado correctamente', 'success');
       } else {
         const data = await res.json();
-        alert(data.error || 'Error al agregar boleto');
+        showToast(data.error || 'Error al agregar boleto', 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error de conexión');
+      showToast('Error de conexión', 'error');
+    } finally {
+      setIsRowActionLoading(prev => ({ ...prev, [verificationCode]: false }));
     }
   };
 
@@ -1157,11 +1205,26 @@ export default function AdminPage() {
                       </button>
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', opacity: isRowActionLoading[code] ? 0.5 : 1 }}>
                       {(group.status === 'pending' || group.status === 'reserved' || editingGroupCode === code) && (
                         <>
                           {(group.status !== 'paid' || editingGroupCode === code) && (
-                            <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
+                            <button 
+                              disabled={isRowActionLoading[code]}
+                              onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} 
+                              style={{ 
+                                background: 'var(--success)', 
+                                border: 'none', 
+                                color: '#000', 
+                                padding: '5px 12px', 
+                                borderRadius: '4px', 
+                                cursor: isRowActionLoading[code] ? 'not-allowed' : 'pointer', 
+                                fontSize: '0.7rem', 
+                                fontWeight: 'bold' 
+                              }}
+                            >
+                              {isRowActionLoading[code] ? '...' : '✓ APROBAR TODO'}
+                            </button>
                           )}
                           <div style={{ 
                             display: 'flex', 
@@ -1172,6 +1235,7 @@ export default function AdminPage() {
                             border: '1px solid rgba(255,255,255,0.1)' 
                           }}>
                             <button 
+                              disabled={isRowActionLoading[code]}
                               onClick={() => handleReduceGroup(code)} 
                               style={{ 
                                 background: 'rgba(255,255,255,0.05)', 
@@ -1183,11 +1247,11 @@ export default function AdminPage() {
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 borderRadius: '6px', 
-                                cursor: 'pointer', 
+                                cursor: isRowActionLoading[code] ? 'not-allowed' : 'pointer', 
                                 fontSize: '1.2rem',
                                 transition: 'all 0.2s'
                               }}
-                              onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'}
+                              onMouseOver={e => !isRowActionLoading[code] && (e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)')}
                               onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
                               title="Bajar 1 Boleto"
                             >
@@ -1198,11 +1262,12 @@ export default function AdminPage() {
                               textAlign: 'center', 
                               fontSize: '1.1rem', 
                               fontWeight: 'bold', 
-                              color: 'var(--primary-cyan)' 
+                              color: isRowActionLoading[code] ? 'var(--text-muted)' : 'var(--primary-cyan)' 
                             }}>
                               {groupTickets.length}
                             </div>
                             <button 
+                              disabled={isRowActionLoading[code]}
                               onClick={() => handleAddTicketToGroup(code, groupTickets[0].raffle_id)}
                               style={{ 
                                 background: 'rgba(255,255,255,0.05)', 
@@ -1214,11 +1279,11 @@ export default function AdminPage() {
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 borderRadius: '6px', 
-                                cursor: 'pointer', 
+                                cursor: isRowActionLoading[code] ? 'not-allowed' : 'pointer', 
                                 fontSize: '1.2rem',
                                 transition: 'all 0.2s'
                               }}
-                              onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.15)'}
+                              onMouseOver={e => !isRowActionLoading[code] && (e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.15)')}
                               onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
                               title="Sumar 1 Boleto manualmente"
                             >
@@ -1325,6 +1390,73 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+
+      {/* Custom Global Notifications Interface */}
+      {confirmConfig.isOpen && (
+        <div className="modal-overlay" style={{ zIndex: 2000 }}>
+          <div className="modal-content" style={{ 
+            maxWidth: '400px', 
+            background: 'var(--bg-panel)', 
+            border: '1px solid rgba(0, 242, 254, 0.3)', 
+            borderRadius: '20px',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
+            padding: '2rem',
+            textAlign: 'center'
+          }}>
+            <div style={{ color: 'var(--primary-cyan)', fontSize: '1.5rem', marginBottom: '1rem', fontWeight: '800' }}>
+              {confirmConfig.title}
+            </div>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
+              {confirmConfig.message}
+            </p>
+            <div style={{ display: 'flex', gap: '15px' }}>
+              <button 
+                className="btn-secondary flex-grow" 
+                onClick={confirmConfig.onCancel}
+                style={{ padding: '12px' }}
+              >
+                CANCELAR
+              </button>
+              <button 
+                className="btn-primary flex-grow" 
+                onClick={confirmConfig.onConfirm}
+                style={{ padding: '12px' }}
+              >
+                {confirmConfig.confirmText || 'CONFIRMAR'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          bottom: '30px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 3000,
+          background: toast.type === 'error' ? 'rgba(239, 68, 68, 0.95)' : 'rgba(0, 242, 254, 0.95)',
+          color: toast.type === 'error' ? '#fff' : '#000',
+          padding: '12px 24px',
+          borderRadius: '50px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          animation: 'slideUp 0.3s ease-out'
+        }}>
+          {toast.type === 'error' ? '❌' : '⚡'} {toast.message.toUpperCase()}
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slideUp {
+          from { transform: translate(-50%, 50px); opacity: 0; }
+          to { transform: translate(-50%, 0); opacity: 1; }
+        }
+      `}</style>
 
     </div>
   );

@@ -12,6 +12,8 @@ type User = {
   last_spin_date?: string;
   total_spins?: number;
   last_spin_count?: number;
+  has_paid_ticket_today?: boolean;
+  has_pending_ticket_today?: boolean;
 };
 
 type AuthContextType = {

@@ -50,12 +50,16 @@ export async function POST(request: Request) {
     }
 
     if (currentSpinCount === 1) {
-      // Check if user has bought a ticket today
+      // Check if user has bought a ticket today and it's paid
+      const startOfToday = new Date();
+      startOfToday.setUTCHours(0, 0, 0, 0);
+
       const { count, error: ticketError } = await supabaseAdmin
         .from('tickets')
         .select('*', { count: 'exact', head: true })
         .eq('participant_id', participant.id)
-        .gte('created_at', today + 'T00:00:00Z');
+        .eq('status', 'paid')
+        .gte('created_at', startOfToday.toISOString());
 
       if (ticketError) throw ticketError;
 

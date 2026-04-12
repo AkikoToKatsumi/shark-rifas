@@ -365,3 +365,56 @@ export const sendPasswordResetEmail = async (
     console.error('Error sending password reset email:', error);
   }
 };
+export const sendSecondSpinUnlockedEmail = async (
+  email: string,
+  fullName: string
+) => {
+  const mailOptions = {
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
+    to: email,
+    subject: `🎡 ¡Segundo chance activado! Gira la ruleta de nuevo`,
+    html: `
+      <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);">
+          
+          <div style="background-color: #000; padding: 25px; text-align: center; border-bottom: 2px solid #00f2fe;">
+            <h1 style="margin: 0; color: #00f2fe; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
+          </div>
+          
+          <div style="padding: 30px; text-align: center;">
+            <h2 style="color: #fff; margin-top: 0; font-size: 24px;">¡Tu pago ha sido aprobado!</h2>
+            <p style="line-height: 1.6; color: #94a3b8; font-size: 16px;">
+              Hola, <strong>${fullName}</strong>. Gracias por tu compra. Te informamos que hemos validado tu pago exitosamente.
+            </p>
+            
+            <div style="background-color: #020617; padding: 30px; border-radius: 15px; margin: 30px 0; border: 1px solid #334155;">
+              <div style="font-size: 50px; margin-bottom: 20px;">🎡</div>
+              <h3 style="color: #00f2fe; margin: 0 0 10px 0; font-size: 22px;">¡GIRO EXTRA DESBLOQUEADO!</h3>
+              <p style="color: #94a3b8; font-size: 15px; margin-bottom: 25px;">
+                Como recompensa por tu compra de hoy, se ha habilitado un segundo giro gratuito en nuestra ruleta de premios.
+              </p>
+              
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/recompensas" style="display: inline-block; background-color: #00f2fe; color: #000; padding: 15px 35px; border-radius: 50px; font-weight: bold; font-size: 16px; text-decoration: none; text-transform: uppercase; transition: all 0.3s ease;">
+                IR A GIRAR LA RULETA ⚡
+              </a>
+            </div>
+
+            <p style="font-size: 13px; color: #64748b; margin-top: 30px;">
+              Este segundo giro es válido únicamente por el día de hoy. ¡No pierdas tu oportunidad de ganar más puntos!
+            </p>
+          </div>
+          
+          <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Shark RD Rifas - Tu momento de ganar es ahora.
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending second spin unlocked email:', error);
+  }
+};

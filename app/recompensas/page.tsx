@@ -21,11 +21,23 @@ export default function RecompensasPage() {
     await refreshUser(); // Update points and last_spin_date
   };
 
-  const hasSpunToday = () => {
-    if (!user || !(user as any).last_spin_date) return false;
+  const getSpinState = () => {
+    if (!user) return 'loading';
     const today = new Date().toISOString().split('T')[0];
-    return (user as any).last_spin_date === today;
+    const isNewDay = user.last_spin_date !== today;
+    const spinsToday = isNewDay ? 0 : (user.last_spin_count || 0);
+
+    if (spinsToday === 0) return 'ready-free';
+    if (spinsToday >= 2) return 'completed';
+    
+    // If 1 spin done, check for purchase
+    if (user.has_paid_ticket_today) return 'ready-second';
+    if (user.has_pending_ticket_today) return 'waiting-approval';
+    
+    return 'need-purchase';
   };
+
+  const spinState = getSpinState();
 
   return (
     <div className="section" style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -37,7 +49,7 @@ export default function RecompensasPage() {
       </div>
       
       <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>Gira y Gana <span className="highlight-text">Boletos Gratis</span></h2>
-      <p style={{ textAlign: 'center', color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '2rem' }}>
+      <p style={{ textAlign: 'center', color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '1.5rem' }}>
         Acumula puntos todos los días y canjéalos por boletos en tus rifas favoritas. 
         <br/><strong>500 puntos = 1 Boleto Gratis.</strong>
       </p>
@@ -88,15 +100,48 @@ export default function RecompensasPage() {
             </div>
           ) : (
             <div style={{ width: '100%', position: 'relative' }}>
-              {hasSpunToday() && (
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(10, 10, 10, 0.6)', backdropFilter: 'blur(5px)', borderRadius: '20px' }}>
-                  <div className="card" style={{ textAlign: 'center', border: '1px solid var(--primary-cyan)' }}>
+              {spinState === 'completed' && (
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(10, 10, 10, 0.7)', backdropFilter: 'blur(5px)', borderRadius: '20px' }}>
+                  <div className="card" style={{ textAlign: 'center', border: '1px solid var(--primary-cyan)', maxWidth: '350px' }}>
                     <h3>¡Vuelve Mañana! ⏰</h3>
-                    <p style={{ color: 'var(--text-muted)' }}>Ya giraste la ruleta hoy. Obtén más intentos gratis cada 24 horas.</p>
+                    <p style={{ color: 'var(--text-muted)' }}>Ya has usado tus 2 giros de hoy. ¡Mañana tendrás una nueva oportunidad!</p>
                   </div>
                 </div>
               )}
-              <RouletteWheel onSpinEnd={handleSpinEnd} disabled={hasSpunToday()} />
+
+              {spinState === 'waiting-approval' && (
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255, 140, 0, 0.15)', backdropFilter: 'blur(5px)', borderRadius: '20px' }}>
+                  <div className="card" style={{ textAlign: 'center', border: '1px solid var(--accent-orange)', maxWidth: '350px' }}>
+                    <h3 style={{ color: 'var(--accent-orange)' }}>Pago Pendiente ⏳</h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Hemos recibido tu compra. Tu segundo giro se activará automáticamente cuando un administrador apruebe tu pago.</p>
+                    <p style={{ color: 'var(--primary-cyan)', fontSize: '0.85rem', fontWeight: 'bold' }}>¡Te avisaremos por correo!</p>
+                  </div>
+                </div>
+              )}
+
+              {spinState === 'need-purchase' && (
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0, 242, 254, 0.1)', backdropFilter: 'blur(5px)', borderRadius: '20px' }}>
+                  <div className="card" style={{ textAlign: 'center', border: '1px solid var(--primary-cyan)', maxWidth: '350px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                      <Sparkles size={20} color="var(--primary-cyan)" /> ¡CHANCE EXTRA!
+                    </h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Ya realizaste tu giro gratis. Compra cualquier boleto hoy para desbloquear un **segundo giro** inmediato.</p>
+                    <a href="/" className="btn-primary w-full" style={{ marginTop: '10px', display: 'block', textDecoration: 'none' }}>COMPRAR BOLETO ⚡</a>
+                  </div>
+                </div>
+              )}
+
+              <RouletteWheel 
+                onSpinEnd={handleSpinEnd} 
+                disabled={spinState === 'completed' || spinState === 'waiting-approval' || spinState === 'need-purchase'} 
+              />
+              
+              <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  {spinState === 'ready-free' && "🎁 Tienes 1 giro gratis disponible."}
+                  {spinState === 'ready-second' && "⚡ ¡Pago aprobado! Tienes tu segundo giro listo."}
+                </p>
+              </div>
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { sendPaymentConfirmedEmail, sendPaymentRejectedEmail } from '@/lib/email';
+import { sendPaymentConfirmedEmail, sendPaymentRejectedEmail, sendSecondSpinUnlockedEmail } from '@/lib/email';
 
 // Helper to validate admin key
 const validateAdminKey = (request: Request) => {
@@ -142,6 +142,26 @@ export async function PATCH(request: Request) {
           totalPrice,
           group.verificationCode
         );
+      }
+    }
+
+    // Logic to notify about Second Spin Unlocked
+    if (status === 'paid' && ticketsToEmail.length > 0) {
+      const participantsToNotify = new Set<string>();
+
+      for (const ticket of ticketsToEmail) {
+        const participant = Array.isArray(ticket.participants) ? ticket.participants[0] : ticket.participants;
+        if (participant?.email) {
+          participantsToNotify.add(JSON.stringify({
+            email: participant.email,
+            fullName: participant.full_name || 'Participante'
+          }));
+        }
+      }
+
+      for (const pJson of participantsToNotify) {
+        const p = JSON.parse(pJson);
+        sendSecondSpinUnlockedEmail(p.email, p.fullName);
       }
     }
 

@@ -26,6 +26,20 @@ export async function GET() {
       session.participant.total_spins = participant.total_spins || 0;
       session.participant.last_spin_count = participant.last_spin_count || 0;
       (session.participant as any).last_spin_date = participant.last_spin_date;
+
+      // Check for tickets today
+      const startOfToday = new Date();
+      startOfToday.setUTCHours(0, 0, 0, 0);
+      const isoToday = startOfToday.toISOString();
+
+      const { data: ticketsToday } = await supabaseAdmin
+        .from('tickets')
+        .select('status')
+        .eq('participant_id', session.participant.id)
+        .gte('created_at', isoToday);
+
+      (session.participant as any).has_paid_ticket_today = ticketsToday?.some(t => t.status === 'paid') || false;
+      (session.participant as any).has_pending_ticket_today = ticketsToday?.some(t => t.status === 'reserved' || t.status === 'pending') || false;
     }
   } catch(e) {
     console.error('Failed to refresh user points', e);

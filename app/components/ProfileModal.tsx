@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff, ShieldCheck, Fingerprint } from 'lucide-react';
+import { X, Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 type ProfileModalProps = {
@@ -121,7 +121,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '10px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ color: 'var(--text-muted)' }}><Fingerprint size={18} /></div>
+                <div style={{ color: 'var(--text-muted)' }}><User size={18} /></div>
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Cédula de Identidad</div>
                   <div style={{ color: '#fff', fontSize: '0.95rem' }}>{user.cedula || 'No registrada'}</div>
@@ -198,13 +198,27 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
-                <button type="button" onClick={() => setShowCurrentPass(!showCurrentPass)} className="inner-input-btn">
+                <button 
+                  type="button" 
+                  onClick={() => setShowCurrentPass(!showCurrentPass)} 
+                  style={{
+                    position: 'absolute',
+                    right: '15px',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
                   {showCurrentPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
 
               <div className="input-group">
-                <ShieldCheck size={18} className="input-icon" />
+                <Shield size={18} className="input-icon" />
                 <input 
                   type={showNewPass ? "text" : "password"} 
                   placeholder="Nueva Contraseña" 
@@ -212,13 +226,27 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
-                <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="inner-input-btn">
+                <button 
+                  type="button" 
+                  onClick={() => setShowNewPass(!showNewPass)} 
+                  style={{
+                    position: 'absolute',
+                    right: '15px',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
                   {showNewPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
 
               <div className="input-group">
-                <ShieldCheck size={18} className="input-icon" />
+                <Shield size={18} className="input-icon" />
                 <input 
                   type={showNewPass ? "text" : "password"} 
                   placeholder="Confirmar Nueva Contraseña" 
@@ -244,23 +272,6 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           Shark RD Rifas © {new Date().getFullYear()}
         </div>
       </div>
-      
-      <style jsx>{`
-        .inner-input-btn {
-          position: absolute;
-          right: 15px;
-          background: none;
-          border: none;
-          color: var(--text-muted);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justifyContent: center;
-        }
-        .inner-input-btn:hover {
-          color: var(--primary-cyan);
-        }
-      `}</style>
     </div>
   );
 }

@@ -8,6 +8,7 @@ type User = {
   email: string;
   phone: string;
   points: number;
+  cedula?: string;
   last_spin_date?: string;
 };
 

@@ -38,7 +38,8 @@ export async function POST(request: Request) {
       email: participant.email,
       full_name: participant.full_name,
       phone: participant.phone,
-      points: participant.points || 0
+      points: participant.points || 0,
+      cedula: participant.cedula
     });
 
     return NextResponse.json({ success: true });

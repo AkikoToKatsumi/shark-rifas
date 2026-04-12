@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff, KeyRound, ShieldCheck } from 'lucide-react';
+import { X, Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff, Key, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 type AuthModalProps = {
@@ -168,7 +168,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {view === 'forgot-confirm' && (
             <>
               <div className="input-group">
-                <KeyRound size={18} className="input-icon" />
+                <Key size={18} className="input-icon" />
                 <input 
                   type="text" 
                   placeholder="Código PIN (6 dígitos)" 
@@ -180,7 +180,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 />
               </div>
               <div className="input-group">
-                <ShieldCheck size={18} className="input-icon" />
+                <Shield size={18} className="input-icon" />
                 <input 
                   type={showPassword ? "text" : "password"} 
                   placeholder="Nueva Contraseña" 

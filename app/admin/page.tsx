@@ -105,6 +105,7 @@ export default function AdminPage() {
     min_tickets: '1'
   });
   const [uploading, setUploading] = useState(false);
+  const [editingGroupCode, setEditingGroupCode] = useState<string | null>(null);
 
   // Login Check
   useEffect(() => {
@@ -413,6 +414,31 @@ export default function AdminPage() {
       } catch (err) {
         console.error(err);
       }
+    }
+  };
+
+  const handleAddTicketToGroup = async (verificationCode: string, raffleId: string) => {
+    try {
+      const res = await fetch('/api/admin/tickets/add', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-key': password
+        },
+        body: JSON.stringify({ verificationCode, raffleId })
+      });
+      if (res.ok) {
+        // Breve delay para asegurar que Supabase procesó el INSERT antes del nuevo FETCH
+        setTimeout(() => {
+          fetchData();
+        }, 300);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Error al agregar boleto');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error de conexión');
     }
   };
 
@@ -1099,21 +1125,44 @@ export default function AdminPage() {
                 <td style={{ fontWeight: 'bold' }}>RD${group.totalPrice}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                    <span style={{ 
-                      padding: '4px 10px', 
-                      borderRadius: '6px', 
-                      fontSize: '0.7rem', 
-                      fontWeight: '700',
-                      backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
-                      color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
-                    }}>
-                      {group.status === 'paid' ? 'PAGADO ✓' : ((group.status === 'pending' || group.status === 'reserved') ? 'PENDIENTE ⏳' : 'MIXTO')}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ 
+                        padding: '4px 10px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.7rem', 
+                        fontWeight: '700',
+                        backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
+                        color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
+                      }}>
+                        {group.status === 'paid' ? 'PAGADO ✓' : ((group.status === 'pending' || group.status === 'reserved') ? 'PENDIENTE ⏳' : 'MIXTO')}
+                      </span>
+                      <button 
+                        onClick={() => setEditingGroupCode(editingGroupCode === code ? null : code)}
+                        style={{
+                          background: editingGroupCode === code ? 'var(--primary-cyan)' : 'rgba(255,255,255,0.05)',
+                          border: 'none',
+                          color: editingGroupCode === code ? '#000' : 'var(--text-muted)',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.8rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s'
+                        }}
+                        title="Editar cantidad de boletos (Modo regalo/ajuste)"
+                      >
+                        {editingGroupCode === code ? '❌' : '✏️'}
+                      </button>
+                    </div>
                     
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      {(group.status === 'pending' || group.status === 'reserved') && (
+                      {(group.status === 'pending' || group.status === 'reserved' || editingGroupCode === code) && (
                         <>
-                          <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
+                          {(group.status !== 'paid' || editingGroupCode === code) && (
+                            <button onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} style={{ background: 'var(--success)', border: 'none', color: '#000', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✓ APROBAR TODO</button>
+                          )}
                           <div style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
@@ -1154,26 +1203,31 @@ export default function AdminPage() {
                               {groupTickets.length}
                             </div>
                             <button 
-                              disabled
+                              onClick={() => handleAddTicketToGroup(code, groupTickets[0].raffle_id)}
                               style={{ 
-                                background: 'transparent', 
+                                background: 'rgba(255,255,255,0.05)', 
                                 border: 'none', 
-                                color: 'rgba(255,255,255,0.2)', 
+                                color: 'var(--primary-cyan)', 
                                 width: '30px', 
                                 height: '30px', 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 borderRadius: '6px', 
-                                cursor: 'not-allowed', 
-                                fontSize: '1.2rem'
+                                cursor: 'pointer', 
+                                fontSize: '1.2rem',
+                                transition: 'all 0.2s'
                               }}
-                              title="No es posible agregar boletos manualmente"
+                              onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.15)'}
+                              onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                              title="Sumar 1 Boleto manualmente"
                             >
                               +
                             </button>
                           </div>
-                          <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
+                          {(group.status !== 'paid' || editingGroupCode === code) && (
+                            <button onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} style={{ background: '#ef4444', border: 'none', color: '#fff', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}>✕</button>
+                          )}
                         </>
                       )}
 

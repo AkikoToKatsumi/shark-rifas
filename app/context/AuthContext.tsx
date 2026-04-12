@@ -10,6 +10,8 @@ type User = {
   points: number;
   cedula?: string;
   last_spin_date?: string;
+  total_spins?: number;
+  last_spin_count?: number;
 };
 
 type AuthContextType = {

@@ -24,7 +24,16 @@ export async function decrypt(input: string): Promise<any> {
     }
 }
 
-export async function setSession(participant: { id: string; email: string; full_name: string; phone: string; points: number, cedula?: string }) {
+export async function setSession(participant: { 
+  id: string; 
+  email: string; 
+  full_name: string; 
+  phone: string; 
+  points: number, 
+  cedula?: string,
+  total_spins?: number,
+  last_spin_count?: number
+}) {
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const session = await encrypt({ participant, expires });
   

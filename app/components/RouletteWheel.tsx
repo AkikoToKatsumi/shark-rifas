@@ -14,10 +14,11 @@ const ROULETTE_OPTIONS = [
 
 type RouletteProps = {
   onSpinEnd: (points: number) => void;
+  onSpinError?: (error: string) => void;
   disabled?: boolean;
 };
 
-export default function RouletteWheel({ onSpinEnd, disabled }: RouletteProps) {
+export default function RouletteWheel({ onSpinEnd, onSpinError, disabled }: RouletteProps) {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
 
@@ -31,7 +32,9 @@ export default function RouletteWheel({ onSpinEnd, disabled }: RouletteProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error);
+        if (onSpinError) onSpinError(data.error);
+        else alert(data.error);
+        
         setSpinning(false);
         return;
       }

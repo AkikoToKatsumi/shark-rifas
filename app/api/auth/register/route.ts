@@ -92,7 +92,10 @@ export async function POST(request: Request) {
       email: participant.email,
       full_name: participant.full_name,
       phone: participant.phone,
-      points: participant.points || 0
+      points: participant.points || 0,
+      cedula: participant.cedula,
+      total_spins: participant.total_spins || 0,
+      last_spin_count: participant.last_spin_count || 0
     });
 
     // Send Welcome Email

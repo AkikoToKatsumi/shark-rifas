@@ -1230,7 +1230,8 @@ export default function AdminPage() {
                     <div style={{ display: 'flex', gap: '8px', opacity: isRowActionLoading[code] ? 0.5 : 1 }}>
                       {(group.status === 'pending' || group.status === 'reserved' || editingGroupCode === code) && (
                         <>
-                          {(group.status !== 'paid' || editingGroupCode === code) && (
+                          {/* Only show 'APROBAR TODO' if there are tickets NOT paid, or if we are in Edit Mode forcing changes */}
+                          {(group.status !== 'paid' || groupTickets.some(t => t.status !== 'paid')) && (
                             <button 
                               disabled={isRowActionLoading[code]}
                               onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} 
@@ -1444,34 +1445,35 @@ export default function AdminPage() {
 
       {/* Custom Global Notifications Interface */}
       {confirmConfig.isOpen && (
-        <div className="modal-overlay" style={{ zIndex: 2000 }}>
+        <div className="modal-overlay" style={{ zIndex: 2000, backdropFilter: 'blur(8px)', backgroundColor: 'rgba(0,0,0,0.6)' }}>
           <div className="modal-content" style={{ 
             maxWidth: '400px', 
-            background: 'var(--bg-panel)', 
-            border: '1px solid rgba(0, 242, 254, 0.3)', 
-            borderRadius: '20px',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
-            padding: '2rem',
-            textAlign: 'center'
+            background: 'linear-gradient(135deg, #111, #1a1a1a)', 
+            border: '1px solid rgba(0, 242, 254, 0.4)', 
+            borderRadius: '24px',
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 242, 254, 0.1)',
+            padding: '2.5rem 2rem',
+            textAlign: 'center',
+            animation: 'modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
-            <div style={{ color: 'var(--primary-cyan)', fontSize: '1.5rem', marginBottom: '1rem', fontWeight: '800' }}>
+            <div style={{ color: 'var(--primary-cyan)', fontSize: '1.6rem', marginBottom: '0.8rem', fontWeight: '900', letterSpacing: '0.5px' }}>
               {confirmConfig.title}
             </div>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: '1.6', fontSize: '1rem' }}>
               {confirmConfig.message}
             </p>
-            <div style={{ display: 'flex', gap: '15px' }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
               <button 
                 className="btn-secondary flex-grow" 
                 onClick={confirmConfig.onCancel}
-                style={{ padding: '12px' }}
+                style={{ padding: '14px', borderRadius: '12px', fontWeight: 'bold' }}
               >
                 CANCELAR
               </button>
               <button 
                 className="btn-primary flex-grow" 
                 onClick={confirmConfig.onConfirm}
-                style={{ padding: '12px' }}
+                style={{ padding: '14px', borderRadius: '12px', fontWeight: 'bold', backgroundColor: '#22c55e', borderColor: '#22c55e' }}
               >
                 {confirmConfig.confirmText || 'CONFIRMAR'}
               </button>
@@ -1489,23 +1491,28 @@ export default function AdminPage() {
           zIndex: 3000,
           background: toast.type === 'error' ? 'rgba(239, 68, 68, 0.95)' : 'rgba(0, 242, 254, 0.95)',
           color: toast.type === 'error' ? '#fff' : '#000',
-          padding: '12px 24px',
+          padding: '14px 28px',
           borderRadius: '50px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-          fontWeight: 'bold',
+          boxShadow: '0 15px 40px rgba(0,0,0,0.6)',
+          fontWeight: '900',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          animation: 'slideUp 0.3s ease-out'
+          gap: '12px',
+          animation: 'slideUpToast 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          backdropFilter: 'blur(4px)'
         }}>
-          {toast.type === 'error' ? '❌' : '⚡'} {toast.message.toUpperCase()}
+          {toast.type === 'error' ? '🚫' : '💎'} {toast.message.toUpperCase()}
         </div>
       )}
 
       <style jsx>{`
-        @keyframes slideUp {
-          from { transform: translate(-50%, 50px); opacity: 0; }
+        @keyframes slideUpToast {
+          from { transform: translate(-50%, 40px); opacity: 0; }
           to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        @keyframes modalSlideIn {
+          from { transform: scale(0.9) translateY(20px); opacity: 0; }
+          to { transform: scale(1) translateY(0); opacity: 1; }
         }
       `}</style>
 

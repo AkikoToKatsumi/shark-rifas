@@ -312,3 +312,56 @@ export const sendWelcomeEmail = async (
     console.error('Error sending welcome email:', error);
   }
 };
+
+export const sendPasswordResetEmail = async (
+  email: string,
+  fullName: string,
+  pin: string
+) => {
+  const mailOptions = {
+    from: `"Shark RD Rifas" <${process.env.EMAIL_FROM}>`,
+    to: email,
+    subject: `🔐 Recuperación de Contraseña - Shark RD`,
+    html: `
+      <div style="font-family: 'Helvetica', Arial, sans-serif; background-color: #020617; padding: 40px 20px; color: #f1f5f9;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);">
+          
+          <div style="background-color: #000; padding: 25px; text-align: center; border-bottom: 2px solid #00f2fe;">
+            <h1 style="margin: 0; color: #00f2fe; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;">Shark RD Rifas</h1>
+          </div>
+          
+          <div style="padding: 30px;">
+            <h2 style="color: #fff; margin-top: 0; font-size: 24px;">Hola, ${fullName}</h2>
+            <p style="line-height: 1.6; color: #94a3b8; font-size: 15px;">
+              Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Si no hiciste esta solicitud, puedes ignorar este correo.
+            </p>
+            
+            <div style="background-color: #020617; padding: 30px; border-radius: 12px; margin: 30px 0; border: 1px solid #334155; text-align: center;">
+              <p style="margin: 0 0 15px 0; color: #00f2fe; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Tu Código de Recuperación:</p>
+              <div style="display: inline-block; background-color: rgba(0, 242, 254, 0.1); color: #fff; padding: 15px 30px; border-radius: 8px; border: 1px dashed #00f2fe; font-weight: bold; font-size: 32px; letter-spacing: 8px;">
+                ${pin}
+              </div>
+              <p style="color: #64748b; font-size: 13px; margin-top: 20px;">
+                <em>Este código expirará en 30 minutos por motivos de seguridad.</em>
+              </p>
+            </div>
+
+            <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center; line-height: 1.5;">
+              Para completar el proceso, ingresa este código en la ventana de recuperación en nuestro sitio web.
+            </p>
+          </div>
+          
+          <div style="background-color: #1e293b; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Shark RD Rifas - Seguridad y Confianza.
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+  }
+};

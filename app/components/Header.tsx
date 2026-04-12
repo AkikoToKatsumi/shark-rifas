@@ -7,16 +7,19 @@ import AdminSidebar from './AdminSidebar';
 import { Target, Search, Trophy, Info, User, Gift, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
+import ProfileModal from './ProfileModal';
 
 export default function Header() {
   const pathname = usePathname();
   const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { user, logout } = useAuth();
 
   return (
     <header className="header-container position-relative">
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
       <div style={{ position: 'fixed', top: '15px', right: '15px', zIndex: 1000, display: 'flex', gap: '10px', alignItems: 'center' }}>
         
         {/* User Account / Profile */}
@@ -27,22 +30,38 @@ export default function Header() {
             WebkitBackdropFilter: 'blur(10px)',
             border: '1px solid var(--primary-cyan)',
             borderRadius: '30px',
-            padding: '6px 15px',
+            padding: '4px 6px 4px 15px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
             boxShadow: '0 0 15px rgba(0, 242, 254, 0.2)'
           }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
+            <button 
+              onClick={() => setIsProfileModalOpen(true)}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer', 
+                padding: 0, 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'flex-end', 
+                lineHeight: '1.2',
+                transition: 'transform 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              title="Mi Perfil"
+            >
               <span style={{ fontSize: '0.8rem', color: '#fff', fontWeight: 'bold' }}>{user.full_name.split(' ')[0]}</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', display: 'flex', alignItems: 'center', gap: '3px' }}>
                 <Gift size={12} /> {user.points} pts
               </span>
-            </div>
+            </button>
             <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--border-color)' }}></div>
             <button 
               onClick={logout}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 0, display: 'flex', alignItems: 'center' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '5px', display: 'flex', alignItems: 'center' }}
               title="Cerrar Sesión"
               onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}

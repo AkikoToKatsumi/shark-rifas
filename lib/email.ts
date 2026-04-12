@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import path from 'path';
 import fs from 'fs';
+ 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://shark-rifas.vercel.app';
 
 export const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_SERVER_HOST,
@@ -115,6 +117,12 @@ export const sendPaymentConfirmedEmail = async (
               <p style="margin: 5px 0 0 0; font-size: 20px; font-weight: bold; letter-spacing: 3px; color: #fff;">${verificationCode}</p>
             </div>
             ` : ''}
+
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${BASE_URL}/verificar" style="display: inline-block; background-color: #38bdf8; color: #000; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 14px; text-decoration: none; text-transform: uppercase;">
+                Mis Boletos 💎
+              </a>
+            </div>
 
             <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">Guarda este correo, es tu comprobante de participación. ¡Muchísima suerte!</p>
           </div>
@@ -294,6 +302,12 @@ export const sendWelcomeEmail = async (
               </ul>
             </div>
 
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${BASE_URL}" style="display: inline-block; background-color: #00f2fe; color: #000; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 14px; text-decoration: none; text-transform: uppercase;">
+                Explorar Rifas 🚀
+              </a>
+            </div>
+
             <p style="font-size: 14px; color: #64748b; margin-top: 30px; text-align: center;">
               Si tienes alguna pregunta, no dudes en contactarnos vía WhatsApp o respondiendo a este correo.
             </p>
@@ -394,7 +408,7 @@ export const sendSecondSpinUnlockedEmail = async (
                 Como recompensa por tu compra de hoy, se ha habilitado un segundo giro gratuito en nuestra ruleta de premios.
               </p>
               
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/recompensas" style="display: inline-block; background-color: #00f2fe; color: #000; padding: 15px 35px; border-radius: 50px; font-weight: bold; font-size: 16px; text-decoration: none; text-transform: uppercase; transition: all 0.3s ease;">
+              <a href="${BASE_URL}/recompensas" style="display: inline-block; background-color: #00f2fe; color: #000; padding: 15px 35px; border-radius: 50px; font-weight: bold; font-size: 16px; text-decoration: none; text-transform: uppercase; transition: all 0.3s ease;">
                 IR A GIRAR LA RULETA ⚡
               </a>
             </div>

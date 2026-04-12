@@ -453,7 +453,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               </button>
             </div>
 
-            {paymentMethod && (
+            {paymentMethod && paymentMethod !== 'points' && (
               <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 {(() => {
                   let details = { name: '', number: '', holder: 'SHARK RD', type: '', extra: '', isPaypal: false };
@@ -544,8 +544,10 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   <span>Pagar con Puntos (Total: {quantity * POINTS_PER_TICKET} pts)</span>
                 </button>
                 {paymentMethod === 'points' && (
-                   <p className="mt-2 text-center" style={{fontSize: '0.8rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)'}}>
-                     Balance disponible: {user.points} pts
+                   <p className="mt-2 text-center" style={{fontSize: '0.9rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)', fontWeight: 'bold'}}>
+                     {user.points >= quantity * POINTS_PER_TICKET 
+                       ? `✓ Tienes puntos suficientes (${user.points} pts)` 
+                       : `❌ Puntos insuficientes (${user.points} pts)`}
                    </p>
                 )}
               </div>

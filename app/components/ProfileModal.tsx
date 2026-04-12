@@ -78,9 +78,32 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           textAlign: 'center'
         }}>
           <button 
-            className="close-btn" 
             onClick={onClose} 
-            style={{ top: '15px', right: '15px', color: 'rgba(255,255,255,0.5)' }}
+            style={{ 
+              position: 'absolute',
+              top: '15px', 
+              right: '15px', 
+              color: '#ef4444',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '8px',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              zIndex: 100
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#ef4444';
+              e.currentTarget.style.color = '#fff';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+              e.currentTarget.style.color = '#ef4444';
+            }}
           >
             <X size={20} />
           </button>

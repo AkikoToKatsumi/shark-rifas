@@ -87,7 +87,7 @@ export default function AdminPage() {
   const [searchParticipantError, setSearchParticipantError] = useState('');
 
   // Ticket Detail Modal State
-  const [viewingTickets, setViewingTickets] = useState<{ code: string, numbers: string[], quantity: number } | null>(null);
+  const [viewingTickets, setViewingTickets] = useState<{ code: string, numbers: string[], quantity: number, participant?: any } | null>(null);
 
   // New Raffle Form State
   const [editingRaffleId, setEditingRaffleId] = useState<string | null>(null);
@@ -1059,7 +1059,12 @@ export default function AdminPage() {
               <tr key={code}>
                 <td>
                   <button 
-                    onClick={() => setViewingTickets({ code, numbers: groupTickets.map(t => t.ticket_number), quantity: groupTickets.length })}
+                    onClick={() => setViewingTickets({ 
+                      code, 
+                      numbers: groupTickets.map(t => t.ticket_number), 
+                      quantity: groupTickets.length,
+                      participant: participant
+                    })}
                     style={{ 
                       color: 'var(--primary-cyan)', 
                       fontWeight: 'bold', 
@@ -1190,11 +1195,32 @@ export default function AdminPage() {
         <div className="modal-overlay" style={{ zIndex: 1100 }}>
           <div className="modal-content" style={{ maxWidth: '450px', backgroundColor: 'var(--bg-panel)', border: '1px solid rgba(0, 242, 254, 0.2)', borderRadius: '16px', boxShadow: '0 15px 40px rgba(0,0,0,0.8)' }}>
             <button className="modal-close" onClick={() => setViewingTickets(null)}>×</button>
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '15px' }}>
               <h3 style={{ color: 'var(--primary-cyan)', margin: '0 0 5px 0', fontSize: '1.4rem' }}>Boletos Asignados</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0, letterSpacing: '1px' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 10px 0', letterSpacing: '1px' }}>
                 CÓDIGO: <strong style={{ color: '#fff' }}>{viewingTickets.code}</strong>
               </p>
+              
+              {viewingTickets.participant && (
+                <div style={{ 
+                  borderTop: '1px solid rgba(255,255,255,0.1)', 
+                  paddingTop: '12px',
+                  marginTop: '10px'
+                }}>
+                  <p style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold', color: '#fff' }}>
+                    {viewingTickets.participant.full_name}
+                  </p>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                    ID: {viewingTickets.participant.cedula ? (
+                      viewingTickets.participant.cedula.substring(0, 5) + '****' + viewingTickets.participant.cedula.substring(viewingTickets.participant.cedula.length - 2)
+                    ) : '---'} 
+                    <span style={{ margin: '0 8px', opacity: 0.3 }}>|</span>
+                    Tel: {viewingTickets.participant.phone ? (
+                      viewingTickets.participant.phone.substring(0, 4) + '****' + viewingTickets.participant.phone.substring(viewingTickets.participant.phone.length - 2)
+                    ) : '---'}
+                  </p>
+                </div>
+              )}
             </div>
             
             <div style={{ 

@@ -645,27 +645,40 @@ export default function AdminPage() {
     });
   }, [tickets, ticketSearch]);
 
-  // Agrupación para tabla
+  // Agrupación para tabla (POR PARTICIPANTE en lugar de por compra)
   const groupedTicketsTable = useMemo(() => {
     const groups: Record<string, Ticket[]> = {};
     filteredTickets.forEach(t => {
-      const code = t.verification_code || `no-code-${t.id}`;
-      if (!groups[code]) groups[code] = [];
-      groups[code].push(t);
+      const p = Array.isArray(t.participants) ? t.participants[0] : t.participants;
+      // Clave de grupo: ID del participante
+      const participantKey = p?.id || `anon-${t.id}`;
+      if (!groups[participantKey]) groups[participantKey] = [];
+      groups[participantKey].push(t);
     });
     
-    return Object.entries(groups).map(([code, gTickets]) => {
-      const first = gTickets[0];
+    return Object.entries(groups).map(([participantKey, gTickets]) => {
+      // Ordenar por fecha para obtener la información más reciente (código, etc)
+      const sortedByDate = [...gTickets].sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      const first = sortedByDate[0];
       const participant = Array.isArray(first.participants) ? first.participants[0] : first.participants;
+      
       const allPaid = gTickets.every(t => t.status === 'paid');
-      const somePending = gTickets.some(t => t.status === 'pending');
+      const allPending = gTickets.every(t => t.status === 'pending' || t.status === 'reserved');
+      const isMixed = !allPaid && !allPending;
+
+      // Código de verificación más reciente para sumas/restas manuales (hereda últimos datos)
+      const latestCode = first.verification_code;
       
       return {
-        code,
+        code: latestCode, 
+        participantKey,
         tickets: gTickets,
         participant,
-        status: allPaid ? 'paid' : (somePending ? 'pending' : 'reserved'),
-        totalPrice: gTickets.length * (raffles.find(r => r.id === first.raffle_id)?.ticket_price || 0),
+        status: allPaid ? 'paid' : (allPending ? 'pending' : 'mixed'),
+        totalPrice: gTickets.reduce((acc, t) => {
+          const r = raffles.find(raf => raf.id === (t as any).raffle_id);
+          return acc + (r?.ticket_price || 0);
+        }, 0),
         createdAt: first.created_at
       };
     }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -1181,9 +1194,6 @@ export default function AdminPage() {
                   >
                     {groupTickets.length} Boletos
                   </button>
-                  <div style={{ fontSize: '0.65rem', opacity: 0.5, marginTop: '6px', paddingLeft: '4px', letterSpacing: '1px' }}>
-                    CODE: {code}
-                  </div>
                 </td>
                 <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
@@ -1204,7 +1214,7 @@ export default function AdminPage() {
                         backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
                         color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
                       }}>
-                        {group.status === 'paid' ? 'PAGADO ✓' : ((group.status === 'pending' || group.status === 'reserved') ? 'PENDIENTE ⏳' : 'MIXTO')}
+                        {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO ⚠️')}
                       </span>
                       <div style={{ display: 'flex', gap: '5px' }}>
                         {editingGroupCode === code ? (

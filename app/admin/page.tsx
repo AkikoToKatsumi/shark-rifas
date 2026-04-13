@@ -1206,25 +1206,62 @@ export default function AdminPage() {
                       }}>
                         {group.status === 'paid' ? 'PAGADO ✓' : ((group.status === 'pending' || group.status === 'reserved') ? 'PENDIENTE ⏳' : 'MIXTO')}
                       </span>
-                      <button 
-                        onClick={() => setEditingGroupCode(editingGroupCode === code ? null : code)}
-                        style={{
-                          background: editingGroupCode === code ? 'var(--primary-cyan)' : 'rgba(255,255,255,0.05)',
-                          border: 'none',
-                          color: editingGroupCode === code ? '#000' : 'var(--text-muted)',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '0.8rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'all 0.2s'
-                        }}
-                        title="Editar cantidad de boletos (Modo regalo/ajuste)"
-                      >
-                        {editingGroupCode === code ? '❌' : '✏️'}
-                      </button>
+                      <div style={{ display: 'flex', gap: '5px' }}>
+                        {editingGroupCode === code ? (
+                          <>
+                            <button 
+                              onClick={() => setEditingGroupCode(null)}
+                              style={{
+                                background: 'var(--success)',
+                                border: 'none',
+                                color: '#000',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                                transition: 'all 0.2s',
+                                fontWeight: 'bold'
+                              }}
+                              title="Listo / Guardar cambios"
+                            >
+                              ✅ LISTO
+                            </button>
+                            <button 
+                              onClick={() => setEditingGroupCode(null)}
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                border: '1px solid #ef4444',
+                                color: '#ef4444',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                                transition: 'all 0.2s'
+                              }}
+                              title="Cancelar edición"
+                            >
+                              ❌
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            onClick={() => setEditingGroupCode(code)}
+                            style={{
+                              background: 'rgba(255,255,255,0.05)',
+                              border: 'none',
+                              color: 'var(--text-muted)',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '0.8rem',
+                              transition: 'all 0.2s'
+                            }}
+                            title="Editar cantidad de boletos (Modo regalo/ajuste)"
+                          >
+                            ✏️ Editar
+                          </button>
+                        )}
+                      </div>
                     </div>
                     
                     <div style={{ display: 'flex', gap: '8px', opacity: isRowActionLoading[code] ? 0.5 : 1 }}>

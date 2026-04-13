@@ -402,61 +402,41 @@ export default function AdminPage() {
   const handleUpdateTicketStatus = async (ticketIds: string | string[], status: 'paid' | 'reserved', actionType: 'approve' | 'cancel') => {
     const ids = Array.isArray(ticketIds) ? ticketIds : [ticketIds];
     
-    if (actionType === 'cancel') {
-      showConfirm(
-        'Cancelar Boletos', 
-        `¿Estás seguro de cancelar ${ids.length > 1 ? 'estos boletos' : 'esta reserva'}? El número quedará libre.`,
-        async () => {
-          try {
-            const res = await fetch('/api/admin/tickets', {
-              method: 'DELETE',
-              headers: { 
-                'Content-Type': 'application/json',
-                'x-admin-key': password
-              },
-              body: JSON.stringify({ ticketIds: ids })
-            });
-            if (res.ok) {
-              await fetchData();
-              showToast('Boletos cancelados correctamente', 'success');
-            } else {
-              showToast('Error al cancelar boletos', 'error');
-            }
-          } catch (err) {
-            console.error(err);
-            showToast('Error de conexión', 'error');
-          }
-        },
-        'Confirmar Cancelación'
-      );
-    } else {
-      // Approve Payment
-      showConfirm(
-        'Aprobar Pago', 
-        `¿Aprobar pago de ${ids.length} boletos y enviar recibo por correo?`,
-        async () => {
-          try {
-            const res = await fetch('/api/admin/tickets', {
-              method: 'PATCH',
-              headers: { 
-                'Content-Type': 'application/json',
-                'x-admin-key': password
-              },
-              body: JSON.stringify({ ticketIds: ids, status: 'paid' })
-            });
-            if (res.ok) {
-              await fetchData();
-              showToast('Pago aprobado y recibo enviado', 'success');
-            } else {
-              showToast('Error al aprobar el pago', 'error');
-            }
-          } catch (err) {
-            console.error(err);
-            showToast('Error de conexión', 'error');
-          }
-        },
-        'Aprobar Todo'
-      );
+    try {
+      if (actionType === 'cancel') {
+        const res = await fetch('/api/admin/tickets', {
+          method: 'DELETE',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-admin-key': password
+          },
+          body: JSON.stringify({ ticketIds: ids })
+        });
+        if (res.ok) {
+          await fetchData();
+          showToast('Boletos cancelados correctamente', 'success');
+        } else {
+          showToast('Error al cancelar boletos', 'error');
+        }
+      } else {
+        const res = await fetch('/api/admin/tickets', {
+          method: 'PATCH',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-admin-key': password
+          },
+          body: JSON.stringify({ ticketIds: ids, status: 'paid' })
+        });
+        if (res.ok) {
+          await fetchData();
+          showToast('Pago aprobado y recibo enviado', 'success');
+        } else {
+          showToast('Error al aprobar el pago', 'error');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error de conexión', 'error');
     }
   };
 
@@ -1285,7 +1265,14 @@ export default function AdminPage() {
                           {(group.status !== 'paid' || groupTickets.some(t => t.status !== 'paid')) && (
                             <button 
                               disabled={isRowActionLoading[code]}
-                              onClick={() => handleUpdateTicketStatus(ticketIds, 'paid', 'approve')} 
+                              onClick={() => {
+                                showConfirm(
+                                  'Aprobar Pago', 
+                                  `¿Aprobar pago de ${ticketIds.length} boletos de ${participant?.full_name}?`,
+                                  () => handleUpdateTicketStatus(ticketIds, 'paid', 'approve'),
+                                  'APROBAR TODO'
+                                );
+                              }} 
                               style={{ 
                                 background: 'var(--success)', 
                                 border: 'none', 

@@ -87,7 +87,12 @@ export default function AdminPage() {
   const [searchParticipantError, setSearchParticipantError] = useState('');
 
   // Ticket Detail Modal State
-  const [viewingTickets, setViewingTickets] = useState<{ code: string, numbers: string[], quantity: number, participant?: any } | null>(null);
+  const [viewingTickets, setViewingTickets] = useState<{ 
+    code: string, 
+    tickets: any[], 
+    quantity: number, 
+    participant: any 
+  } | null>(null);
 
   // New Raffle Form State
   const [editingRaffleId, setEditingRaffleId] = useState<string | null>(null);
@@ -1162,7 +1167,6 @@ export default function AdminPage() {
             {groupedTicketsTable.map(group => {
               const { participant, tickets: groupTickets, code } = group;
               const ticketIds = groupTickets.map(t => t.id);
-              const ticketNumbers = groupTickets.map(t => `#${t.ticket_number}`).join(', ');
               
               return (
               <tr key={code}>
@@ -1170,7 +1174,7 @@ export default function AdminPage() {
                   <button 
                     onClick={() => setViewingTickets({ 
                       code, 
-                      numbers: groupTickets.map(t => t.ticket_number), 
+                      tickets: groupTickets, 
                       quantity: groupTickets.length,
                       participant: participant
                     })}
@@ -1384,7 +1388,14 @@ export default function AdminPage() {
                       {group.status === 'paid' && (
                         <button 
                           disabled={isRowActionLoading[code]}
-                          onClick={() => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel')} 
+                          onClick={() => {
+                            showConfirm(
+                              'Anulación Total',
+                              `¿Deseas anular LA PARTICIPACIÓN TOTAL de ${participant?.full_name}? Se liberarán ${groupTickets.length} boletos.`,
+                              () => handleUpdateTicketStatus(ticketIds, 'reserved', 'cancel'),
+                              'ANULAR TODO'
+                            );
+                          }} 
                           style={{ 
                             background: 'none', 
                             border: '1px solid #ef4444', 
@@ -1441,44 +1452,76 @@ export default function AdminPage() {
               )}
             </div>
             
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              padding: '12px 20px', 
-              background: 'rgba(0, 242, 254, 0.05)', 
-              borderRadius: '8px',
-              marginBottom: '20px',
-              border: '1px dashed rgba(0, 242, 254, 0.2)'
-            }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>TOTAL COMPRADO:</span>
-              <span style={{ fontWeight: 'bold', color: 'var(--primary-cyan)', fontSize: '1.1rem' }}>{viewingTickets.quantity}</span>
-            </div>
-
+            {viewingTickets.tickets.length === 0 && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No hay boletos activos.</p>
+            )}
+            
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(75px, 1fr))', 
-              gap: '10px',
-              maxHeight: '350px',
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: '10px', 
+              maxHeight: '300px', 
               overflowY: 'auto',
               padding: '15px',
               background: 'rgba(0,0,0,0.4)',
               borderRadius: '12px',
               border: '1px solid rgba(255,255,255,0.05)'
             }}>
-              {viewingTickets.numbers.sort((a,b) => parseInt(a) - parseInt(b)).map((num, idx) => (
+              {viewingTickets.tickets.sort((a,b) => parseInt(a.ticket_number) - parseInt(b.ticket_number)).map((ticket, idx) => (
                 <div key={idx} style={{ 
                   background: 'rgba(255, 255, 255, 0.03)', 
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   color: '#fff',
                   textAlign: 'center',
                   padding: '8px 4px',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   fontSize: '1rem',
                   fontWeight: '600',
-                  letterSpacing: '1px',
-                  boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '5px',
+                  position: 'relative'
                 }}>
-                  {num}
+                  <span>{ticket.ticket_number}</span>
+                  <button 
+                    onClick={() => {
+                      showConfirm(
+                        'Eliminar Boleto',
+                        `¿Estás seguro de que deseas eliminar el boleto #${ticket.ticket_number}? El cliente será notificado.`,
+                        async () => {
+                          const res = await fetch('/api/admin/tickets', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+                            body: JSON.stringify({ ticketIds: [ticket.id] })
+                          });
+                          if (res.ok) {
+                            showToast(`Boleto #${ticket.ticket_number} eliminado`, 'success');
+                            await fetchData();
+                            // Update modal state localy to reflect change
+                            setViewingTickets(prev => {
+                              if (!prev) return null;
+                              return { ...prev, tickets: prev.tickets.filter(t => t.id !== ticket.id), quantity: prev.quantity - 1 };
+                            });
+                          } else {
+                            showToast('Error al eliminar boleto', 'error');
+                          }
+                        },
+                        'ELIMINAR'
+                      );
+                    }}
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.15)',
+                      border: 'none',
+                      color: '#ef4444',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.65rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ELIMINAR
+                  </button>
                 </div>
               ))}
             </div>

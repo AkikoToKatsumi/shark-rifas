@@ -185,6 +185,33 @@ export default function Home() {
 
         <div className="incentives-grid">
           <div className="incentive-card">
+            <h3><Trophy className="text-orange-400" /> PREMIOS EN TOTAL</h3>
+            <p className="text-muted">¡Estos son los increíbles premios que tenemos para ti en este sorteo principal!</p>
+            <div className="prizes-list">
+              <div className="prize-item">
+                <span className="prize-rank">1er Lugar</span>
+                <span className="prize-name">Yamaha YZ</span>
+              </div>
+              <div className="prize-item">
+                <span className="prize-rank">2do Lugar</span>
+                <span className="prize-name">Super Gato Bengala</span>
+              </div>
+              <div className="prize-item">
+                <span className="prize-rank">3er Lugar</span>
+                <span className="prize-name">RD$50,000</span>
+              </div>
+              <div className="prize-item">
+                <span className="prize-rank">4to Lugar</span>
+                <span className="prize-name">RD$20,000</span>
+              </div>
+              <div className="prize-item">
+                <span className="prize-rank">5to Lugar</span>
+                <span className="prize-name">RD$20,000</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="incentive-card">
             <h3><Star className="text-orange-400" /> NÚMEROS GANADORES</h3>
             <p className="text-muted">Si te toca cualquiera de estos números al comprar tus boletos, ¡ganas <strong>RD$3,000 en efectivo</strong> al instante!</p>
             <div className="winning-numbers">
@@ -200,7 +227,7 @@ export default function Home() {
           </div>
 
           <div className="incentive-card">
-            <h3><Crown className="text-orange-400" /> MAYOR COMPRADOR</h3>
+            <h3><Crown className="text-orange-400" /> BONO AL MAYOR COMPRADOR</h3>
             <p className="text-muted">¡Premiamos tu fidelidad! La persona que más boletos acumule comprados para la rifa actual recibirá un bono especial.</p>
             
             <div className="bonus-prize">

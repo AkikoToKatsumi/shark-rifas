@@ -435,8 +435,47 @@ a {
 
 .incentives-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--spacing-xl);
+}
+
+.prizes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.prize-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-orange);
+  transition: all 0.3s ease;
+}
+
+.prize-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(5px);
+}
+
+.prize-rank {
+  font-weight: bold;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.prize-name {
+  color: #fff;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  letter-spacing: 1px;
 }
 
 @media (max-width: 900px) {

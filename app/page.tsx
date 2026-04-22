@@ -32,7 +32,7 @@ export default function Home() {
     }
   };
 
-  const soldPercentage = metrics.totalPossible > 0 
+  const soldPercentage = metrics.totalPossible > 0
     ? Math.round((metrics.ticketsSold / metrics.totalPossible) * 100)
     : 0;
 
@@ -99,31 +99,31 @@ export default function Home() {
               const progress = (raffle.sold / raffle.total_tickets) * 100;
               return (
                 <div key={raffle.id} className="raffle-card">
-                <div className="raffle-image" style={{ position: 'relative', overflow: 'hidden' }}>
-                  {raffle.image_url ? (
-                    <img 
-                      src={raffle.image_url} 
-                      alt={raffle.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                    />
-                  ) : (
-                    <div style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center', 
-                      fontSize: '5rem',
-                      background: 'rgba(255,255,255,0.02)'
-                    }}>
-                      {raffle.emoji || '🎟️'}
-                    </div>
-                  )}
-                </div>
+                  <div className="raffle-image" style={{ position: 'relative', overflow: 'hidden' }}>
+                    {raffle.image_url ? (
+                      <img
+                        src={raffle.image_url}
+                        alt={raffle.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '5rem',
+                        background: 'rgba(255,255,255,0.02)'
+                      }}>
+                        {raffle.emoji || '🎟️'}
+                      </div>
+                    )}
+                  </div>
                   <div className="raffle-content">
                     <h3>{raffle.title}</h3>
                     <p className="raffle-desc">{raffle.description}</p>
-                    
+
                     <div className="raffle-info-row">
                       <div className="info-block">
                         <span className="price">RD${raffle.ticket_price}</span>
@@ -146,7 +146,7 @@ export default function Home() {
                     </div>
 
                     {progress >= 100 ? (
-                      <button 
+                      <button
                         className="btn-primary w-full mt-auto"
                         style={{ backgroundColor: 'var(--success)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
                         disabled
@@ -154,7 +154,7 @@ export default function Home() {
                         🎉 COMPLETADA
                       </button>
                     ) : raffle.is_paused ? (
-                      <button 
+                      <button
                         className="btn-primary w-full mt-auto"
                         style={{ backgroundColor: 'var(--accent-orange)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
                         disabled
@@ -162,9 +162,9 @@ export default function Home() {
                         ⏸️ VENTAS PAUSADAS
                       </button>
                     ) : (
-                      <button 
-                         className="btn-primary w-full mt-auto"
-                         onClick={() => setSelectedRaffle(raffle)}
+                      <button
+                        className="btn-primary w-full mt-auto"
+                        onClick={() => setSelectedRaffle(raffle)}
                       >
                         ⚡ COMPRAR BOLETOS
                       </button>
@@ -180,7 +180,7 @@ export default function Home() {
       {/* Incentives Section */}
       <section className="incentives-section">
         <div className="section-header" style={{ justifyContent: 'center' }}>
-          <h2>🔥 PREMIOS RÁPIDOS 🔥</h2>
+          <h2>🔥 PREMIOS 🔥</h2>
         </div>
 
         <div className="incentives-grid">
@@ -202,12 +202,9 @@ export default function Home() {
               </div>
               <div className="prize-item">
                 <span className="prize-rank">4to Lugar</span>
-                <span className="prize-name">RD$20,000</span>
+                <span className="prize-name">RD$25,000</span>
               </div>
-              <div className="prize-item">
-                <span className="prize-rank">5to Lugar</span>
-                <span className="prize-name">RD$20,000</span>
-              </div>
+
             </div>
           </div>
 
@@ -229,7 +226,7 @@ export default function Home() {
           <div className="incentive-card">
             <h3><Crown className="text-orange-400" /> BONO AL MAYOR COMPRADOR</h3>
             <p className="text-muted">¡Premiamos tu fidelidad! La persona que más boletos acumule comprados para la rifa actual recibirá un bono especial.</p>
-            
+
             <div className="bonus-prize">
               <h4>RD$10,000 ADICIONALES</h4>
               <p style={{ margin: 0, fontSize: '0.9rem' }}>Otorgados al final del sorteo principal.</p>
@@ -247,12 +244,12 @@ export default function Home() {
       <FAQ />
 
       {selectedRaffle && (
-        <BuyModal 
+        <BuyModal
           raffle={{
             ...selectedRaffle,
             price: selectedRaffle.ticket_price // Adapt to what BuyModal expects
-          }} 
-          onClose={() => setSelectedRaffle(null)} 
+          }}
+          onClose={() => setSelectedRaffle(null)}
         />
       )}
     </div>

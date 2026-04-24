@@ -4,12 +4,12 @@ import { supabaseAdmin } from '@/lib/supabase';
 
 // Weighted options for normal spins
 const WEIGHTED_OPTIONS = [
-  { value: 0, weight: 20 },
+  { value: 0, weight: 45 },
   { value: 10, weight: 40 },
-  { value: 20, weight: 25 },
-  { value: 50, weight: 10 },
-  { value: 100, weight: 4 },
-  { value: 200, weight: 1 },
+  { value: 20, weight: 12 },
+  { value: 50, weight: 2.5 },
+  { value: 100, weight: 0.4 },
+  { value: 200, weight: 0.1 },
 ];
 
 function getRandomWeightedOption() {
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     let pointsWon = 0;
     if ((participant.total_spins || 0) === 0) {
       // First time bonus!
-      pointsWon = 100;
+      pointsWon = 20;
     } else {
       pointsWon = getRandomWeightedOption();
     }

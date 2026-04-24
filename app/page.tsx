@@ -89,6 +89,12 @@ export default function Home() {
           <h2>🎟️ RIFAS DISPONIBLES 🎟️</h2>
         </div>
 
+        <div className="announcement-banner">
+          <p className="announcement-text">
+            📢 EL SORTEO SE EFECTUARÁ AL ALCANZAR EL 75% DE VENTAS 📢
+          </p>
+        </div>
+
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Cargando rifas...</div>
         ) : raffles.length === 0 ? (

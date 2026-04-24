@@ -320,10 +320,17 @@ export default function AdminPage() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
     
+    // Check file size (Vercel limit is ~4.5MB)
+    if (file.size > 4.5 * 1024 * 1024) {
+      showToast('La imagen es demasiado grande (máx 4.5MB)', 'error');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
     setUploading(true);
-    const file = e.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
 
@@ -333,17 +340,28 @@ export default function AdminPage() {
         headers: { 'x-admin-key': password },
         body: formData
       });
+      
+      const contentType = res.headers.get('content-type');
+      if (!res.ok || !contentType || !contentType.includes('application/json')) {
+        const errorText = await res.text();
+        console.error('Upload failed:', res.status, errorText);
+        showToast(`Error del servidor (${res.status}). Intente con una imagen más pequeña.`, 'error');
+        return;
+      }
+
       const data = await res.json();
       if (data.success) {
         setNewRaffle(prev => ({ ...prev, image_url: data.publicUrl }));
         showToast('Imagen subida correctamente', 'success');
       } else {
-        showToast('Error al subir imagen', 'error');
+        showToast(data.error || 'Error al subir imagen', 'error');
       }
     } catch (err) {
-      showToast('Error de conexión al subir imagen', 'error');
+      console.error('Upload Error:', err);
+      showToast('Error de conexión al subir imagen. Verifique su internet.', 'error');
     } finally {
       setUploading(false);
+      if (e.target) e.target.value = ''; // Reset to allow re-uploading same file
     }
   };
 

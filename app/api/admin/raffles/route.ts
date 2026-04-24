@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { title, description, emoji, ticket_price, total_tickets, start_date, draw_date, sort_order, min_tickets } = body;
+    const { title, description, emoji, ticket_price, total_tickets, start_date, draw_date, sort_order, min_tickets, image_url } = body;
 
     if (!title || !ticket_price || !total_tickets) {
       return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
@@ -55,6 +55,7 @@ export async function POST(request: Request) {
           draw_date,
           sort_order: sort_order || 0,
           min_tickets: min_tickets || 1,
+          image_url,
           is_active: true 
         }
       ])

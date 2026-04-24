@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Supabase Upload Error:', error);
-      throw error;
+      return NextResponse.json({ error: `Supabase: ${error.message}` }, { status: 500 });
     }
 
     // Get Public URL
@@ -46,6 +46,6 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error('Upload Route Error:', error);
-    return NextResponse.json({ error: 'Error al subir la imagen' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Error al subir la imagen' }, { status: 500 });
   }
 }

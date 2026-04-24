@@ -196,7 +196,7 @@ export default function Home() {
             <div className="prizes-list">
               <div className="prize-item">
                 <span className="prize-rank">1er Lugar</span>
-                <span className="prize-name">Yamaha YZ</span>
+                <span className="prize-name">Yamaha YZ o Kawasaki KX</span>
               </div>
               <div className="prize-item">
                 <span className="prize-rank">2do Lugar</span>

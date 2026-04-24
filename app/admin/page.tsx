@@ -319,22 +319,78 @@ export default function AdminPage() {
     setNewRaffle({ title: '', ticket_price: '', total_tickets: '10000', start_date: '', draw_date: '', description: '', emoji: '🎟️', image_url: '', sort_order: '0', raffle_type: 'estandar', min_tickets: '1' });
   };
 
+  const compressImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Max resolution 1920px
+          const MAX_WIDTH = 1920;
+          const MAX_HEIGHT = 1080;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(blob);
+              else reject(new Error('Canvas to Blob failed'));
+            },
+            'image/jpeg',
+            0.8 // Quality
+          );
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const originalFile = e.target.files?.[0];
+    if (!originalFile) return;
     
-    // Check file size (Vercel limit is ~4.5MB)
-    if (file.size > 4.5 * 1024 * 1024) {
-      showToast('La imagen es demasiado grande (máx 4.5MB)', 'error');
-      e.target.value = ''; // Reset input
+    // Check original file size (hard limit 15MB to avoid browser crashes)
+    if (originalFile.size > 15 * 1024 * 1024) {
+      showToast('La imagen es demasiado pesada (máx 15MB)', 'error');
+      e.target.value = '';
       return;
     }
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
+      let fileToUpload: Blob | File = originalFile;
+      
+      // If file is > 1MB, compress it
+      if (originalFile.size > 1 * 1024 * 1024) {
+        showToast('Optimizando imagen...', 'info');
+        fileToUpload = await compressImage(originalFile);
+      }
+
+      const formData = new FormData();
+      formData.append('file', fileToUpload, originalFile.name.replace(/\.[^/.]+$/, "") + ".jpg");
+
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
         headers: { 'x-admin-key': password },
@@ -1014,7 +1070,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <input id="raffle-img-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} accept="image/*" />
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Formatos aceptados: JPG, PNG, WEBP. Máximo 5MB.</p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Formatos aceptados: JPG, PNG, WEBP. Máximo 15MB (se optimizará automáticamente).</p>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.75rem' }}>
                       {uploading ? 'SUBIENDO...' : 'SELECCIONAR FOTO'}

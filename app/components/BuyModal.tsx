@@ -18,7 +18,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const { user } = useAuth();
-  
+
   const POINTS_PER_TICKET = 500;
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       setErrorMsg("Seleccione un método de pago.");
       return;
     }
-    
+
     if (paymentMethod === 'points') {
       if (!user) {
         setErrorMsg("Debes iniciar sesión para usar puntos.");
@@ -80,9 +80,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         return;
       }
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       let receiptDataUrl = null;
       if (receiptFile) {
@@ -112,7 +112,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(data.error || 'Error al procesar la reserva. Por favor intenta de nuevo.');
       }
@@ -144,14 +144,14 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           <p className="mt-4 mb-2 text-muted">Tus números asignados para la rifa <strong>{raffle.title}</strong> son:</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '1.5rem' }}>
             {assignedTickets.map(t => (
-              <span 
-                key={t} 
-                style={{ 
-                  backgroundColor: 'var(--primary-cyan)', 
-                  color: '#000', 
-                  fontWeight: 'bold', 
-                  padding: '4px 12px', 
-                  borderRadius: '4px', 
+              <span
+                key={t}
+                style={{
+                  backgroundColor: 'var(--primary-cyan)',
+                  color: '#000',
+                  fontWeight: 'bold',
+                  padding: '4px 12px',
+                  borderRadius: '4px',
                   fontSize: '1.2rem',
                   boxShadow: '0 0 10px rgba(0, 242, 254, 0.5)'
                 }}
@@ -164,7 +164,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             <p style={{ color: 'var(--primary-cyan)', fontSize: '0.8rem', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px' }}>🔑 Código Secreto de Verificación</p>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
               <p style={{ fontSize: '2.5rem', fontWeight: 'bold', letterSpacing: '4px', margin: 0, color: '#fff' }}>{verificationCode}</p>
-              <button 
+              <button
                 onClick={() => {
                   navigator.clipboard.writeText(verificationCode);
                   const btn = document.getElementById('copy-btn');
@@ -235,9 +235,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             <ShieldAlert size={50} className="text-cyan-400" />
           </div>
           <h2 style={{ color: 'var(--primary-cyan)', marginBottom: '15px' }}>Términos y Condiciones</h2>
-          
+
           <div style={{ textAlign: 'left', fontSize: '0.9rem', lineHeight: '1.6', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <p><strong>1. Dinámica del Sorteo:</strong> La rifa se efectuará cuando se alcance el 40% de boletos vendidos; en caso contrario, se anunciará el cambio del premio o modalidad.</p>
+            <p><strong>1. Dinámica del Sorteo:</strong> La rifa se efectuará cuando se alcance el 75% de boletos vendidos; en caso contrario, se anunciará el cambio del premio o modalidad.</p>
             <p><strong>2. Veracidad de Datos:</strong> Los datos proporcionados (Nombre, Cédula y Teléfono/WhatsApp) deben ser reales y exactos. El premio solo se entregará al titular de la cédula registrada en la compra. Si los datos son falsos, el boleto ganador será invalidado.</p>
             <p><strong>3. Validación del Pago:</strong> En los pagos mediante transferencia bancaria, el boleto no será válido ni estará asegurado hasta que la administración confirme la recepción de los fondos. Enviar el comprobante no asegura los números si el pago es rechazado.</p>
             <p><strong>4. Transferencias Interbancarias (Fines de Semana y Feriados):</strong> Si realizas una transferencia desde un banco diferente durante un fin de semana (sábado y domingo) o en un día no laborable (feriado), la transacción no será aprobada el mismo día, sino hasta que el dinero se refleje efectivamente en nuestra cuenta en el siguiente día hábil/laborable.</p>
@@ -245,10 +245,10 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             <p><strong>6. Reclamación:</strong> El ganador dispondrá de un plazo máximo de <strong>15 días</strong> a partir de la fecha del sorteo para reclamar su premio presentando físicamente la cédula original registrada en la compra.</p>
             <p><strong>7. Uso de Imagen:</strong> Al participar y ganar, el usuario autoriza a Shark Rifas a utilizar su imagen (fotos/videos del momento de entrega) exclusivamente con fines de transparencia y publicidad en redes sociales.</p>
           </div>
-          
-          <button className="btn-primary w-full mt-6" onClick={() => { 
-            setAcceptedTerms(true); 
-            setShowTermsModal(false); 
+
+          <button className="btn-primary w-full mt-6" onClick={() => {
+            setAcceptedTerms(true);
+            setShowTermsModal(false);
             setTimeout(() => {
               const modalEl = document.querySelector('.modal-content');
               if (modalEl) modalEl.scrollTo({ top: modalEl.scrollHeight, behavior: 'smooth' });
@@ -265,7 +265,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="modal-close" onClick={onClose}>×</button>
-        
+
         <div className="modal-header">
           {raffle.image_url && (
             <div style={{ width: '100%', height: '120px', borderRadius: '8px', overflow: 'hidden', marginBottom: '15px' }}>
@@ -281,27 +281,27 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           <div className="form-section">
             <label>CANTIDAD DE BOLETOS</label>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                background: 'rgba(255,255,255,0.05)', 
-                borderRadius: '8px', 
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '8px',
                 padding: '4px',
-                border: '1px solid var(--border-color)' 
+                border: '1px solid var(--border-color)'
               }}>
-                <button 
-                  type="button" 
-                  style={{ 
-                    fontSize: '2rem', 
-                    width: '60px', 
-                    height: '50px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    border: 'none', 
+                <button
+                  type="button"
+                  style={{
+                    fontSize: '2rem',
+                    width: '60px',
+                    height: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none',
                     background: 'var(--bg-panel)',
                     borderRadius: '6px',
-                    color: 'var(--text-main)', 
+                    color: 'var(--text-main)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
@@ -311,18 +311,18 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 >
                   -
                 </button>
-                <input 
-                  type="number" 
-                  value={quantity} 
-                  onChange={e => setQuantity(Math.max(raffle.min_tickets || 1, parseInt(e.target.value) || (raffle.min_tickets || 1)))} 
-                  style={{ 
-                    fontSize: '1.8rem', 
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={e => setQuantity(Math.max(raffle.min_tickets || 1, parseInt(e.target.value) || (raffle.min_tickets || 1)))}
+                  style={{
+                    fontSize: '1.8rem',
                     fontFamily: 'var(--font-heading)',
                     color: 'var(--primary-cyan)',
-                    width: '90px', 
-                    textAlign: 'center', 
-                    background: 'transparent', 
-                    border: 'none', 
+                    width: '90px',
+                    textAlign: 'center',
+                    background: 'transparent',
+                    border: 'none',
                     outline: 'none',
                     padding: '0',
                     margin: '0',
@@ -330,19 +330,19 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   }}
                   min={raffle.min_tickets || 1}
                 />
-                <button 
-                  type="button" 
-                  style={{ 
-                    fontSize: '2rem', 
-                    width: '60px', 
-                    height: '50px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    border: 'none', 
+                <button
+                  type="button"
+                  style={{
+                    fontSize: '2rem',
+                    width: '60px',
+                    height: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none',
                     background: 'var(--bg-panel)',
                     borderRadius: '6px',
-                    color: 'var(--text-main)', 
+                    color: 'var(--text-main)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
@@ -369,44 +369,44 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           {/* User Data Section */}
           <div className="form-section">
             <label>TU NOMBRE COMPLETO</label>
-            <input 
-              type="text" 
-              value={formData.fullName} 
-              onChange={e => setFormData({...formData, fullName: e.target.value})} 
-              placeholder="Ej: Juan Pérez" 
+            <input
+              type="text"
+              value={formData.fullName}
+              onChange={e => setFormData({ ...formData, fullName: e.target.value })}
+              placeholder="Ej: Juan Pérez"
               required
             />
           </div>
-          
+
           <div className="form-section">
             <label>CÉDULA DE IDENTIDAD</label>
-            <input 
-              type="text" 
-              value={formData.cedula} 
-              onChange={e => setFormData({...formData, cedula: e.target.value})} 
-              placeholder="Ej: 402-XXXXXXX-X" 
+            <input
+              type="text"
+              value={formData.cedula}
+              onChange={e => setFormData({ ...formData, cedula: e.target.value })}
+              placeholder="Ej: 402-XXXXXXX-X"
               required
             />
           </div>
 
           <div className="form-section">
             <label>TELÉFONO / WHATSAPP</label>
-            <input 
-              type="text" 
-              value={formData.phone} 
-              onChange={e => setFormData({...formData, phone: e.target.value})} 
-              placeholder="809-XXX-XXXX" 
+            <input
+              type="text"
+              value={formData.phone}
+              onChange={e => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="809-XXX-XXXX"
               required
             />
           </div>
 
           <div className="form-section">
             <label>CORREO ELECTRÓNICO</label>
-            <input 
-              type="email" 
-              value={formData.email} 
-              onChange={e => setFormData({...formData, email: e.target.value})} 
-              placeholder="tu@correo.com" 
+            <input
+              type="email"
+              value={formData.email}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              placeholder="tu@correo.com"
               required
             />
           </div>
@@ -417,8 +417,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             {/* Hide Bank Options if Points is selected or not explicitly selected */}
             {paymentMethod !== 'points' && (
               <div className="payment-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`pay-btn ${paymentMethod === 'paypal' ? 'selected' : ''}`}
                   onClick={() => setPaymentMethod('paypal')}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
@@ -426,8 +426,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
                   <span style={{ fontSize: '0.7rem' }}>PAYPAL</span>
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`pay-btn ${paymentMethod === 'reservas' ? 'selected' : ''}`}
                   onClick={() => setPaymentMethod('reservas')}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
@@ -435,8 +435,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   <img src="/banreservas.png" alt="Reservas" style={{ height: '30px', objectFit: 'contain' }} />
                   <span style={{ fontSize: '0.65rem' }}>BANRESERVAS</span>
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`pay-btn ${paymentMethod === 'qik' ? 'selected' : ''}`}
                   onClick={() => setPaymentMethod('qik')}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
@@ -452,7 +452,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 {(() => {
                   let details = { name: '', number: '', holder: 'SHARK RD', type: '', extra: '', isPaypal: false };
-                  
+
                   if (paymentMethod === 'paypal') {
                     details = { name: 'PAYPAL', number: 'adminsharkrd@gmail.com', holder: 'SharkRDrifas', type: 'US$ Dólares', extra: '', isPaypal: true };
                   } else if (paymentMethod === 'reservas') {
@@ -478,10 +478,10 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       <p style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px', textTransform: 'uppercase' }}>{details.name}</p>
-                      
+
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '8px' }}>
                         <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#fff', letterSpacing: '0.5px' }}>{details.number}</span>
-                        <button 
+                        <button
                           type="button"
                           id="copy-account-btn"
                           onClick={() => handleCopy(details.number, 'copy-account-btn')}
@@ -511,7 +511,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                           <div style={{ margin: '8px 0 0 0', padding: '8px 10px', background: 'rgba(255, 140, 0, 0.1)', borderLeft: '3px solid var(--accent-orange)', borderRadius: '4px' }}>
                             <p style={{ margin: 0, color: 'var(--accent-orange)', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '3px' }}>⚠️ NOTA IMPORTANTE:</p>
                             <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '0.75rem', lineHeight: '1.4' }}>
-                              En el concepto de tu transferencia debes poner <strong>exclusivamente</strong> alguna de estas frases: <strong style={{color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px'}}>PAGO DE BOLETO</strong> o <strong style={{color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px'}}>PAGO RIFA</strong>.
+                              En el concepto de tu transferencia debes poner <strong>exclusivamente</strong> alguna de estas frases: <strong style={{ color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px' }}>PAGO DE BOLETO</strong> o <strong style={{ color: '#fff', backgroundColor: '#000', padding: '2px 5px', borderRadius: '3px' }}>PAGO RIFA</strong>.
                             </p>
                           </div>
                         )}
@@ -524,7 +524,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 })()}
               </div>
             )}
-            
+
             {user && (
               <div style={{ marginTop: '15px' }}>
                 <button
@@ -537,11 +537,11 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   <span>Pagar con Puntos (Total: {quantity * POINTS_PER_TICKET} pts)</span>
                 </button>
                 {paymentMethod === 'points' && (
-                   <p className="mt-2 text-center" style={{fontSize: '0.9rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)', fontWeight: 'bold'}}>
-                     {user.points >= quantity * POINTS_PER_TICKET 
-                       ? `✓ Tienes puntos suficientes (${user.points} pts)` 
-                       : `❌ Puntos insuficientes (${user.points} pts)`}
-                   </p>
+                  <p className="mt-2 text-center" style={{ fontSize: '0.9rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)', fontWeight: 'bold' }}>
+                    {user.points >= quantity * POINTS_PER_TICKET
+                      ? `✓ Tienes puntos suficientes (${user.points} pts)`
+                      : `❌ Puntos insuficientes (${user.points} pts)`}
+                  </p>
                 )}
               </div>
             )}
@@ -551,8 +551,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           {paymentMethod !== 'points' && (
             <div className="form-section mt-4">
               <label>Sube tu captura de pago (JPG, PNG)</label>
-              <input 
-                type="file" 
+              <input
+                type="file"
                 accept="image/png, image/jpeg, image/jpg"
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
@@ -569,7 +569,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   }
                 }}
                 style={{
-                  backgroundColor: 'rgba(0,0,0,0.5)', 
+                  backgroundColor: 'rgba(0,0,0,0.5)',
                   border: receiptFile ? '1px solid var(--success)' : '1px dashed var(--primary-cyan)',
                   padding: '10px'
                 }}
@@ -579,9 +579,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           )}
 
           <div className="form-section mt-4" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <input 
-              type="checkbox" 
-              id="terms-checkbox" 
+            <input
+              type="checkbox"
+              id="terms-checkbox"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
               style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: 'var(--primary-cyan)', marginTop: '2px' }}

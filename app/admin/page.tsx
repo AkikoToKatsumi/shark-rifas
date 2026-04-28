@@ -12,6 +12,7 @@ import {
   Download, Filter, RefreshCcw, Search
 } from 'lucide-react';
 import DigitalTicket from '../components/DigitalTicket';
+import RichTextEditor from '../components/RichTextEditor';
 
 type Raffle = {
   id: string;
@@ -1043,10 +1044,9 @@ export default function AdminPage() {
 
             <div className="admin-form-group">
               <label>DESCRIPCIÓN</label>
-              <textarea 
-                className="admin-input admin-textarea"
-                value={newRaffle.description} 
-                onChange={e => setNewRaffle({...newRaffle, description: e.target.value})} 
+              <RichTextEditor
+                value={newRaffle.description}
+                onChange={(html) => setNewRaffle({...newRaffle, description: html})}
                 placeholder="Descripción detallada del premio..."
               />
             </div>

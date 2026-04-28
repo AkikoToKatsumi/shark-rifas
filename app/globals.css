@@ -1004,6 +1004,81 @@ a {
   resize: vertical;
 }
 
+/* ── Rich Text Editor (Tiptap) ── */
+.rich-editor-body {
+  min-height: 160px;
+  padding: 14px 16px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  outline: none;
+  caret-color: var(--primary-cyan);
+}
+
+.rich-editor-body p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+.rich-editor-body h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-cyan);
+  margin: 0.5rem 0 0.3rem;
+}
+
+.rich-editor-body h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-orange);
+  margin: 0.4rem 0 0.2rem;
+}
+
+.rich-editor-body strong { font-weight: 700; color: #fff; }
+.rich-editor-body em { font-style: italic; }
+.rich-editor-body u { text-decoration: underline; }
+.rich-editor-body s { text-decoration: line-through; opacity: 0.7; }
+
+.rich-editor-body ul {
+  padding-left: 1.4rem;
+  list-style: disc;
+  margin: 0.3rem 0;
+}
+.rich-editor-body ol {
+  padding-left: 1.4rem;
+  list-style: decimal;
+  margin: 0.3rem 0;
+}
+.rich-editor-body li { margin: 2px 0; }
+
+.rich-editor-body blockquote {
+  border-left: 3px solid var(--primary-cyan);
+  padding-left: 12px;
+  color: var(--text-muted);
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+.rich-editor-body hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  margin: 0.8rem 0;
+}
+
+/* raffle card description rendered HTML */
+.raffle-description h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary-cyan); margin: 0.4rem 0 0.2rem; }
+.raffle-description h3 { font-size: 0.95rem; font-weight: 700; color: var(--accent-orange); margin: 0.3rem 0 0.15rem; }
+.raffle-description strong { font-weight: 700; }
+.raffle-description ul { padding-left: 1.2rem; list-style: disc; }
+.raffle-description ol { padding-left: 1.2rem; list-style: decimal; }
+.raffle-description blockquote { border-left: 3px solid var(--primary-cyan); padding-left: 10px; opacity: 0.8; font-style: italic; }
+.raffle-description hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 0.5rem 0; }
+
+
 .admin-form-group {
   display: flex;
   flex-direction: column;

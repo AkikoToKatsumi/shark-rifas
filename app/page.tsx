@@ -128,7 +128,7 @@ export default function Home() {
                   </div>
                   <div className="raffle-content">
                     <h3>{raffle.title}</h3>
-                    <p className="raffle-desc">{raffle.description}</p>
+                    <div className="raffle-desc raffle-description" dangerouslySetInnerHTML={{ __html: raffle.description || '' }} />
 
                     <div className="raffle-info-row">
                       <div className="info-block">

@@ -35,7 +35,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   // Sync external value changes (e.g., when loading edit data)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value || '', false);
+      editor.commands.setContent(value || '', { emitUpdate: false });
     }
   }, [value, editor]);
 

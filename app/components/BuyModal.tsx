@@ -444,15 +444,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   <img src="/qik.png" alt="Qik" style={{ height: '30px', objectFit: 'contain' }} />
                   <span style={{ fontSize: '0.8rem' }}>QIK</span>
                 </button>
-                <button 
-                  type="button" 
-                  className={`pay-btn ${paymentMethod === 'bhd' ? 'selected' : ''}`}
-                  onClick={() => setPaymentMethod('bhd')}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
-                >
-                  <img src="/bhd-logo.png" alt="BHD" style={{ height: '25px', objectFit: 'contain' }} />
-                  <span style={{ fontSize: '0.8rem' }}>BHD</span>
-                </button>
+
               </div>
             )}
 
@@ -464,11 +456,9 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   if (paymentMethod === 'paypal') {
                     details = { name: 'PAYPAL', number: 'adminsharkrd@gmail.com', holder: 'SharkRDrifas', type: 'US$ Dólares', extra: '', isPaypal: true };
                   } else if (paymentMethod === 'reservas') {
-                    details = { name: 'BANCO RESERVAS', number: '960-123456-7', holder: 'SHARK RD', type: 'CUENTA DE AHORROS', extra: '', isPaypal: false };
+                    details = { name: 'BANCO RESERVAS', number: '9609127509', holder: 'Erick Eduardo Inoa D.', type: 'CUENTA CORRIENTE PERSONAL', extra: '', isPaypal: false };
                   } else if (paymentMethod === 'qik') {
                     details = { name: 'QIK', number: '1009585431', holder: 'Gabriela García R. o Erick E. Inoa D.', type: 'CUENTA DE AHORROS COMPARTIDA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
-                  } else if (paymentMethod === 'bhd') {
-                    details = { name: 'BANCO BHD', number: '1234567-001-8', holder: 'SHARK RD', type: 'CUENTA CORRIENTE', extra: '', isPaypal: false };
                   }
 
                   const handleCopy = (text: string, id: string) => {

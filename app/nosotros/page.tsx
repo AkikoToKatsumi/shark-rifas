@@ -20,7 +20,7 @@ export default function AboutPage() {
                 <img src="/banreservas.png" alt="Banreservas" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
                 <div>
                   <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Banco Reservas</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Depósitos y Transferencias</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cuenta Corriente Personal</span>
                 </div>
               </div>
 
@@ -32,13 +32,7 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <img src="/bhd-logo.png" alt="BHD" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
-                <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Banco BHD</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cuenta Corriente</span>
-                </div>
-              </div>
+{/* BHD temporalmente oculto */}
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>🌐</span>

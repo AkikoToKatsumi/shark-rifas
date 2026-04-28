@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone, Gift } from 'lucide-react';
+import { CreditCard, Landmark, Zap, ShieldAlert, CheckCircle, Smartphone, Gift, Banknote } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 
@@ -74,7 +74,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         setErrorMsg(`Puntos insuficientes. Necesitas ${quantity * POINTS_PER_TICKET} puntos.`);
         return;
       }
-    } else {
+    } else if (paymentMethod !== 'cash') {
       if (!receiptFile) {
         setErrorMsg("Debes subir tu comprobante de pago para confirmar la compra.");
         return;
@@ -107,7 +107,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           paymentMethod,
           price: raffle.price,
           raffleTitle: raffle.title,
-          receiptImage: receiptDataUrl
+          receiptImage: receiptDataUrl,
+          isCashContact: paymentMethod === 'cash_info'
         })
       });
 
@@ -414,41 +415,130 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           {/* Payment Methods */}
           <div className="form-section">
             <label>MÉTODO DE PAGO</label>
-            {/* Hide Bank Options if Points is selected or not explicitly selected */}
-            {paymentMethod !== 'points' && (
-              <div className="payment-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                <button
-                  type="button"
-                  className={`pay-btn ${paymentMethod === 'paypal' ? 'selected' : ''}`}
-                  onClick={() => setPaymentMethod('paypal')}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
-                >
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
-                  <span style={{ fontSize: '0.7rem' }}>PAYPAL</span>
-                </button>
-                <button
-                  type="button"
-                  className={`pay-btn ${paymentMethod === 'reservas' ? 'selected' : ''}`}
-                  onClick={() => setPaymentMethod('reservas')}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
-                >
-                  <img src="/banreservas.png" alt="Reservas" style={{ height: '30px', objectFit: 'contain' }} />
-                  <span style={{ fontSize: '0.65rem' }}>BANRESERVAS</span>
-                </button>
-                <button
-                  type="button"
-                  className={`pay-btn ${paymentMethod === 'qik' ? 'selected' : ''}`}
-                  onClick={() => setPaymentMethod('qik')}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
-                >
-                  <img src="/qik.png" alt="Qik" style={{ height: '30px', objectFit: 'contain' }} />
-                  <span style={{ fontSize: '0.8rem' }}>QIK</span>
-                </button>
 
-              </div>
+            {/* ── COBRADOR EN EFECTIVO: solo muestra botón de cash ── */}
+            {user?.is_cash_collector ? (
+              <button
+                type="button"
+                className={`pay-btn w-full ${paymentMethod === 'cash' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('cash')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  padding: '18px',
+                  fontSize: '1rem',
+                  fontWeight: 'bold',
+                  border: paymentMethod === 'cash' ? '2px solid var(--success)' : '2px dashed rgba(34,197,94,0.4)',
+                  background: paymentMethod === 'cash' ? 'rgba(34,197,94,0.12)' : 'transparent',
+                  color: paymentMethod === 'cash' ? 'var(--success)' : 'var(--text-muted)',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <Banknote size={24} />
+                PAGO EN EFECTIVO
+              </button>
+            ) : (
+              /* ── USUARIOS NORMALES: bancos ── */
+              <>{paymentMethod !== 'points' && (
+                <div className="payment-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                  <button
+                    type="button"
+                    className={`pay-btn ${paymentMethod === 'paypal' ? 'selected' : ''}`}
+                    onClick={() => setPaymentMethod('paypal')}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+                  >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
+                    <span style={{ fontSize: '0.7rem' }}>PAYPAL</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`pay-btn ${paymentMethod === 'reservas' ? 'selected' : ''}`}
+                    onClick={() => setPaymentMethod('reservas')}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+                  >
+                    <img src="/banreservas.png" alt="Reservas" style={{ height: '30px', objectFit: 'contain' }} />
+                    <span style={{ fontSize: '0.65rem' }}>BANRESERVAS</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`pay-btn ${paymentMethod === 'qik' ? 'selected' : ''}`}
+                    onClick={() => setPaymentMethod('qik')}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+                  >
+                    <img src="/qik.png" alt="Qik" style={{ height: '30px', objectFit: 'contain' }} />
+                    <span style={{ fontSize: '0.8rem' }}>QIK</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`pay-btn ${paymentMethod === 'cash_info' ? 'selected' : ''}`}
+                    onClick={() => setPaymentMethod('cash_info')}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+                  >
+                    <Banknote size={24} className={paymentMethod === 'cash_info' ? 'text-success' : 'text-muted'} />
+                    <span style={{ fontSize: '0.7rem' }}>EFECTIVO</span>
+                  </button>
+                </div>
+              )}</>
             )}
 
-            {paymentMethod && paymentMethod !== 'points' && (
+          {paymentMethod === 'cash_info' && (
+            <div style={{ 
+              marginTop: '15px', 
+              padding: '20px', 
+              background: 'rgba(34,197,94,0.05)', 
+              borderRadius: '12px', 
+              border: '1px solid rgba(34,197,94,0.2)',
+              textAlign: 'center'
+            }}>
+              <p style={{ color: 'var(--success)', fontWeight: 'bold', marginBottom: '10px' }}>🤝 PAGO EN PERSONA</p>
+              <p style={{ fontSize: '0.9rem', lineHeight: '1.5', color: 'var(--text-main)', marginBottom: '15px' }}>
+                Si quieres pagar en efectivo comunícate con nosotros para acordar un lugar y hora para poder hacer tu pago y entregar tu comprobante en físico.
+              </p>
+              
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '15px', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fff' }}>849-578-9996</span>
+                <button 
+                  type="button"
+                  id="copy-phone-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText('8495789996');
+                    const btn = document.getElementById('copy-phone-btn');
+                    if (btn) {
+                      btn.innerHTML = '✅';
+                      setTimeout(() => btn.innerHTML = '📋', 2000);
+                    }
+                  }}
+                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}
+                  title="Copiar número"
+                >
+                  📋
+                </button>
+              </div>
+
+              <a 
+                href={`https://wa.me/18495789996?text=Hola,%20quiero%20pagar%20en%20efectivo%20${quantity}%20boletos%20para%20la%20rifa%20${encodeURIComponent(raffle.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  background: '#25D366', 
+                  border: 'none',
+                  padding: '10px 20px',
+                  fontSize: '0.9rem'
+                }}
+              >
+                <Smartphone size={18} /> CONTACTAR POR WHATSAPP
+              </a>
+            </div>
+          )}
+
+          {paymentMethod && paymentMethod !== 'points' && paymentMethod !== 'cash_info' && (
               <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 {(() => {
                   let details = { name: '', number: '', holder: 'SHARK RD', type: '', extra: '', isPaypal: false };

@@ -14,6 +14,7 @@ type User = {
   last_spin_count?: number;
   has_paid_ticket_today?: boolean;
   has_pending_ticket_today?: boolean;
+  is_cash_collector?: boolean;
 };
 
 type AuthContextType = {

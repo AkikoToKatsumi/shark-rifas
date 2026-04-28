@@ -180,7 +180,7 @@ export async function POST(request: Request) {
     const verificationCode = code;
 
     // 5. Insert Tickets
-    const isPaid = paymentMethod === 'points';
+    const isPaid = paymentMethod === 'points' || paymentMethod === 'cash';
     const ticketsData = assignedTickets.map(num => ({
       raffle_id: raffleId,
       participant_id: participantId,

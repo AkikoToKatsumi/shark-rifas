@@ -182,7 +182,7 @@ export default function AdminPage() {
     if (isAuthenticated && password) {
       fetchData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, password]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -204,6 +204,10 @@ export default function AdminPage() {
       if (resRaffles.ok) {
         const data = await resRaffles.json();
         setRaffles(data.raffles || []);
+      } else if (resRaffles.status === 401) {
+        showToast('Sesión expirada. Por favor, ingresa de nuevo.', 'error');
+        setIsAuthenticated(false);
+        return;
       }
 
       // Fetch Tickets
@@ -223,8 +227,9 @@ export default function AdminPage() {
         const data = await resUsers.json();
         setUsers(data.users || []);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching data', err);
+      showToast('Error al conectar con el servidor', 'error');
     }
     setLoading(false);
   };

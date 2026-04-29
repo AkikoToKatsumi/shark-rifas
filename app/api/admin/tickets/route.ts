@@ -29,7 +29,7 @@ export async function GET(request: Request) {
         verification_code,
         collector_id,
         created_at,
-        participants (
+        participants!participant_id (
           id,
           full_name,
           phone,

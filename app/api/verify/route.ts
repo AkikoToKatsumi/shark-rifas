@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         ticket_number,
         status,
         payment_method,
-        participants!inner (
+        participants!participant_id (
           id,
           full_name,
           phone,
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
           ticket_number,
           status,
           payment_method,
-          participants!inner (
+          participants!participant_id (
             id,
             full_name,
             phone,

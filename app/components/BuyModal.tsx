@@ -474,6 +474,15 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   </button>
                   <button
                     type="button"
+                    className={`pay-btn ${paymentMethod === 'bhd' ? 'selected' : ''}`}
+                    onClick={() => setPaymentMethod('bhd')}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
+                  >
+                    <img src="/bhd-logo.png" alt="BHD" style={{ height: '30px', objectFit: 'contain' }} />
+                    <span style={{ fontSize: '0.8rem' }}>BHD</span>
+                  </button>
+                  <button
+                    type="button"
                     className={`pay-btn ${paymentMethod === 'cash_info' ? 'selected' : ''}`}
                     onClick={() => setPaymentMethod('cash_info')}
                     style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
@@ -550,6 +559,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                     details = { name: 'BANCO RESERVAS', number: '9609127509', holder: 'Erick Eduardo Inoa D.', type: 'CUENTA CORRIENTE PERSONAL', extra: '', isPaypal: false };
                   } else if (paymentMethod === 'qik') {
                     details = { name: 'QIK', number: '1009585431', holder: 'Gabriela García R. o Erick E. Inoa D.', type: 'CUENTA DE AHORROS COMPARTIDA | ESTÁNDAR: DO68QDDM00000000001009585431', extra: '', isPaypal: false };
+                  } else if (paymentMethod === 'bhd') {
+                    details = { name: 'BANCO BHD', number: '39503890027', holder: 'Erick Eduardo Inoa D.', type: 'CUENTA MÓVIL (AHORROS)', extra: '', isPaypal: false };
                   }
 
                   const handleCopy = (text: string, id: string) => {

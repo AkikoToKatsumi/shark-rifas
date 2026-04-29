@@ -42,6 +42,16 @@ export default function AboutPage() {
                 </div>
               </div>
 
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(34, 197, 94, 0.05)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>💵</span>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold', color: '#22c55e' }}>Pagos en Efectivo</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.2', display: 'block' }}>
+                    Puedes pagar en persona a través de nuestros colaboradores autorizados o contactarnos vía WhatsApp para coordinar.
+                  </span>
+                </div>
+              </div>
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0, 242, 254, 0.05)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(0, 242, 254, 0.2)' }}>
                 <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>🎡</span>
                 <div>

@@ -78,8 +78,11 @@ export default function AdminPage() {
   // Data State
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'users'>('dashboard');
   const [loading, setLoading] = useState(false);
   const [ticketSearch, setTicketSearch] = useState('');
+  const [userSearch, setUserSearch] = useState('');
 
   // Participant Search State
   const [searchParticipantQuery, setSearchParticipantQuery] = useState('');
@@ -197,6 +200,15 @@ export default function AdminPage() {
       if (resTickets.ok) {
         const data = await resTickets.json();
         setTickets([...(data.tickets || [])]); // Spread for fresh reference
+      }
+
+      // Fetch Users
+      const resUsers = await fetch(`/api/admin/users?t=${Date.now()}`, {
+        headers: { 'x-admin-key': password }
+      });
+      if (resUsers.ok) {
+        const data = await resUsers.json();
+        setUsers(data.users || []);
       }
     } catch (err) {
       console.error('Error fetching data', err);
@@ -595,6 +607,51 @@ export default function AdminPage() {
     }
   };
 
+  const handleToggleCollaborator = async (userId: string, currentStatus: boolean) => {
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        body: JSON.stringify({ userId, updates: { is_cash_collector: !currentStatus } })
+      });
+      if (res.ok) {
+        showToast('Estado de colaborador actualizado', 'success');
+        fetchData();
+      } else {
+        showToast('Error al actualizar usuario', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error de conexión', 'error');
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    showConfirm(
+      '¿Eliminar Usuario?',
+      `¿Estás seguro de eliminar a ${userName}? Esta acción no se puede deshacer y fallará si tiene boletos asociados.`,
+      async () => {
+        try {
+          const res = await fetch('/api/admin/users', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+            body: JSON.stringify({ userId })
+          });
+          if (res.ok) {
+            showToast('Usuario eliminado', 'success');
+            fetchData();
+          } else {
+            const data = await res.json();
+            showToast(data.error || 'Error al eliminar usuario', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      'Eliminar'
+    );
+  };
+
   // --- Dashboard Data Processing ---
   const dashboardData: DashboardData = useMemo(() => {
     const paidTickets = tickets.filter(t => t.status === 'paid');
@@ -800,7 +857,45 @@ export default function AdminPage() {
           <h1 className="dashboard-title">Panel de Control</h1>
           <p className="dashboard-subtitle">Monitorea el rendimiento de Shark Rifas en tiempo real.</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <div className="tab-navigation" style={{ 
+            display: 'flex', 
+            background: 'rgba(255,255,255,0.05)', 
+            padding: '4px', 
+            borderRadius: '12px',
+            marginRight: '10px'
+          }}>
+            <button 
+              onClick={() => setActiveTab('dashboard')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                border: 'none',
+                background: activeTab === 'dashboard' ? 'var(--primary-cyan)' : 'transparent',
+                color: activeTab === 'dashboard' ? '#000' : 'var(--text-muted)',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              📊 DASHBOARD
+            </button>
+            <button 
+              onClick={() => setActiveTab('users')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                border: 'none',
+                background: activeTab === 'users' ? 'var(--primary-cyan)' : 'transparent',
+                color: activeTab === 'users' ? '#000' : 'var(--text-muted)',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              👥 USUARIOS
+            </button>
+          </div>
           <button onClick={fetchData} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} /> ACTUALIZAR
           </button>
@@ -809,6 +904,9 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+
+      {activeTab === 'dashboard' ? (
+        <>
 
       {/* --- METRICS CARDS --- */}
       <div className="metrics-grid">
@@ -1590,6 +1688,116 @@ export default function AdminPage() {
             <button className="btn-primary w-full mt-6" onClick={() => setViewingTickets(null)} style={{ borderRadius: '12px' }}>
               CERRAR LISTA
             </button>
+          </div>
+        </div>
+      )}
+
+      </>
+      ) : (
+        /* --- USERS MANAGEMENT TAB --- */
+        <div className="users-management-section">
+          <div className="table-wrapper" style={{ marginTop: '0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ color: 'var(--primary-cyan)', margin: 0 }}>👥 GESTIÓN DE USUARIOS Y COLABORADORES</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '5px' }}>
+                  Administra los roles de colaboradores (cobro en efectivo) y visualiza tus clientes registrados.
+                </p>
+              </div>
+              <input 
+                type="text" 
+                placeholder="🔍 Buscar por nombre, cédula o teléfono..." 
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                style={{ width: '100%', maxWidth: '350px', padding: '10px 15px', borderRadius: '12px' }}
+              />
+            </div>
+            
+            <table className="admin-table-premium">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Cédula</th>
+                  <th>Teléfono</th>
+                  <th>Puntos</th>
+                  <th>Rol / Estado</th>
+                  <th style={{ textAlign: 'right' }}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users
+                  .filter(u => {
+                    const search = userSearch.toLowerCase();
+                    return (
+                      u.full_name?.toLowerCase().includes(search) ||
+                      u.phone?.includes(search) ||
+                      u.cedula?.includes(search) ||
+                      u.email?.toLowerCase().includes(search)
+                    );
+                  })
+                  .map(user => (
+                    <tr key={user.id}>
+                      <td>
+                        <div style={{ fontWeight: 'bold', color: '#fff' }}>{user.full_name}</div>
+                        <div style={{ fontSize: '0.7rem', opacity: 0.5 }}>{user.email}</div>
+                      </td>
+                      <td style={{ fontSize: '0.9rem' }}>{user.cedula || '---'}</td>
+                      <td style={{ fontSize: '0.9rem' }}>{user.phone}</td>
+                      <td style={{ color: 'var(--primary-cyan)', fontWeight: 'bold' }}>{user.points || 0} pts</td>
+                      <td>
+                        <span style={{ 
+                          padding: '4px 10px', 
+                          borderRadius: '6px', 
+                          fontSize: '0.7rem', 
+                          fontWeight: '700',
+                          backgroundColor: user.is_cash_collector ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          color: user.is_cash_collector ? 'var(--success)' : 'var(--text-muted)'
+                        }}>
+                          {user.is_cash_collector ? '🤝 COLABORADOR (CASH)' : '👤 CLIENTE'}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                          <button 
+                            onClick={() => handleToggleCollaborator(user.id, !!user.is_cash_collector)}
+                            className="btn-secondary"
+                            style={{ 
+                              padding: '6px 12px', 
+                              fontSize: '0.7rem',
+                              border: user.is_cash_collector ? '1px solid var(--success)' : '1px solid rgba(255,255,255,0.1)',
+                              color: user.is_cash_collector ? 'var(--success)' : '#fff'
+                            }}
+                          >
+                            {user.is_cash_collector ? 'QUITAR ROL' : 'HACER COLABORADOR'}
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteUser(user.id, user.full_name)}
+                            style={{ 
+                              padding: '6px 10px', 
+                              fontSize: '0.7rem', 
+                              color: '#ef4444', 
+                              border: '1px solid rgba(239, 68, 68, 0.2)', 
+                              borderRadius: '4px', 
+                              background: 'none', 
+                              cursor: 'pointer' 
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                }
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                      No se encontraron usuarios registrados.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

@@ -78,7 +78,9 @@ export async function POST(request: Request) {
       tickets: tickets.map(t => ({
         ticket_number: t.ticket_number,
         status: t.status,
-        raffle_title: t.raffles?.title || (Array.isArray(t.raffles) ? t.raffles[0]?.title : 'Rifa')
+        raffle_title: Array.isArray(t.raffles) 
+          ? t.raffles[0]?.title 
+          : (t.raffles as any)?.title || 'Rifa'
       }))
     });
 

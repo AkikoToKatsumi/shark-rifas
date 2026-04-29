@@ -196,41 +196,47 @@ export default function AdminPage() {
 
   const fetchData = async () => {
     setLoading(true);
+
+    // Fetch Raffles
     try {
-      // Fetch Raffles
       const resRaffles = await fetch(`/api/admin/raffles?t=${Date.now()}`, {
         headers: { 'x-admin-key': password }
       });
       if (resRaffles.ok) {
         const data = await resRaffles.json();
         setRaffles(data.raffles || []);
-      } else if (resRaffles.status === 401) {
-        showToast('Sesión expirada. Por favor, ingresa de nuevo.', 'error');
-        setIsAuthenticated(false);
-        return;
+      } else {
+        showToast('Error cargando rifas', 'error');
       }
+    } catch (e) { console.error(e); }
 
-      // Fetch Tickets
+    // Fetch Tickets
+    try {
       const resTickets = await fetch(`/api/admin/tickets?t=${Date.now()}`, {
         headers: { 'x-admin-key': password }
       });
       if (resTickets.ok) {
         const data = await resTickets.json();
-        setTickets([...(data.tickets || [])]); // Spread for fresh reference
+        setTickets([...(data.tickets || [])]);
+      } else {
+        const errData = await resTickets.json().catch(() => ({}));
+        showToast('Error cargando tickets: ' + (errData.error || ''), 'error');
       }
+    } catch (e) { console.error(e); }
 
-      // Fetch Users
+    // Fetch Users
+    try {
       const resUsers = await fetch(`/api/admin/users?t=${Date.now()}`, {
         headers: { 'x-admin-key': password }
       });
       if (resUsers.ok) {
         const data = await resUsers.json();
         setUsers(data.users || []);
+      } else {
+        showToast('Error cargando usuarios', 'error');
       }
-    } catch (err: any) {
-      console.error('Error fetching data', err);
-      showToast('Error al conectar con el servidor', 'error');
-    }
+    } catch (e) { console.error(e); }
+
     setLoading(false);
   };
 

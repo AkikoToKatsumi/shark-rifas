@@ -838,18 +838,17 @@ export default function AdminPage() {
     });
   }, [tickets, ticketSearch]);
 
-  // Agrupación para tabla (POR PARTICIPANTE en lugar de por compra)
+  // Agrupación para tabla (POR COMPRA / CÓDIGO DE VERIFICACIÓN)
   const groupedTicketsTable = useMemo(() => {
     const groups: Record<string, Ticket[]> = {};
     filteredTickets.forEach(t => {
-      const p = Array.isArray(t.participants) ? t.participants[0] : t.participants;
-      // Clave de grupo: ID del participante
-      const participantKey = p?.id || `anon-${t.id}`;
-      if (!groups[participantKey]) groups[participantKey] = [];
-      groups[participantKey].push(t);
+      // Clave de grupo: Código de verificación (cada compra tiene uno único)
+      const groupKey = t.verification_code || `anon-${t.id}`;
+      if (!groups[groupKey]) groups[groupKey] = [];
+      groups[groupKey].push(t);
     });
     
-    return Object.entries(groups).map(([participantKey, gTickets]) => {
+    return Object.entries(groups).map(([code, gTickets]) => {
       // Ordenar por fecha para obtener la información más reciente (código, etc)
       const sortedByDate = [...gTickets].sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       const first = sortedByDate[0];
@@ -863,8 +862,7 @@ export default function AdminPage() {
       const latestCode = first.verification_code;
       
       return {
-        code: latestCode, 
-        participantKey,
+        code, 
         tickets: gTickets,
         participant,
         status: allPaid ? 'paid' : (allPending ? 'pending' : 'mixed'),

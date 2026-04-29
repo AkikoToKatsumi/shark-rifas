@@ -108,7 +108,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           price: raffle.price,
           raffleTitle: raffle.title,
           receiptImage: receiptDataUrl,
-          isCashContact: paymentMethod === 'cash_info'
+          isCashContact: paymentMethod === 'cash_info',
+          collectorId: user?.is_cash_collector ? user.id : null
         })
       });
 

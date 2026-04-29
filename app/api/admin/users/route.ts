@@ -28,6 +28,53 @@ export async function GET(request: Request) {
   }
 }
 
+// POST: Create a new user
+export async function POST(request: Request) {
+  if (!validateAdminKey(request)) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { full_name, email, phone, cedula, points, is_cash_collector } = body;
+
+    // Generate a customer code if not provided
+    let customer_code = '001';
+    const { data: lastParticipant } = await supabaseAdmin
+      .from('participants')
+      .select('customer_code')
+      .not('customer_code', 'is', null)
+      .order('customer_code', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (lastParticipant && lastParticipant.customer_code) {
+      customer_code = (parseInt(lastParticipant.customer_code, 10) + 1).toString().padStart(3, '0');
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('participants')
+      .insert([{
+        full_name,
+        email: email?.toLowerCase(),
+        phone,
+        cedula,
+        points: Number(points) || 0,
+        is_cash_collector: !!is_cash_collector,
+        customer_code
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, user: data });
+  } catch (error: any) {
+    console.error('Admin API Users POST Error:', error);
+    return NextResponse.json({ error: 'Error creando usuario' }, { status: 500 });
+  }
+}
+
 // PATCH: Update user status (e.g. toggle is_cash_collector)
 export async function PATCH(request: Request) {
   if (!validateAdminKey(request)) {

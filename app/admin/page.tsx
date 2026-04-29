@@ -80,6 +80,7 @@ export default function AdminPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'users'>('dashboard');
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [loading, setLoading] = useState(false);
   const [ticketSearch, setTicketSearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
@@ -113,6 +114,18 @@ export default function AdminPage() {
     raffle_type: 'estandar',
     min_tickets: '1'
   });
+
+  // New User Form State
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [userForm, setUserForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    cedula: '',
+    points: '0',
+    is_cash_collector: false
+  });
+
   const [uploading, setUploading] = useState(false);
   const [editingGroupCode, setEditingGroupCode] = useState<string | null>(null);
 
@@ -652,6 +665,69 @@ export default function AdminPage() {
     );
   };
 
+  const handleSaveUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const url = '/api/admin/users';
+      const method = editingUserId ? 'PATCH' : 'POST';
+      const bodyData = editingUserId 
+        ? { userId: editingUserId, updates: {
+            full_name: userForm.full_name,
+            email: userForm.email.toLowerCase(),
+            phone: userForm.phone,
+            cedula: userForm.cedula,
+            points: Number(userForm.points),
+            is_cash_collector: userForm.is_cash_collector
+          }}
+        : {
+            full_name: userForm.full_name,
+            email: userForm.email.toLowerCase(),
+            phone: userForm.phone,
+            cedula: userForm.cedula,
+            points: Number(userForm.points),
+            is_cash_collector: userForm.is_cash_collector
+          };
+
+      const res = await fetch(url, {
+        method,
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-key': password
+        },
+        body: JSON.stringify(bodyData)
+      });
+
+      if (res.ok) {
+        setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false });
+        setEditingUserId(null);
+        fetchData();
+        showToast(editingUserId ? 'Usuario actualizado' : 'Usuario creado', 'success');
+      } else {
+        showToast('Error al guardar usuario', 'error');
+      }
+    } catch (err) {
+      showToast('Error de conexión', 'error');
+    }
+  };
+
+  const handleEditUser = (u: any) => {
+    setEditingUserId(u.id);
+    setUserForm({
+      full_name: u.full_name || '',
+      email: u.email || '',
+      phone: u.phone || '',
+      cedula: u.cedula || '',
+      points: String(u.points || 0),
+      is_cash_collector: !!u.is_cash_collector
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelUserEdit = () => {
+    setEditingUserId(null);
+    setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false });
+  };
+
   // --- Dashboard Data Processing ---
   const dashboardData: DashboardData = useMemo(() => {
     const paidTickets = tickets.filter(t => t.status === 'paid');
@@ -792,6 +868,8 @@ export default function AdminPage() {
         tickets: gTickets,
         participant,
         status: allPaid ? 'paid' : (allPending ? 'pending' : 'mixed'),
+        paymentMethod: first.payment_method || 'N/A',
+        collectorId: (first as any).collector_id || null,
         totalPrice: gTickets.reduce((acc, t) => {
           const r = raffles.find(raf => raf.id === (t as any).raffle_id);
           return acc + (r?.ticket_price || 0);
@@ -1307,12 +1385,13 @@ export default function AdminPage() {
           <thead>
             <tr>
               <th>Compra / Boletos</th>
-              <th>ID Cliente</th>
+              <th>Método</th>
+              <th>Vendedor / Info</th>
+              <th>Estado</th>
               <th>Cliente</th>
-              <th>Contacto</th>
               <th>Cédula</th>
               <th>Precio Total</th>
-              <th style={{ textAlign: 'right' }}>Estado / Acciones</th>
+              <th style={{ textAlign: 'right' }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -1351,17 +1430,17 @@ export default function AdminPage() {
                     {groupTickets.length} Boletos
                   </button>
                 </td>
-                <td style={{ fontWeight: '600', color: 'var(--text-muted)' }}>{participant?.customer_code || '---'}</td>
-                <td>{participant?.full_name || 'Desconocido'}</td>
-                <td style={{ fontSize: '0.8rem' }}>
-                  {participant?.phone}<br/>
-                  <span style={{ opacity: 0.5 }}>{participant?.email}</span>
+                <td style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>{group.paymentMethod}</td>
+                <td>
+                  {group.collectorId ? (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', fontWeight: 'bold' }}>
+                      🤝 {users.find(u => u.id === group.collectorId)?.full_name || 'Colaborador'}
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Venta Directa</div>
+                  )}
                 </td>
-                <td style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '500' }}>{participant?.cedula || '-'}</td>
-                <td style={{ fontWeight: 'bold' }}>RD${group.totalPrice}</td>
-                <td style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <td>
                       <span style={{ 
                         padding: '4px 10px', 
                         borderRadius: '6px', 
@@ -1372,7 +1451,13 @@ export default function AdminPage() {
                       }}>
                         {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO ⚠️')}
                       </span>
-                      <div style={{ display: 'flex', gap: '5px' }}>
+                </td>
+                <td>{participant?.full_name || 'Desconocido'}</td>
+                <td style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '500' }}>{participant?.cedula || '-'}</td>
+                <td style={{ fontWeight: 'bold' }}>RD${group.totalPrice}</td>
+                <td style={{ textAlign: 'right' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '5px' }}>
                         {editingGroupCode === code ? (
                           <>
                             <button 
@@ -1427,7 +1512,6 @@ export default function AdminPage() {
                             ✏️ Editar
                           </button>
                         )}
-                      </div>
                     </div>
                     
                     <div style={{ display: 'flex', gap: '8px', opacity: isRowActionLoading[code] ? 0.5 : 1 }}>
@@ -1696,6 +1780,67 @@ export default function AdminPage() {
       ) : (
         /* --- USERS MANAGEMENT TAB --- */
         <div className="users-management-section">
+          {/* Create/Edit User Form */}
+          <div className="premium-form-container" style={{ marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ color: 'var(--primary-cyan)', fontSize: '1.2rem', margin: 0 }}>
+                {editingUserId ? '✏️ EDITAR USUARIO' : '➕ REGISTRAR NUEVO USUARIO / CLIENTE'}
+              </h3>
+              {editingUserId && (
+                <button type="button" onClick={cancelUserEdit} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.7rem' }}>
+                  CANCELAR
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveUser} className="admin-form-container">
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label>NOMBRE COMPLETO</label>
+                  <input className="admin-input" required value={userForm.full_name} onChange={e => setUserForm({...userForm, full_name: e.target.value})} type="text" placeholder="Ej: Juan Pérez" />
+                </div>
+                <div className="admin-form-group">
+                  <label>EMAIL</label>
+                  <input className="admin-input" required value={userForm.email} onChange={e => setUserForm({...userForm, email: e.target.value})} type="email" placeholder="correo@ejemplo.com" />
+                </div>
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label>TELÉFONO</label>
+                  <input className="admin-input" required value={userForm.phone} onChange={e => setUserForm({...userForm, phone: e.target.value})} type="text" placeholder="8091234567" />
+                </div>
+                <div className="admin-form-group">
+                  <label>CÉDULA</label>
+                  <input className="admin-input" value={userForm.cedula} onChange={e => setUserForm({...userForm, cedula: e.target.value})} type="text" placeholder="402XXXXXXX-X" />
+                </div>
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label>PUNTOS ACUMULADOS</label>
+                  <input className="admin-input" value={userForm.points} onChange={e => setUserForm({...userForm, points: e.target.value})} type="number" />
+                </div>
+                <div className="admin-form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingTop: '25px' }}>
+                  <input 
+                    type="checkbox" 
+                    id="is-collab-check" 
+                    checked={userForm.is_cash_collector} 
+                    onChange={e => setUserForm({...userForm, is_cash_collector: e.target.checked})}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="is-collab-check" style={{ margin: 0, cursor: 'pointer', color: userForm.is_cash_collector ? 'var(--success)' : 'inherit' }}>
+                    ES COLABORADOR (Vendedor en efectivo)
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
+                {editingUserId ? '⚡ ACTUALIZAR DATOS' : '👤 REGISTRAR USUARIO'}
+              </button>
+            </form>
+          </div>
+
           <div className="table-wrapper" style={{ marginTop: '0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
@@ -1759,6 +1904,13 @@ export default function AdminPage() {
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                           <button 
+                            onClick={() => handleEditUser(user)}
+                            className="btn-secondary"
+                            style={{ padding: '6px 10px', fontSize: '0.7rem' }}
+                          >
+                            ✏️
+                          </button>
+                          <button 
                             onClick={() => handleToggleCollaborator(user.id, !!user.is_cash_collector)}
                             className="btn-secondary"
                             style={{ 
@@ -1767,8 +1919,9 @@ export default function AdminPage() {
                               border: user.is_cash_collector ? '1px solid var(--success)' : '1px solid rgba(255,255,255,0.1)',
                               color: user.is_cash_collector ? 'var(--success)' : '#fff'
                             }}
+                            title={user.is_cash_collector ? 'Quitar Rol' : 'Hacer Colaborador'}
                           >
-                            {user.is_cash_collector ? 'QUITAR ROL' : 'HACER COLABORADOR'}
+                            {user.is_cash_collector ? '🤝' : '👤'}
                           </button>
                           <button 
                             onClick={() => handleDeleteUser(user.id, user.full_name)}
@@ -1798,6 +1951,109 @@ export default function AdminPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Collaborator Statistics Section */}
+          <div className="card" style={{ marginTop: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <h3 style={{ color: 'var(--success)', fontSize: '1.2rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <TrendingUp size={20} /> ESTADÍSTICAS DE COLABORADORES
+              </h3>
+              
+              <div className="filter-group" style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '8px' }}>
+                {(['all', 'today', 'week', 'month'] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setDateFilter(f)}
+                    style={{
+                      padding: '6px 12px',
+                      fontSize: '0.7rem',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: dateFilter === f ? 'var(--success)' : 'transparent',
+                      color: dateFilter === f ? '#000' : 'var(--text-muted)',
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {f === 'all' ? 'TODO' : f === 'today' ? 'HOY' : f === 'week' ? 'SEMANA' : 'MES'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="table-wrapper" style={{ background: 'rgba(0,0,0,0.2)', border: 'none' }}>
+              <table className="admin-table-premium">
+                <thead>
+                  <tr>
+                    <th>Colaborador</th>
+                    <th>Tickets Vendidos</th>
+                    <th>Dinero Generado</th>
+                    <th>Última Venta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users
+                    .filter(u => u.is_cash_collector)
+                    .map(collab => {
+                      // Filter tickets by collector AND date
+                      const collabTickets = tickets.filter(t => {
+                        const isCollab = (t as any).collector_id === collab.id;
+                        if (!isCollab) return false;
+                        
+                        if (dateFilter === 'all') return true;
+                        
+                        const ticketDate = new Date(t.created_at);
+                        const now = new Date();
+                        
+                        if (dateFilter === 'today') {
+                          return ticketDate.toDateString() === now.toDateString();
+                        }
+                        
+                        if (dateFilter === 'week') {
+                          const startOfWeek = new Date(now);
+                          startOfWeek.setDate(now.getDate() - now.getDay());
+                          startOfWeek.setHours(0,0,0,0);
+                          return ticketDate >= startOfWeek;
+                        }
+                        
+                        if (dateFilter === 'month') {
+                          return ticketDate.getMonth() === now.getMonth() && ticketDate.getFullYear() === now.getFullYear();
+                        }
+                        
+                        return true;
+                      });
+
+                      const totalMoney = collabTickets.reduce((acc, t) => {
+                        const raffle = raffles.find(r => r.id === t.raffle_id);
+                        return acc + (raffle?.ticket_price || 0);
+                      }, 0);
+                      
+                      return (
+                        <tr key={collab.id}>
+                          <td>
+                            <div style={{ fontWeight: 'bold' }}>{collab.full_name}</div>
+                            <div style={{ fontSize: '0.7rem', opacity: 0.5 }}>{collab.phone}</div>
+                          </td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{collabTickets.length}</td>
+                          <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>RD${totalMoney.toLocaleString()}</td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            {collabTickets.length > 0 
+                              ? new Date(collabTickets[0].created_at).toLocaleDateString() 
+                              : 'Sin ventas en este periodo'
+                            }
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  {users.filter(u => u.is_cash_collector).length === 0 && (
+                    <tr>
+                      <td colSpan={4} style={{ textAlign: 'center', padding: '1rem' }}>No hay colaboradores activos.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

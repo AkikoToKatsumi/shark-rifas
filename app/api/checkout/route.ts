@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { raffleId, quantity, fullName, phone, email, cedula, paymentMethod, price, raffleTitle, receiptImage } = body;
+    const { raffleId, quantity, fullName, phone, email, cedula, paymentMethod, price, raffleTitle, receiptImage, collectorId } = body;
 
     const POINTS_PER_TICKET = 500;
     const requiredPoints = quantity * POINTS_PER_TICKET;
@@ -180,14 +180,16 @@ export async function POST(request: Request) {
     const verificationCode = code;
 
     // 5. Insert Tickets
-    const isPaid = paymentMethod === 'points' || paymentMethod === 'cash';
+    // Solo los puntos son automáticos. Las ventas en efectivo (incluyendo colaboradores) pasan a aprobación.
+    const isPaid = paymentMethod === 'points';
     const ticketsData = assignedTickets.map(num => ({
       raffle_id: raffleId,
       participant_id: participantId,
       ticket_number: num,
       status: isPaid ? 'paid' : 'pending',
       payment_method: paymentMethod,
-      verification_code: verificationCode
+      verification_code: verificationCode,
+      collector_id: collectorId || null
     }));
 
     const { error: tError } = await supabaseAdmin

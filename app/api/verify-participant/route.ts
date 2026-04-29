@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     const groupedByRaffle: Record<string, any> = {};
 
     tickets.forEach(t => {
-      const raffleData: any = t.raffles;
+      const raffleData: any = Array.isArray(t.raffles) ? t.raffles[0] : t.raffles;
       const rId = raffleData?.id || 'general';
       if (!groupedByRaffle[rId]) {
         groupedByRaffle[rId] = {

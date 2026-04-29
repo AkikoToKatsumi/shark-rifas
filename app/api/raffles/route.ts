@@ -30,9 +30,13 @@ export async function GET() {
     // Sold = 'paid' + 'pending' (reserved)
     const soldTicketsCount = tickets.length;
     
-    // Approximate prize total (sum of raffle title/prices or just a symbolic number)
-    // For now we'll sum the prices * 10 to simulate a prize pool if not defined
-    const prizesTotal = raffles.length > 0 ? `RD$${(raffles.length * 50000).toLocaleString()}` : 'RD$0';
+    // Sum of prizes: (3rd: 50k + 4th: 25k) + (5 instant * 3k) + (bonus: 10k) = 100k per raffle
+    const cashPrizes = 75000;
+    const instantPrizes = 15000;
+    const bonusPrize = 10000;
+    const totalPrizesPerRaffle = cashPrizes + instantPrizes + bonusPrize;
+    
+    const prizesTotal = raffles.length > 0 ? `RD$${(raffles.length * totalPrizesPerRaffle).toLocaleString()}` : 'RD$0';
 
     // 4. Attach sold count to each raffle
     const rafflesWithSold = raffles.map(raffle => {

@@ -2,7 +2,10 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-const secretKey = process.env.ADMIN_SECRET_KEY || 'default_secret_fallback_shark';
+const secretKey = process.env.ADMIN_SECRET_KEY;
+if (!secretKey) {
+  throw new Error("ADMIN_SECRET_KEY no está configurada en las variables de entorno. La aplicación no puede iniciar de forma segura.");
+}
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: any) {
@@ -57,6 +60,38 @@ export async function getSession() {
 export async function clearSession() {
   const cookieStore = await cookies();
   cookieStore.set('participant_session', '', {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+}
+
+export async function setAdminSession(password: string) {
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+  const session = await encrypt({ role: 'admin', key: password, expires });
+  
+  const cookieStore = await cookies();
+  cookieStore.set('admin_session', session, {
+    expires,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+}
+
+export async function getAdminSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('admin_session')?.value;
+  if (!session) return null;
+  return await decrypt(session);
+}
+
+export async function clearAdminSession() {
+  const cookieStore = await cookies();
+  cookieStore.set('admin_session', '', {
     expires: new Date(0),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

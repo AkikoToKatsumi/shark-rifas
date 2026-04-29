@@ -167,14 +167,34 @@ export default function AdminPage() {
 
   // Login Check
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const auth = localStorage.getItem('shark_admin_auth');
-      const savedPass = localStorage.getItem('shark_admin_key');
-      if (auth === 'true' && savedPass) {
-        setIsAuthenticated(true);
-        setPassword(savedPass); // keep it in state for API calls
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/admin/me');
+        if (res.ok) {
+          const data = await res.json();
+          setIsAuthenticated(true);
+          setPassword(data.key);
+          // Sync localStorage for UI consistency if needed
+          localStorage.setItem('shark_admin_auth', 'true');
+          localStorage.setItem('shark_admin_key', data.key);
+        } else {
+          // Si el servidor dice que no hay sesión, limpiamos local
+          localStorage.removeItem('shark_admin_auth');
+          localStorage.removeItem('shark_admin_key');
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        // Fallback to localStorage if API fails (offline/dev)
+        const auth = localStorage.getItem('shark_admin_auth');
+        const savedPass = localStorage.getItem('shark_admin_key');
+        if (auth === 'true' && savedPass) {
+          setIsAuthenticated(true);
+          setPassword(savedPass);
+        }
       }
-    }
+    };
+
+    checkAuth();
   }, []);
 
   // Fetch Data when authenticated
@@ -263,7 +283,12 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Error logging out:', err);
+    }
     localStorage.removeItem('shark_admin_auth');
     localStorage.removeItem('shark_admin_key');
     setIsAuthenticated(false);

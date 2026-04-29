@@ -80,10 +80,13 @@ export async function POST(request: Request) {
       numbers: r.numbers.sort((a: string, b: string) => parseInt(a) - parseInt(b))
     }));
 
+    // Ofuscar nombre: "Juan Perez" -> "Ju** Pe***"
+    const rawName = participant.full_name || 'Participante';
+    const participantName = rawName.split(' ').map((n: string) => n.length > 2 ? n.substring(0, 2) + '*'.repeat(n.length - 2) : n).join(' ');
+
     return NextResponse.json({ 
       success: true, 
-      participantName: participant.full_name,
-      participantPhone: participant.phone,
+      participantName,
       raffles: results 
     });
 

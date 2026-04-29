@@ -20,11 +20,8 @@ export async function POST(request: Request) {
       .select(`
         ticket_number,
         status,
-        payment_method,
         participants!participant_id (
-          id,
           full_name,
-          phone,
           email
         ),
         raffles (
@@ -43,11 +40,8 @@ export async function POST(request: Request) {
         .select(`
           ticket_number,
           status,
-          payment_method,
           participants!participant_id (
-            id,
             full_name,
-            phone,
             email
           ),
           raffles (
@@ -66,16 +60,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Código o número de teléfono no encontrado.' }, { status: 404 });
     }
 
-    // 2. Extract participant name and email (they will all have the same participant in this group)
+    // 2. Preparar respuesta segura (limpiando datos privados)
     const pData: any = tickets[0].participants;
-    const participantName = Array.isArray(pData) ? pData[0]?.full_name : pData?.full_name;
-    const participantEmail = Array.isArray(pData) ? pData[0]?.email : pData?.email;
+    const rawName = Array.isArray(pData) ? pData[0]?.full_name : pData?.full_name;
+    const rawEmail = Array.isArray(pData) ? pData[0]?.email : pData?.email;
+
+    // Ofuscar nombre: "Juan Perez" -> "Ju** Pe***"
+    const participantName = rawName ? rawName.split(' ').map((n: string) => n.length > 2 ? n.substring(0, 2) + '*'.repeat(n.length - 2) : n).join(' ') : 'Participante';
+    
+    // Ofuscar el email si existe
+    const participantEmail = rawEmail ? rawEmail.replace(/(.{2})(.*)(?=@)/, (gp1:any, gp2:any, gp3:any) => gp2 + "*".repeat(gp3.length)) : null;
 
     return NextResponse.json({ 
       success: true, 
-      participantName: participantName,
-      participantEmail: participantEmail,
-      tickets 
+      participantName,
+      participantEmail,
+      tickets: tickets.map(t => ({
+        ticket_number: t.ticket_number,
+        status: t.status,
+        raffle_title: t.raffles?.title || (Array.isArray(t.raffles) ? t.raffles[0]?.title : 'Rifa')
+      }))
     });
 
   } catch (error: any) {

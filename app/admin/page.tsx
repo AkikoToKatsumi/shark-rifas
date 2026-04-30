@@ -173,23 +173,18 @@ export default function AdminPage() {
         if (res.ok) {
           const data = await res.json();
           setIsAuthenticated(true);
-          setPassword(data.key);
           // Sync localStorage for UI consistency if needed
           localStorage.setItem('shark_admin_auth', 'true');
-          localStorage.setItem('shark_admin_key', data.key);
         } else {
           // Si el servidor dice que no hay sesión, limpiamos local
           localStorage.removeItem('shark_admin_auth');
-          localStorage.removeItem('shark_admin_key');
           setIsAuthenticated(false);
         }
       } catch (err) {
         // Fallback to localStorage if API fails (offline/dev)
         const auth = localStorage.getItem('shark_admin_auth');
-        const savedPass = localStorage.getItem('shark_admin_key');
-        if (auth === 'true' && savedPass) {
+        if (auth === 'true') {
           setIsAuthenticated(true);
-          setPassword(savedPass);
         }
       }
     };
@@ -199,10 +194,10 @@ export default function AdminPage() {
 
   // Fetch Data when authenticated
   useEffect(() => {
-    if (isAuthenticated && password) {
+    if (isAuthenticated) {
       fetchData();
     }
-  }, [isAuthenticated, password]);
+  }, [isAuthenticated]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -219,9 +214,7 @@ export default function AdminPage() {
 
     // Fetch Raffles
     try {
-      const resRaffles = await fetch(`/api/admin/raffles?t=${Date.now()}`, {
-        headers: { 'x-admin-key': password }
-      });
+      const resRaffles = await fetch(`/api/admin/raffles?t=${Date.now()}`);
       if (resRaffles.ok) {
         const data = await resRaffles.json();
         setRaffles(data.raffles || []);
@@ -232,9 +225,7 @@ export default function AdminPage() {
 
     // Fetch Tickets
     try {
-      const resTickets = await fetch(`/api/admin/tickets?t=${Date.now()}`, {
-        headers: { 'x-admin-key': password }
-      });
+      const resTickets = await fetch(`/api/admin/tickets?t=${Date.now()}`);
       if (resTickets.ok) {
         const data = await resTickets.json();
         setTickets([...(data.tickets || [])]);
@@ -246,9 +237,7 @@ export default function AdminPage() {
 
     // Fetch Users
     try {
-      const resUsers = await fetch(`/api/admin/users?t=${Date.now()}`, {
-        headers: { 'x-admin-key': password }
-      });
+      const resUsers = await fetch(`/api/admin/users?t=${Date.now()}`);
       if (resUsers.ok) {
         const data = await resUsers.json();
         setUsers(data.users || []);
@@ -273,7 +262,6 @@ export default function AdminPage() {
       
       if (res.ok) {
         localStorage.setItem('shark_admin_auth', 'true');
-        localStorage.setItem('shark_admin_key', password);
         setIsAuthenticated(true);
       } else {
         setError('Contraseña incorrecta');
@@ -330,8 +318,7 @@ export default function AdminPage() {
       const res = await fetch(url, {
         method,
         headers: { 
-          'Content-Type': 'application/json',
-          'x-admin-key': password
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyData)
       });
@@ -455,7 +442,6 @@ export default function AdminPage() {
 
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
-        headers: { 'x-admin-key': password },
         body: formData
       });
       
@@ -487,7 +473,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/raffles', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, updates: { is_active: !currentStatus } })
       });
       if (res.ok) fetchData();
@@ -500,7 +486,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/raffles', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, updates: { is_paused: !currentStatus } })
       });
       if (res.ok) fetchData();
@@ -517,7 +503,7 @@ export default function AdminPage() {
         try {
           const res = await fetch('/api/admin/raffles', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id })
           });
           if (res.ok) {
@@ -543,8 +529,7 @@ export default function AdminPage() {
         const res = await fetch('/api/admin/tickets', {
           method: 'DELETE',
           headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': password
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ ticketIds: ids })
         });
@@ -558,8 +543,7 @@ export default function AdminPage() {
         const res = await fetch('/api/admin/tickets', {
           method: 'PATCH',
           headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': password
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ ticketIds: ids, status: 'paid' })
         });
@@ -611,8 +595,7 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/tickets/add', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'x-admin-key': password
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ verificationCode, raffleId })
       });
@@ -640,7 +623,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/verify-participant', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchParticipantQuery })
       });
       const data = await res.json();
@@ -660,7 +643,7 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/users', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, updates: { is_cash_collector: !currentStatus } })
       });
       if (res.ok) {
@@ -683,7 +666,7 @@ export default function AdminPage() {
         try {
           const res = await fetch('/api/admin/users', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId })
           });
           if (res.ok) {
@@ -1769,7 +1752,7 @@ export default function AdminPage() {
                         async () => {
                           const res = await fetch('/api/admin/tickets', {
                             method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json', 'x-admin-key': password },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ticketIds: [ticket.id] })
                           });
                           if (res.ok) {

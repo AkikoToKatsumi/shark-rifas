@@ -9,7 +9,6 @@ export async function GET() {
   }
 
   return NextResponse.json({ 
-    authenticated: true,
-    key: session.key // Devolvemos la key para que el frontend la use en los headers si es necesario
+    authenticated: true
   });
 }

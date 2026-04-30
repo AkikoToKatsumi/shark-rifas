@@ -1,15 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-
-const validateAdminKey = (request: Request) => {
-  const adminKey = request.headers.get('x-admin-key');
-  return adminKey === process.env.ADMIN_SECRET_KEY;
-};
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 // GET all raffles (including inactive ones)
 export async function GET(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -30,8 +24,8 @@ export async function GET(request: Request) {
 
 // POST create a new raffle
 export async function POST(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -73,8 +67,8 @@ export async function POST(request: Request) {
 
 // PATCH update a raffle (e.g. deactivate)
 export async function PATCH(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -103,8 +97,8 @@ export async function PATCH(request: Request) {
 
 // DELETE a raffle
 export async function DELETE(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {

@@ -1,11 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
-    const adminKey = request.headers.get('x-admin-key');
-    if (adminKey !== process.env.ADMIN_SECRET_KEY) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    if (!await validateAdminSession()) {
+      return unauthorizedResponse();
     }
 
     const formData = await request.formData();

@@ -1,16 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-
-// Helper to validate admin key
-const validateAdminKey = (request: Request) => {
-  const adminKey = request.headers.get('x-admin-key');
-  return adminKey === process.env.ADMIN_SECRET_KEY;
-};
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 // GET: Fetch all participants (users)
 export async function GET(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -30,8 +23,8 @@ export async function GET(request: Request) {
 
 // POST: Create a new user
 export async function POST(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -77,8 +70,8 @@ export async function POST(request: Request) {
 
 // PATCH: Update user status (e.g. toggle is_cash_collector)
 export async function PATCH(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -105,8 +98,8 @@ export async function PATCH(request: Request) {
 
 // DELETE: Remove a user
 export async function DELETE(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {

@@ -1,17 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-import { sendPaymentConfirmedEmail, sendPaymentRejectedEmail, sendSecondSpinUnlockedEmail } from '@/lib/email';
-
-// Helper to validate admin key
-const validateAdminKey = (request: Request) => {
-  const adminKey = request.headers.get('x-admin-key');
-  return adminKey === process.env.ADMIN_SECRET_KEY;
-};
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 // GET: Fetch all tickets with participant details
 export async function GET(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -57,8 +49,8 @@ export async function GET(request: Request) {
 
 // PATCH: Update ticket status (e.g. confirm payment)
 export async function PATCH(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {
@@ -175,8 +167,8 @@ export async function PATCH(request: Request) {
 
 // DELETE: Cancel ticket reservation (free up the number)
 export async function DELETE(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {

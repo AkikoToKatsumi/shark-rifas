@@ -73,12 +73,16 @@ export async function PATCH(request: Request) {
           ticket_number,
           payment_method,
           verification_code,
-          participants ( email ),
-          raffles ( title, ticket_price )
+          participants!participant_id ( email, full_name ),
+          raffles!raffle_id ( title, ticket_price )
         `)
         .in('id', ticketIds);
         
-      if (!fetchError && fetchedTickets) {
+      if (fetchError) {
+        console.error('Error fetching tickets for email:', fetchError);
+      }
+
+      if (fetchedTickets) {
         ticketsToEmail = fetchedTickets;
       }
     }
@@ -130,14 +134,18 @@ export async function PATCH(request: Request) {
         const allTicketNumbers = group.ticketNumbers.join(', ');
         const totalPrice = group.ticketPrice * group.ticketNumbers.length;
 
-        sendPaymentConfirmedEmail(
-          group.email,
-          allTicketNumbers,
-          group.raffleTitle,
-          group.paymentMethod,
-          totalPrice,
-          group.verificationCode
-        );
+        try {
+          await sendPaymentConfirmedEmail(
+            group.email,
+            allTicketNumbers,
+            group.raffleTitle,
+            group.paymentMethod,
+            totalPrice,
+            group.verificationCode
+          );
+        } catch (mailErr) {
+          console.error('Error sending confirmation email to', group.email, mailErr);
+        }
       }
     }
 
@@ -157,7 +165,11 @@ export async function PATCH(request: Request) {
 
       for (const pJson of Array.from(participantsToNotify)) {
         const p = JSON.parse(pJson);
-        sendSecondSpinUnlockedEmail(p.email, p.fullName);
+        try {
+          await sendSecondSpinUnlockedEmail(p.email, p.fullName);
+        } catch (mailErr) {
+          console.error('Error sending second spin email to', p.email, mailErr);
+        }
       }
     }
 
@@ -190,12 +202,16 @@ export async function DELETE(request: Request) {
         .select(`
           ticket_number,
           verification_code,
-          participants ( email ),
-          raffles ( title )
+          participants!participant_id ( email ),
+          raffles!raffle_id ( title )
         `)
         .in('id', ticketIds);
         
-      if (!fetchError && fetchedTickets) {
+      if (fetchError) {
+        console.error('Error fetching tickets for cancellation email:', fetchError);
+      }
+
+      if (fetchedTickets) {
         ticketsToEmail = fetchedTickets;
       }
     }
@@ -239,12 +255,16 @@ export async function DELETE(request: Request) {
 
       for (const group of Array.from(groups.values())) {
         const allTicketNumbers = group.ticketNumbers.join(', ');
-        sendPaymentRejectedEmail(
-          group.email,
-          allTicketNumbers,
-          group.raffleTitle,
-          group.verificationCode
-        );
+        try {
+          await sendPaymentRejectedEmail(
+            group.email,
+            allTicketNumbers,
+            group.raffleTitle,
+            group.verificationCode
+          );
+        } catch (mailErr) {
+          console.error('Error sending rejection email to', group.email, mailErr);
+        }
       }
     }
 

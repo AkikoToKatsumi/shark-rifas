@@ -86,10 +86,13 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
     try {
       let receiptDataUrl = null;
       if (receiptFile) {
-        const buffer = await receiptFile.arrayBuffer();
-        const base64String = Buffer.from(buffer).toString('base64');
-        const mimeType = receiptFile.type;
-        receiptDataUrl = `data:${mimeType};base64,${base64String}`;
+        // Use FileReader for better browser compatibility (avoid Buffer on client)
+        receiptDataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (e) => reject(new Error("Error al leer el archivo de imagen."));
+          reader.readAsDataURL(receiptFile);
+        });
       }
 
       const res = await fetch('/api/checkout', {

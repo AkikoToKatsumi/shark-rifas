@@ -132,8 +132,10 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         colors: ['#00f2fe', '#4facfe', '#ffffff']
       });
     } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || 'Error al procesar la reserva. Por favor intenta de nuevo.');
+      console.error('Checkout error:', err);
+      // Intentamos extraer el mensaje de error más descriptivo posible
+      const detailedError = err.message || (typeof err === 'string' ? err : 'Error al procesar la reserva. Por favor intenta de nuevo.');
+      setErrorMsg(detailedError);
     } finally {
       setIsSubmitting(false);
     }
@@ -653,7 +655,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           </div>
 
           {/* Receipt Upload Section */}
-          {paymentMethod !== 'points' && (
+          {paymentMethod !== 'points' && paymentMethod !== 'cash' && (
             <div className="form-section mt-4">
               <label>Sube tu captura de pago (JPG, PNG)</label>
               <input

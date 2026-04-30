@@ -180,8 +180,9 @@ export async function POST(request: Request) {
     const verificationCode = code;
 
     // 5. Insert Tickets
-    // Solo los puntos son automáticos. Las ventas en efectivo (incluyendo colaboradores) pasan a aprobación.
-    const isPaid = paymentMethod === 'points';
+    // Solo los puntos y las ventas de colaboradores son automáticos. 
+    // Las ventas de colaboradores (payment_method: 'cash') se marcan como 'paid' inmediatamente.
+    const isPaid = paymentMethod === 'points' || paymentMethod === 'cash';
     const ticketsData = assignedTickets.map(num => ({
       raffle_id: raffleId,
       participant_id: participantId,
@@ -238,9 +239,15 @@ export async function POST(request: Request) {
     });
 
   } catch (error: any) {
-    console.error(`[${requestId}] Unexpected error:`, error);
+    console.error(`[${requestId}] Checkout Unexpected error:`, error);
+    
+    // Log more details if it's a Supabase error
+    if (error.code) console.error(`[${requestId}] DB Error Code: ${error.code}, Message: ${error.message}`);
+    if (error.details) console.error(`[${requestId}] DB Error Details: ${error.details}`);
+    if (error.hint) console.error(`[${requestId}] DB Error Hint: ${error.hint}`);
+
     return NextResponse.json(
-      { error: 'Hubo un error inesperado. Por favor contacta soporte.' },
+      { error: error.message || 'Hubo un error inesperado. Por favor contacta soporte.' },
       { status: 500 }
     );
   }

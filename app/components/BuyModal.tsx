@@ -491,59 +491,6 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                 )}</>
             )}
 
-          {paymentMethod === 'cash_info' && (
-            <div style={{ 
-              marginTop: '15px', 
-              padding: '20px', 
-              background: 'rgba(34,197,94,0.05)', 
-              borderRadius: '12px', 
-              border: '1px solid rgba(34,197,94,0.2)',
-              textAlign: 'center'
-            }}>
-              <p style={{ color: 'var(--success)', fontWeight: 'bold', marginBottom: '10px' }}>🤝 PAGO EN PERSONA</p>
-              <p style={{ fontSize: '0.9rem', lineHeight: '1.5', color: 'var(--text-main)', marginBottom: '15px' }}>
-                Si quieres pagar en efectivo comunícate con nosotros para acordar un lugar y hora para poder hacer tu pago y entregar tu comprobante en físico.
-              </p>
-              
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '15px', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fff' }}>849-578-9996</span>
-                <button 
-                  type="button"
-                  id="copy-phone-btn"
-                  onClick={() => {
-                    navigator.clipboard.writeText('8495789996');
-                    const btn = document.getElementById('copy-phone-btn');
-                    if (btn) {
-                      btn.innerHTML = '✅';
-                      setTimeout(() => btn.innerHTML = '📋', 2000);
-                    }
-                  }}
-                  style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}
-                  title="Copiar número"
-                >
-                  📋
-                </button>
-              </div>
-
-              <a 
-                href={`https://wa.me/18495789996?text=Hola,%20quiero%20pagar%20en%20efectivo%20${quantity}%20boletos%20para%20la%20rifa%20${encodeURIComponent(raffle.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  background: '#25D366', 
-                  border: 'none',
-                  padding: '10px 20px',
-                  fontSize: '0.9rem'
-                }}
-              >
-                <Smartphone size={18} /> CONTACTAR POR WHATSAPP
-              </a>
-            </div>
-          )}
 
           {paymentMethod && paymentMethod !== 'points' && paymentMethod !== 'cash_info' && (
               <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>

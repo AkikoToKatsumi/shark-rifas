@@ -76,8 +76,8 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
         <div className="drawer-content">
           {isAuthenticated ? (
             <div className="logged-in-view">
-              <p className="text-cyan mb-4" style={{ fontWeight: 'bold' }}>Sessión Iniciada</p>
-              <p className="text-muted mb-6" style={{ fontSize: '0.9rem' }}>
+              <p className="text-cyan mb-4 bold">Sessión Iniciada</p>
+              <p className="text-muted mb-6 text-sm">
                 Tienes acceso total al panel de administración.
               </p>
               
@@ -90,24 +90,14 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
 
               <button 
                 onClick={handleLogout}
-                className="w-full"
-                style={{
-                  background: 'transparent',
-                  border: '1px solid var(--error)',
-                  color: 'var(--error)',
-                  padding: '12px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  marginTop: '10px'
-                }}
+                className="btn-logout-drawer"
               >
                 CERRAR SESIÓN
               </button>
             </div>
           ) : (
             <>
-              <p className="text-muted mb-6" style={{ fontSize: '0.9rem' }}>
+              <p className="text-muted mb-6 text-sm">
                 Ingresa tus credenciales para acceder al panel de administración.
               </p>
 
@@ -135,7 +125,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
                   />
                 </div>
                 
-                {error && <p className="text-error mb-4" style={{ fontSize: '0.85rem' }}>{error}</p>}
+                {error && <p className="text-error mb-4 text-xs-plus">{error}</p>}
 
                 <button type="submit" className="btn-primary w-full" disabled={loading}>
                   {loading ? 'VERIFICANDO...' : 'INGRESAR AL PANEL'}
@@ -144,8 +134,8 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen: boolean, onC
             </>
           )}
 
-          <div style={{ marginTop: 'auto', paddingTop: '40px', textAlign: 'center' }}>
-            <img src="/logo.png" alt="Shark Logo" style={{ width: '80px', opacity: 0.2 }} />
+          <div className="drawer-footer-brand">
+            <img src="/logo.png" alt="Shark Logo" className="footer-mini-logo" />
           </div>
         </div>
       </div>

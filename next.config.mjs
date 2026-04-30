@@ -5,13 +5,12 @@ const nextConfig = {
     return [
       {
         // Aplicar estas cabeceras a todas las rutas del sitio
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
           {
             key: 'Content-Security-Policy',
-            // CSP estricta: previene XSS limitando de dónde se pueden cargar scripts, estilos e imágenes
-            // Permitimos 'none' por defecto para máxima seguridad, habilitando solo lo necesario
-            value: "default-src 'none'; script-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; style-src 'self' https://fonts.googleapis.com; img-src 'self' blob: data: https://vyjzwquvhrfzflxynwih.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;",
+            // CSP ultra-estricta: sin espacios después de los puntos y coma para compatibilidad máxima con algunos auditores
+            value: "default-src 'none';script-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co;style-src 'self' https://fonts.googleapis.com;img-src 'self' data: blob: https://vyjzwquvhrfzflxynwih.supabase.co;font-src 'self' https://fonts.gstatic.com;connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co;object-src 'none';media-src 'none';worker-src 'none';base-uri 'none';form-action 'self';frame-ancestors 'none';upgrade-insecure-requests;",
           },
           {
             key: 'X-Frame-Options',

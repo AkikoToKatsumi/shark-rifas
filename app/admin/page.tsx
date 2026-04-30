@@ -910,7 +910,7 @@ export default function AdminPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              style={{ marginBottom: '10px' }}
+              className="mb-10"
             />
             <input 
               type="password" 
@@ -924,17 +924,7 @@ export default function AdminPage() {
           </form>
           <button 
             onClick={() => router.push('/')}
-            style={{ 
-              marginTop: '15px', 
-              background: 'none', 
-              border: '1px solid var(--border-color)', 
-              color: 'var(--text-muted)', 
-              width: '100%', 
-              padding: '10px', 
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.9rem'
-            }}
+            className="mt-15 bg-none border-faint text-muted w-full p-10 rounded-4 pointer text-sm"
           >
             ← Volver al Inicio
           </button>
@@ -952,49 +942,25 @@ export default function AdminPage() {
           <h1 className="dashboard-title">Panel de Control</h1>
           <p className="dashboard-subtitle">Monitorea el rendimiento de Shark Rifas en tiempo real.</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <div className="tab-navigation" style={{ 
-            display: 'flex', 
-            background: 'rgba(255,255,255,0.05)', 
-            padding: '4px', 
-            borderRadius: '12px',
-            marginRight: '10px'
-          }}>
+        <div className="admin-header-flex">
+          <div className="admin-tabs-container">
             <button 
               onClick={() => setActiveTab('dashboard')}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                border: 'none',
-                background: activeTab === 'dashboard' ? 'var(--primary-cyan)' : 'transparent',
-                color: activeTab === 'dashboard' ? '#000' : 'var(--text-muted)',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
+              className={`admin-tab-btn ${activeTab === 'dashboard' ? 'admin-tab-active' : 'admin-tab-inactive'}`}
             >
               📊 DASHBOARD
             </button>
             <button 
               onClick={() => setActiveTab('users')}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                border: 'none',
-                background: activeTab === 'users' ? 'var(--primary-cyan)' : 'transparent',
-                color: activeTab === 'users' ? '#000' : 'var(--text-muted)',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
+              className={`admin-tab-btn ${activeTab === 'users' ? 'admin-tab-active' : 'admin-tab-inactive'}`}
             >
               👥 USUARIOS
             </button>
           </div>
-          <button onClick={fetchData} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button onClick={fetchData} className="btn-secondary flex items-center gap-8">
             <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} /> ACTUALIZAR
           </button>
-          <button onClick={handleLogout} className="btn-primary" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+          <button onClick={handleLogout} className="btn-primary admin-logout-btn">
             SALIR
           </button>
         </div>
@@ -1013,7 +979,7 @@ export default function AdminPage() {
               <TrendingUp size={14} /> <span>Pagados</span>
             </div>
           </div>
-          <div className="metric-icon-box" style={{ color: 'var(--primary-cyan)' }}>
+          <div className="metric-icon-box primary-cyan">
             <DollarSign size={24} />
           </div>
         </div>
@@ -1026,7 +992,7 @@ export default function AdminPage() {
               <span>Tickets confirmados</span>
             </div>
           </div>
-          <div className="metric-icon-box" style={{ color: '#4facfe' }}>
+          <div className="metric-icon-box text-blue-sky">
             <Ticket size={24} />
           </div>
         </div>
@@ -1039,7 +1005,7 @@ export default function AdminPage() {
               <span>Esperando revisión</span>
             </div>
           </div>
-          <div className="metric-icon-box" style={{ color: 'var(--accent-orange)' }}>
+          <div className="metric-icon-box accent-orange">
             <Activity size={24} />
           </div>
         </div>
@@ -1052,7 +1018,7 @@ export default function AdminPage() {
               <span>Interés vs Venta</span>
             </div>
           </div>
-          <div className="metric-icon-box" style={{ color: '#a855f7' }}>
+          <div className="metric-icon-box text-purple">
             <Users size={24} />
           </div>
         </div>
@@ -1246,30 +1212,29 @@ export default function AdminPage() {
 
             <div className="admin-form-group">
               <label>IMAGEN DEL PREMIO</label>
-              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="image-upload-wrapper">
                 <div 
                   className="image-preview-box"
-                  style={{ width: '120px', height: '120px', flexShrink: 0 }}
                   onClick={() => document.getElementById('raffle-img-upload')?.click()}
                 >
                   {newRaffle.image_url ? (
                     <img src={newRaffle.image_url} alt="Preview" />
                   ) : (
-                    <div style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: '2rem', display: 'block' }}>+</span>
-                      <span style={{ fontSize: '0.6rem', opacity: 0.5 }}>IMAGEN</span>
+                    <div className="text-center">
+                      <span className="text-2xl block">+</span>
+                      <span className="text-xs opacity-5">IMAGEN</span>
                     </div>
                   )}
                 </div>
                 <div>
-                  <input id="raffle-img-upload" type="file" onChange={handleImageUpload} style={{ display: 'none' }} accept="image/*" />
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Formatos aceptados: JPG, PNG, WEBP. Máximo 15MB (se optimizará automáticamente).</p>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.75rem' }}>
+                  <input id="raffle-img-upload" type="file" onChange={handleImageUpload} className="hidden" accept="image/*" />
+                  <p className="text-sm text-muted mb-10">Formatos aceptados: JPG, PNG, WEBP. Máximo 15MB (se optimizará automáticamente).</p>
+                  <div className="flex gap-10">
+                    <button type="button" onClick={() => document.getElementById('raffle-img-upload')?.click()} className="btn-secondary text-sm p-10">
                       {uploading ? 'SUBIENDO...' : 'SELECCIONAR FOTO'}
                     </button>
                     {newRaffle.image_url && (
-                      <button type="button" onClick={() => setNewRaffle({...newRaffle, image_url: ''})} style={{ color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', background: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.75rem' }}>
+                      <button type="button" onClick={() => setNewRaffle({...newRaffle, image_url: ''})} className="btn-delete-img">
                         ELIMINAR
                       </button>
                     )}
@@ -1278,12 +1243,12 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="admin-form-group" style={{ maxWidth: '150px' }}>
+            <div className="admin-form-group w-150">
               <label>EMOJI / ÍCONO</label>
-              <input className="admin-input" value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" style={{ textAlign: 'center', fontSize: '1.5rem' }} placeholder="🎁" maxLength={2} />
+              <input className="admin-input text-center text-2xl" value={newRaffle.emoji} onChange={e => setNewRaffle({...newRaffle, emoji: e.target.value})} type="text" placeholder="🎁" maxLength={2} />
             </div>
 
-            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1.5rem', padding: '18px', fontSize: '1.1rem', borderRadius: '16px', boxShadow: '0 10px 20px rgba(0, 242, 254, 0.2)' }}>
+            <button type="submit" className="btn-primary btn-raffle-submit">
               {editingRaffleId ? '⚡ ACTUALIZAR RIFA' : '⚡ CREAR RIFA AHORA'}
             </button>
           </form>
@@ -1426,52 +1391,30 @@ export default function AdminPage() {
                       quantity: groupTickets.length,
                       participant: participant
                     })}
-                    style={{ 
-                      color: 'var(--primary-cyan)', 
-                      fontWeight: 'bold', 
-                      fontSize: '1.1rem',
-                      background: 'rgba(0, 242, 254, 0.05)',
-                      border: '1px solid rgba(0, 242, 254, 0.2)',
-                      cursor: 'pointer',
-                      padding: '6px 12px',
-                      borderRadius: '6px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.15)'}
-                    onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(0, 242, 254, 0.05)'}
+                    className="ticket-count-badge"
                     title="Ver detalle de todos los boletos"
                   >
                     {groupTickets.length} Boletos
                   </button>
                 </td>
-                <td style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>{group.paymentMethod}</td>
+                <td className="text-xs uppercase">{group.paymentMethod}</td>
                 <td>
                   {group.collectorId ? (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)', fontWeight: 'bold' }}>
+                    <div className="text-xs primary-cyan bold">
                       🤝 {users.find(u => u.id === group.collectorId)?.full_name || 'Colaborador'}
                     </div>
                   ) : (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Venta Directa</div>
+                    <div className="text-xs text-muted">Venta Directa</div>
                   )}
                 </td>
                 <td>
-                      <span style={{ 
-                        padding: '4px 10px', 
-                        borderRadius: '6px', 
-                        fontSize: '0.7rem', 
-                        fontWeight: '700',
-                        backgroundColor: group.status === 'paid' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 140, 0, 0.1)',
-                        color: group.status === 'paid' ? 'var(--success)' : 'var(--accent-orange)'
-                      }}>
+                      <span className={`badge-status ${group.status === 'paid' ? 'status-paid-alt' : 'status-pending-alt'}`}>
                         {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO ⚠️')}
                       </span>
                 </td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
-                <td style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '500' }}>{participant?.cedula || '-'}</td>
-                <td style={{ fontWeight: 'bold' }}>RD${group.totalPrice}</td>
+                <td className="text-sm text-main bold">{participant?.cedula || '-'}</td>
+                <td className="bold">RD${group.totalPrice}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
                     <div style={{ display: 'flex', gap: '5px' }}>

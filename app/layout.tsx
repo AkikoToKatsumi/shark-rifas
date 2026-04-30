@@ -26,6 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <meta 
+          httpEquiv="Content-Security-Policy" 
+          content="default-src 'none'; script-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https://vyjzwquvhrfzflxynwih.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+        />
+      </head>
       <body>
         <AuthProvider>
           <LoadingScreen />

@@ -2468,3 +2468,369 @@ a {
 .block {
   display: block;
 }
+
+/* Header & Navigation Utilities */
+.floating-controls {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.user-badge {
+  background-color: rgba(5, 10, 16, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-cyan);
+  border-radius: 30px;
+  padding: 4px 6px 4px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+}
+
+.user-info-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
+  transition: transform 0.2s ease;
+}
+
+.user-info-btn:hover {
+  transform: scale(1.05);
+}
+
+.auth-btn {
+  background-color: rgba(5, 10, 16, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  border: 1px solid var(--primary-cyan);
+  border-radius: 30px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+}
+
+.auth-btn:hover {
+  background-color: var(--primary-cyan);
+  color: #000;
+}
+
+.admin-trigger {
+  width: 38px;
+  height: 38px;
+  background-color: rgba(5, 10, 16, 0.5);
+  backdrop-filter: blur(10px);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.logo-section-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 2rem 1rem;
+}
+
+.logo-img-header {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.logo-text-center {
+  text-align: center;
+}
+
+.logo-title-responsive {
+  font-size: clamp(2rem, 8vw, 3rem);
+  margin: 0;
+}
+
+.logo-subtitle-responsive {
+  font-size: clamp(0.7rem, 3vw, 0.9rem);
+  letter-spacing: 4px;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.btn-logout:hover {
+  color: #ef4444;
+}
+
+.divider-v {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-color);
+}
+
+.footer-logo-img {
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.img-icon-20 {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-main {
+  color: var(--text-main);
+}
+
+/* Admin Dashboard Utilities */
+.admin-header-flex {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-tabs-container {
+  display: flex; 
+  background: rgba(255,255,255,0.05); 
+  padding: 4px; 
+  border-radius: 12px;
+  margin-right: 10px;
+}
+
+.admin-tab-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-tab-active {
+  background: var(--primary-cyan);
+  color: #000;
+}
+
+.admin-tab-inactive {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.admin-logout-btn {
+  background-color: rgba(239, 68, 68, 0.1); 
+  color: #ef4444; 
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.form-header-between {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 2rem;
+}
+
+.form-title-premium {
+  color: var(--primary-cyan); 
+  font-size: 1.4rem; 
+  margin: 0; 
+  letter-spacing: 1px;
+}
+
+.image-upload-wrapper {
+  display: flex; 
+  gap: 2rem; 
+  align-items: center; 
+  background: rgba(255,255,255,0.02); 
+  padding: 1.5rem; 
+  border-radius: 16px; 
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.ticket-count-badge {
+  color: var(--primary-cyan); 
+  font-weight: bold; 
+  font-size: 1.1rem;
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.ticket-count-badge:hover {
+  background-color: rgba(0, 242, 254, 0.15);
+}
+
+.action-btn-group {
+  display: flex; 
+  gap: 8px;
+}
+
+.btn-reduce-ticket {
+  background: rgba(255,255,255,0.05); 
+  border: none; 
+  color: #fff; 
+  width: 30px; 
+  height: 30px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.btn-reduce-ticket:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.primary-cyan {
+  color: var(--primary-cyan);
+}
+
+.accent-orange {
+  color: var(--accent-orange);
+}
+
+.text-blue-sky {
+  color: #4facfe;
+}
+
+.text-purple {
+  color: #a855f7;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.hidden {
+  display: none;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.w-150 {
+  max-width: 150px;
+}
+
+.btn-delete-img {
+  color: #ef4444; 
+  border: 1px solid rgba(239, 68, 68, 0.2); 
+  background: none; 
+  padding: 8px 16px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  font-size: 0.75rem;
+}
+
+.btn-raffle-submit {
+  width: 100%; 
+  margin-top: 1.5rem; 
+  padding: 18px; 
+  font-size: 1.1rem; 
+  border-radius: 16px; 
+  box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+}
+
+.badge-status {
+  padding: 4px 10px; 
+  border-radius: 6px; 
+  font-size: 0.7rem; 
+  font-weight: 700;
+}
+
+.status-paid-alt {
+  background-color: rgba(0, 255, 136, 0.1);
+  color: var(--success);
+}
+
+.status-pending-alt {
+  background-color: rgba(255, 140, 0, 0.1);
+  color: var(--accent-orange);
+}
+
+.btn-logout-drawer {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.btn-logout-drawer:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.drawer-footer-brand {
+  margin-top: auto; 
+  padding-top: 40px; 
+  text-align: center;
+}
+
+.footer-mini-logo {
+  width: 80px; 
+  opacity: 0.2;
+}
+
+.text-xs-plus {
+  font-size: 0.85rem;
+}
+
+.bold {
+  font-weight: bold;
+}

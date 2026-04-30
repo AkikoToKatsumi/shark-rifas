@@ -2091,3 +2091,380 @@ a {
 .input-group:focus-within .input-icon {
   color: var(--primary-cyan);
 }
+/* --- Utility Classes for CSP Compliance --- */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.max-w-400 {
+  max-width: 400px;
+}
+
+.max-w-300 {
+  max-width: 300px;
+}
+
+.m-auto {
+  margin: 2rem auto;
+}
+
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-15 {
+  gap: 15px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-20 {
+  margin-top: 2rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mb-10 {
+  margin-bottom: 1rem;
+}
+
+.mb-20 {
+  margin-bottom: 2rem;
+}
+
+.max-w-600 {
+  max-width: 600px;
+}
+
+.max-w-500 {
+  max-width: 500px;
+}
+
+.max-w-350 {
+  max-width: 350px;
+}
+
+.p-3-2 {
+  padding: 3rem 2rem;
+}
+
+.p-2 {
+  padding: 2rem;
+}
+
+.p-3 {
+  padding: 3rem;
+}
+
+.font-italic {
+  font-style: italic;
+}
+
+.border-none {
+  border: none;
+}
+
+.opacity-9 {
+  opacity: 0.9;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+/* Glass Panels & Containers */
+.glass-panel {
+  background: rgba(0,0,0,0.3);
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.border-top-faint {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1.5rem;
+}
+
+/* Verificador Specific */
+.verify-container {
+  min-height: 60vh;
+}
+
+.verify-input {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  padding: 15px;
+  width: 100%;
+  letter-spacing: 2px;
+  text-align: center;
+  color: #000;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid var(--primary-cyan);
+}
+
+.verify-button {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+}
+
+.verify-result-header {
+  color: var(--primary-cyan);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.verify-result-email {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-left: 38px;
+  letter-spacing: 0.5px;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  padding: 12px 15px;
+  border-radius: 6px;
+}
+
+.ticket-number {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.ticket-status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-paid {
+  background-color: rgba(0, 255, 136, 0.1);
+  color: var(--success);
+  border-left: 4px solid var(--success);
+}
+
+.status-pending {
+  background-color: rgba(255, 140, 0, 0.1);
+  color: var(--accent-orange);
+  border-left: 4px solid var(--accent-orange);
+}
+
+.status-cancelled {
+  background-color: rgba(255, 60, 172, 0.1);
+  color: var(--error);
+  border-left: 4px solid var(--error);
+}
+
+/* Recompensas Specific */
+.rewards-container {
+  min-height: 80vh;
+}
+
+.rewards-badge {
+  margin-bottom: 1rem;
+}
+
+.rewards-stats-grid {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.reward-stat-card {
+  min-width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon-box {
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.icon-points {
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--primary-cyan);
+}
+
+.icon-gifts {
+  background: rgba(168, 85, 247, 0.1);
+  color: #a855f7;
+}
+
+.win-card {
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 20px;
+}
+
+.overlay-completed {
+  background: rgba(10, 10, 10, 0.7);
+}
+
+.overlay-waiting {
+  background: rgba(255, 140, 0, 0.15);
+}
+
+.overlay-need-purchase {
+  background: rgba(0, 242, 254, 0.1);
+}
+
+.card-auth-needed {
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.raffle-img-container {
+  position: relative;
+  overflow: hidden;
+  height: 200px; /* Standardize height if needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.02);
+}
+
+.raffle-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-emoji {
+  font-size: 5rem;
+}
+
+/* List & Social Items */
+.list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.list-item-glass {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.list-item-success {
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.list-item-cyan {
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.img-icon-35 {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.img-icon-24 {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.social-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.social-btn-whatsapp {
+  background: #25D366;
+}
+
+.social-btn-whatsapp:hover {
+  background: #128C7E;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-sm {
+  font-size: 0.85rem;
+}
+
+.text-lg {
+  font-size: 1.2rem;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.block {
+  display: block;
+}

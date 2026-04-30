@@ -15,48 +15,48 @@ export default function AboutPage() {
             <h3>💳 Métodos de Pago</h3>
             <p className="mb-4">Realiza tus pagos de forma segura a través de nuestras cuentas oficiales:</p>
             
-            <div className="payment-stack" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <img src="/banreservas.png" alt="Banreservas" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
+            <div className="list-stack">
+              <div className="list-item-glass">
+                <img src="/banreservas.png" alt="Banreservas" className="img-icon-35" />
                 <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Banco Reservas</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cuenta Corriente Personal</span>
+                  <span className="block text-sm bold">Banco Reservas</span>
+                  <span className="text-xs text-muted">Cuenta Corriente Personal</span>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <img src="/qik.png" alt="Qik" style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
+              <div className="list-item-glass">
+                <img src="/qik.png" alt="Qik" className="img-icon-35" />
                 <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>Qik Banco Digital</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pagos instantáneos</span>
+                  <span className="block text-sm bold">Qik Banco Digital</span>
+                  <span className="text-xs text-muted">Pagos instantáneos</span>
                 </div>
               </div>
 
 {/* BHD temporalmente oculto */}
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>🌐</span>
+              <div className="list-item-glass">
+                <span className="text-lg w-full text-center" style={{ width: '35px' }}>🌐</span>
                 <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold' }}>PayPal</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pagos internacionales (USD)</span>
+                  <span className="block text-sm bold">PayPal</span>
+                  <span className="text-xs text-muted">Pagos internacionales (USD)</span>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(34, 197, 94, 0.05)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-                <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>💵</span>
+              <div className="list-item-glass list-item-success">
+                <span className="text-lg w-full text-center" style={{ width: '35px' }}>💵</span>
                 <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold', color: '#22c55e' }}>Pagos en Efectivo</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.2', display: 'block' }}>
+                  <span className="block text-sm bold" style={{ color: '#22c55e' }}>Pagos en Efectivo</span>
+                  <span className="text-xs text-muted block" style={{ lineHeight: '1.2' }}>
                     Puedes pagar en persona a través de nuestros colaboradores autorizados o contactarnos vía WhatsApp para coordinar.
                   </span>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0, 242, 254, 0.05)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(0, 242, 254, 0.2)' }}>
-                <span style={{ fontSize: '1.5rem', width: '35px', textAlign: 'center' }}>🎡</span>
+              <div className="list-item-glass list-item-cyan">
+                <span className="text-lg w-full text-center" style={{ width: '35px' }}>🎡</span>
                 <div>
-                  <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--primary-cyan)' }}>Ruleta de Suerte</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.2', display: 'block' }}>
+                  <span className="block text-sm bold" style={{ color: 'var(--primary-cyan)' }}>Ruleta de Suerte</span>
+                  <span className="text-xs text-muted block" style={{ lineHeight: '1.2' }}>
                     Acumula puntos con tus giros diarios. Al alcanzar 500 puntos, puedes canjearlos por un boleto para cualquier rifa.
                   </span>
                 </div>
@@ -66,25 +66,25 @@ export default function AboutPage() {
 
           <div className="about-card">
             <h3>📱 Redes y Soporte</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="flex-col gap-10">
               <a href="https://www.instagram.com/rifassharkrd?igsh=MWszNzZsdDBxMzgzeA==" target="_blank" rel="noopener noreferrer" 
-                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
-                <img src="/instagram-logo.png" alt="Instagram" style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> @rifassharkrd
+                 className="social-btn">
+                <img src="/instagram-logo.png" alt="Instagram" className="img-icon-24" /> @rifassharkrd
               </a>
               
               <a href="https://www.tiktok.com/@rifassharkrd" target="_blank" rel="noopener noreferrer" 
-                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
-                <span style={{ fontSize: '1.2rem', width: '24px', textAlign: 'center' }}>📱</span> TikTok @rifassharkrd
+                 className="social-btn">
+                <span className="text-lg w-full text-center" style={{ width: '24px' }}>📱</span> TikTok @rifassharkrd
               </a>
               
               <a href="https://wa.me/18495789996" target="_blank" rel="noopener noreferrer" 
-                 style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#25D366', padding: '10px 15px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', textDecoration: 'none' }}>
-                <span style={{ fontSize: '1.2rem' }}>💬</span> WhatsApp Soporte
+                 className="social-btn social-btn-whatsapp">
+                <span className="text-lg">💬</span> WhatsApp Soporte
               </a>
 
-              <div style={{ padding: '10px', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '5px' }}>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>CORREO ELECTRÓNICO:</p>
-                <p style={{ margin: 0, fontWeight: 'bold', color: 'var(--primary-cyan)' }}>adminsharkrd@gmail.com</p>
+              <div className="border-top-faint mt-10" style={{ padding: '10px' }}>
+                <p className="text-xs text-muted" style={{ margin: 0 }}>CORREO ELECTRÓNICO:</p>
+                <p className="bold primary-cyan" style={{ margin: 0, color: 'var(--primary-cyan)' }}>adminsharkrd@gmail.com</p>
               </div>
             </div>
           </div>

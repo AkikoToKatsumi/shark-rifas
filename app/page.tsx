@@ -85,7 +85,7 @@ export default function Home() {
 
       {/* Raffles Section */}
       <section className="raffles-section">
-        <div className="section-header" style={{ justifyContent: 'center' }}>
+        <div className="section-header flex-center">
           <h2>🎟️ RIFAS DISPONIBLES 🎟️</h2>
         </div>
 
@@ -96,32 +96,24 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Cargando rifas...</div>
+          <div className="text-center p-3 text-muted">Cargando rifas...</div>
         ) : raffles.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>No hay rifas activas en este momento. Vuelve pronto.</div>
+          <div className="text-center p-3 text-muted">No hay rifas activas en este momento. Vuelve pronto.</div>
         ) : (
           <div className="raffles-grid">
             {raffles.map((raffle) => {
               const progress = (raffle.sold / raffle.total_tickets) * 100;
               return (
                 <div key={raffle.id} className="raffle-card">
-                  <div className="raffle-image" style={{ position: 'relative', overflow: 'hidden' }}>
+                  <div className="raffle-image raffle-img-container">
                     {raffle.image_url ? (
                       <img
                         src={raffle.image_url}
                         alt={raffle.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        className="raffle-img"
                       />
                     ) : (
-                      <div style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '5rem',
-                        background: 'rgba(255,255,255,0.02)'
-                      }}>
+                      <div className="placeholder-emoji">
                         {raffle.emoji || '🎟️'}
                       </div>
                     )}
@@ -153,16 +145,16 @@ export default function Home() {
 
                     {progress >= 100 ? (
                       <button
-                        className="btn-primary w-full mt-auto"
-                        style={{ backgroundColor: 'var(--success)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
+                        className="btn-primary w-full mt-auto status-paid border-none cursor-not-allowed opacity-9"
+                        style={{ color: '#000' }}
                         disabled
                       >
                         🎉 COMPLETADA
                       </button>
                     ) : raffle.is_paused ? (
                       <button
-                        className="btn-primary w-full mt-auto"
-                        style={{ backgroundColor: 'var(--accent-orange)', border: 'none', cursor: 'not-allowed', opacity: 0.9, color: '#000' }}
+                        className="btn-primary w-full mt-auto status-pending border-none cursor-not-allowed opacity-9"
+                        style={{ color: '#000' }}
                         disabled
                       >
                         ⏸️ VENTAS PAUSADAS
@@ -185,7 +177,7 @@ export default function Home() {
 
       {/* Incentives Section */}
       <section className="incentives-section">
-        <div className="section-header" style={{ justifyContent: 'center' }}>
+        <div className="section-header flex-center">
           <h2>🔥 PREMIOS 🔥</h2>
         </div>
 
@@ -224,7 +216,7 @@ export default function Home() {
               <span className="number-chip">4444</span>
               <span className="number-chip">5555</span>
             </div>
-            <p className="mt-4 text-sm" style={{ fontStyle: 'italic', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
+            <p className="mt-4 text-sm font-italic border-top-faint" style={{ paddingTop: '10px' }}>
               * Los premios se pagan vía transferencia inmediatamente después de verificar el pago.
             </p>
           </div>
@@ -238,7 +230,7 @@ export default function Home() {
               <p style={{ margin: 0, fontSize: '0.9rem' }}>Otorgados al final del sorteo principal.</p>
             </div>
 
-            <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+            <div className="mt-20 p-2 glass-panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '15px' }}>
               <p style={{ color: 'var(--accent-orange)', fontWeight: 'bold', marginBottom: '5px' }}>¿Cómo participar?</p>
               <p className="text-muted" style={{ fontSize: '0.85rem' }}>Solo tienes que comprar boletos. El sistema rastrea automáticamente tu cédula y suma todos tus números.</p>
             </div>

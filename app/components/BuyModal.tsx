@@ -22,13 +22,14 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
   const POINTS_PER_TICKET = 500;
 
   useEffect(() => {
-    if (user) {
+    // Solo autocompletar si el usuario NO es un colaborador.
+    // Los colaboradores ingresan los datos del cliente, no los suyos.
+    if (user && !user.is_cash_collector) {
       setFormData(prev => ({
         ...prev,
         fullName: user.full_name || prev.fullName,
         phone: user.phone || prev.phone,
         email: user.email || prev.email,
-        // using optional chaining for cedula if it exists
         cedula: (user as any).cedula || prev.cedula
       }));
     }
@@ -486,17 +487,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                     <img src="/bhd-logo.png" alt="BHD" style={{ height: '30px', objectFit: 'contain' }} />
                     <span style={{ fontSize: '0.8rem' }}>BHD</span>
                   </button>
-                  <button
-                    type="button"
-                    className={`pay-btn ${paymentMethod === 'cash_info' ? 'selected' : ''}`}
-                    onClick={() => setPaymentMethod('cash_info')}
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
-                  >
-                    <Banknote size={24} className={paymentMethod === 'cash_info' ? 'text-success' : 'text-muted'} />
-                    <span style={{ fontSize: '0.7rem' }}>EFECTIVO</span>
-                  </button>
-                </div>
-              )}</>
+                  </div>
+                )}</>
             )}
 
           {paymentMethod === 'cash_info' && (

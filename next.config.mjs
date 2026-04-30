@@ -11,7 +11,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             // CSP estricta: previene XSS limitando de dónde se pueden cargar scripts, estilos e imágenes
             // Permitimos 'self' (el propio dominio) y Supabase para la funcionalidad base
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://*.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;",
+            value: "default-src 'self'; script-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://vyjzwquvhrfzflxynwih.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;",
           },
           {
             key: 'X-Frame-Options',

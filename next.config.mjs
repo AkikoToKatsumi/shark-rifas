@@ -10,7 +10,7 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             // CSP ultra-estricta: sin espacios después de los puntos y coma para compatibilidad máxima con algunos auditores
-            value: "default-src 'none';script-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co;style-src 'self' https://fonts.googleapis.com;img-src 'self' data: blob: https://vyjzwquvhrfzflxynwih.supabase.co;font-src 'self' https://fonts.gstatic.com;connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co;object-src 'none';media-src 'none';worker-src 'none';base-uri 'none';form-action 'self';frame-ancestors 'none';upgrade-insecure-requests;",
+            value: "default-src 'none';script-src 'self' 'unsafe-inline' https://vyjzwquvhrfzflxynwih.supabase.co;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;img-src 'self' data: blob: https://vyjzwquvhrfzflxynwih.supabase.co;font-src 'self' https://fonts.gstatic.com;connect-src 'self' https://vyjzwquvhrfzflxynwih.supabase.co;object-src 'none';media-src 'none';worker-src 'none';base-uri 'self';form-action 'self';frame-ancestors 'none';upgrade-insecure-requests;",
           },
           {
             key: 'X-Frame-Options',

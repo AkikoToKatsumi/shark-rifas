@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    if (!await validateAdminSession()) {
+      return unauthorizedResponse();
+    }
     const body = await request.json();
     let { query } = body; 
     

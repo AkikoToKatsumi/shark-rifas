@@ -1,15 +1,10 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-
-// Helper to validate admin key
-const validateAdminKey = (request: Request) => {
-  const adminKey = request.headers.get('x-admin-key');
-  return adminKey === process.env.ADMIN_SECRET_KEY;
-};
+import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 export async function POST(request: Request) {
-  if (!validateAdminKey(request)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!await validateAdminSession()) {
+    return unauthorizedResponse();
   }
 
   try {

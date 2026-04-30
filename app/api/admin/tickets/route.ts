@@ -1,3 +1,6 @@
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase';
+import { sendPaymentConfirmedEmail, sendPaymentRejectedEmail, sendSecondSpinUnlockedEmail } from '@/lib/email';
 import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 // GET: Fetch all tickets with participant details

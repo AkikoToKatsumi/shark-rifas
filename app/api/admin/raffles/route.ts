@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase';
 import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 
 // GET all raffles (including inactive ones)

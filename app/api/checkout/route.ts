@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     }
 
     // 0. Basic Validation
-    if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || !email || !paymentMethod) {
+    const isEmailRequired = paymentMethod !== 'cash';
+    if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || (isEmailRequired && !email) || !paymentMethod) {
       console.warn(`[${requestId}] Missing required fields`);
       return NextResponse.json({ error: 'Faltan campos obligatorios para procesar la compra.' }, { status: 400 });
     }
@@ -84,7 +85,7 @@ export async function POST(request: Request) {
         .from('participants')
         .update({ 
           full_name: fullName, 
-          email: email.toLowerCase().trim(), 
+          email: email ? email.toLowerCase().trim() : null, 
           cedula: cleanCedula || cedula, // Use cleaned if possible
           phone: cleanPhone
         })
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
         .insert([{ 
           full_name: fullName, 
           phone: cleanPhone, 
-          email: email.toLowerCase().trim(), 
+          email: email ? email.toLowerCase().trim() : null, 
           cedula: cleanCedula || cedula,
           customer_code: customerCode
         }])
@@ -217,12 +218,14 @@ export async function POST(request: Request) {
         if (paymentMethod === 'points') {
           // Send confirmed email immediately for points purchases
           const { sendPaymentConfirmedEmail } = await import('@/lib/email');
-          await sendPaymentConfirmedEmail(email, ticketNumbersFormatted, raffleTitle, 'CANJE DE PUNTOS', totalPrice, verificationCode);
+          if (email) {
+            await sendPaymentConfirmedEmail(email, ticketNumbersFormatted, raffleTitle, 'CANJE DE PUNTOS', totalPrice, verificationCode);
+          }
         } else {
           // Standard pending email for bank transfers
           await Promise.all([
-              sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode),
-              receiptImage ? sendAdminReceiptEmail(fullName, phone, email, cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
+              email ? sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode) : Promise.resolve(),
+              receiptImage ? sendAdminReceiptEmail(fullName, phone, email || 'No especificado', cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
           ]);
         }
       } catch (e) {

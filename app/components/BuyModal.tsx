@@ -49,8 +49,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
     e.preventDefault();
     setErrorMsg('');
 
-    if (!formData.fullName || !formData.phone || !formData.email || !formData.cedula) {
-      setErrorMsg("Por favor completa todos tus datos personales incluyendo tu cédula.");
+    if (!formData.fullName || !formData.phone || (!formData.email && !user?.is_cash_collector) || !formData.cedula) {
+      setErrorMsg("Por favor completa todos tus datos personales (el correo es opcional para pago en efectivo).");
       return;
     }
     if (!acceptedTerms) {
@@ -75,8 +75,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         setErrorMsg(`Puntos insuficientes. Necesitas ${quantity * POINTS_PER_TICKET} puntos.`);
         return;
       }
-    } else if (paymentMethod !== 'cash') {
-      if (!receiptFile) {
+    } else {
+      if (!receiptFile && paymentMethod !== 'cash') {
         setErrorMsg("Debes subir tu comprobante de pago para confirmar la compra.");
         return;
       }
@@ -204,7 +204,11 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
             </div>
             <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '8px' }}>Guarda este código para consultar el estado de tus boletos.</p>
           </div>
-          <p className="mb-6 text-sm">El recibo de tu compra y tu código han sido enviados a tu correo (<strong>{formData.email}</strong>). ¡Mucha suerte!</p>
+          {formData.email ? (
+            <p className="mb-6 text-sm">El recibo de tu compra y tu código han sido enviados a tu correo (<strong>{formData.email}</strong>). ¡Mucha suerte!</p>
+          ) : (
+            <p className="mb-6 text-sm">Asegúrate de guardar tu código de verificación. ¡Mucha suerte!</p>
+          )}
           <button className="btn-primary w-full" onClick={onClose}>CERRAR</button>
         </div>
       </div>
@@ -409,13 +413,13 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           </div>
 
           <div className="form-section">
-            <label>CORREO ELECTRÓNICO</label>
+            <label>CORREO ELECTRÓNICO {user?.is_cash_collector && "(OPCIONAL)"}</label>
             <input
               type="email"
               value={formData.email}
               onChange={e => setFormData({ ...formData, email: e.target.value })}
-              placeholder="tu@correo.com"
-              required
+              placeholder={user?.is_cash_collector ? "Opcional" : "tu@correo.com"}
+              required={!user?.is_cash_collector}
             />
           </div>
 
@@ -594,7 +598,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           </div>
 
           {/* Receipt Upload Section */}
-          {paymentMethod !== 'points' && paymentMethod !== 'cash' && (
+          {paymentMethod !== 'points' && (
             <div className="form-section mt-4">
               <label>Sube tu captura de pago (JPG, PNG)</label>
               <input

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 // GET: Fetch all participants (users)
 export async function GET(request: Request) {

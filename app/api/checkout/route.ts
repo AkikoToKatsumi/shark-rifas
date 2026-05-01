@@ -85,7 +85,7 @@ export async function POST(request: Request) {
         .from('participants')
         .update({ 
           full_name: fullName, 
-          email: email ? email.toLowerCase().trim() : null, 
+          email: email ? email.toLowerCase().trim() : `no-email-${cleanPhone}@sharkrifas.com`, 
           cedula: cleanCedula || cedula, // Use cleaned if possible
           phone: cleanPhone
         })
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
         .insert([{ 
           full_name: fullName, 
           phone: cleanPhone, 
-          email: email ? email.toLowerCase().trim() : null, 
+          email: email ? email.toLowerCase().trim() : `no-email-${cleanPhone}@sharkrifas.com`, 
           cedula: cleanCedula || cedula,
           customer_code: customerCode
         }])

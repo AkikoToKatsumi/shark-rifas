@@ -7,63 +7,99 @@ export async function POST(request: Request) {
     let { query } = body; 
     
     if (!query) {
-      return NextResponse.json({ error: 'Ingresa un código de verificación.' }, { status: 400 });
+      return NextResponse.json({ error: 'Ingresa un código, teléfono o número de boleto.' }, { status: 400 });
     }
 
     const cleanQuery = query.trim().toUpperCase();
+    const isTicketNumber = /^\d{1,4}$/.test(cleanQuery);
 
-    let tickets;
+    let tickets: any[] = [];
 
-    // 1. Try by Verification Code
-    const { data: ticketsByCode, error: tError } = await supabaseAdmin
+    // 1. Try by Verification Code (Exact match)
+    const { data: ticketsByCode } = await supabaseAdmin
       .from('tickets')
       .select(`
         ticket_number,
         status,
-        participants!participant_id (
+        participants!participant_id!inner (
           full_name,
-          email
+          email,
+          phone,
+          cedula
         ),
         raffles (
           title
         )
       `)
-      .eq('verification_code', cleanQuery)
-      .order('ticket_number', { ascending: true });
+      .eq('verification_code', cleanQuery);
 
     if (ticketsByCode && ticketsByCode.length > 0) {
       tickets = ticketsByCode;
     } else {
-      // 2. Try by Phone
-      const { data: ticketsByPhone } = await supabaseAdmin
+      // 2. Try by Phone or Cedula (Fetch ALL tickets of that participant)
+      const { data: participantTickets } = await supabaseAdmin
         .from('tickets')
         .select(`
           ticket_number,
           status,
-          participants!participant_id (
+          participants!participant_id!inner (
             full_name,
-            email
+            email,
+            phone,
+            cedula
           ),
           raffles (
             title
           )
         `)
-        .eq('participants.phone', cleanQuery)
+        .or(`phone.eq.${cleanQuery},cedula.eq.${cleanQuery}`, { foreignTable: 'participants' })
         .order('ticket_number', { ascending: true });
+
+      if (participantTickets && participantTickets.length > 0) {
+        tickets = participantTickets;
+      } else if (isTicketNumber) {
+        // 3. Try by Ticket Number (Exact match)
+        const { data: ticketsByNumber } = await supabaseAdmin
+          .from('tickets')
+          .select(`
+            ticket_number,
+            status,
+            participants!participant_id!inner (
+              full_name,
+              email,
+              phone,
+              cedula
+            ),
+            raffles (
+              title
+            )
+          `)
+          .eq('ticket_number', cleanQuery.padStart(4, '0'))
+          .order('created_at', { ascending: false });
         
-      if (ticketsByPhone && ticketsByPhone.length > 0) {
-        tickets = ticketsByPhone;
+        if (ticketsByNumber && ticketsByNumber.length > 0) {
+          tickets = ticketsByNumber;
+        }
       }
     }
 
     if (!tickets || tickets.length === 0) {
-      return NextResponse.json({ error: 'Código o número de teléfono no encontrado.' }, { status: 404 });
+      return NextResponse.json({ error: 'No se encontraron boletos con ese criterio.' }, { status: 404 });
     }
 
-    // 2. Preparar respuesta segura (limpiando datos privados)
-    const pData: any = tickets[0].participants;
-    const rawName = Array.isArray(pData) ? pData[0]?.full_name : pData?.full_name;
-    const rawEmail = Array.isArray(pData) ? pData[0]?.email : pData?.email;
+    // Filter results if searching by specific ticket number to show ONLY that one
+    // But ONLY if the search wasn't a phone/cedula search (which usually returns all)
+    // Actually, the user says: "deben salir unicamente los boletos comprados ... con ese numero de busqueda"
+    if (isTicketNumber) {
+      const paddedQuery = cleanQuery.padStart(4, '0');
+      tickets = tickets.filter(t => t.ticket_number === paddedQuery);
+    }
+
+    const firstTicket = tickets[0];
+    const pData: any = firstTicket.participants;
+    const participantObj = Array.isArray(pData) ? pData[0] : pData;
+    const rawName = participantObj?.full_name;
+    const rawEmail = participantObj?.email;
 
     // Ofuscar nombre: "Juan Perez" -> "Ju** Pe***"
     const participantName = rawName ? rawName.split(' ').map((n: string) => n.length > 2 ? n.substring(0, 2) + '*'.repeat(n.length - 2) : n).join(' ') : 'Participante';

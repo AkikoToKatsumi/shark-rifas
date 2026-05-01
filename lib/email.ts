@@ -150,19 +150,21 @@ export const sendAdminReceiptEmail = async (
   raffleTitle: string,
   paymentMethod: string,
   totalPrice: number,
-  receiptImageBase64: string, // expects format like "data:image/png;base64,iVBORw0KGgo..."
+  receiptImageBase64: string | null | undefined, // expects format like "data:image/png;base64,iVBORw0KGgo..."
   verificationCode: string
 ) => {
-  // Extract content type and base64 data
-  const matches = receiptImageBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-  
   let attachments = [];
-  if (matches && matches.length === 3) {
-    attachments.push({
-      filename: `comprobante-${ticketNumber}.png`,
-      content: matches[2],
-      encoding: 'base64'
-    });
+  
+  if (receiptImageBase64) {
+    // Extract content type and base64 data
+    const matches = receiptImageBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      attachments.push({
+        filename: `comprobante-${ticketNumber}.png`,
+        content: matches[2],
+        encoding: 'base64'
+      });
+    }
   }
 
   const mailOptions = {

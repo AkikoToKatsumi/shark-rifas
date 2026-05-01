@@ -223,9 +223,12 @@ export async function POST(request: Request) {
           }
         } else {
           // Standard pending email for bank transfers
+          const isDummyEmail = email && email.startsWith('no-email-');
+          const shouldSendAdminEmail = receiptImage || paymentMethod === 'cash';
+          
           await Promise.all([
-              email ? sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode) : Promise.resolve(),
-              receiptImage ? sendAdminReceiptEmail(fullName, phone, email || 'No especificado', cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
+              (email && !isDummyEmail) ? sendPaymentPendingEmail(email, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, verificationCode) : Promise.resolve(),
+              shouldSendAdminEmail ? sendAdminReceiptEmail(fullName, phone, isDummyEmail ? 'No proporcionado' : email, cedula, ticketNumbersFormatted, raffleTitle, paymentMethod, totalPrice, receiptImage, verificationCode) : Promise.resolve()
           ]);
         }
       } catch (e) {

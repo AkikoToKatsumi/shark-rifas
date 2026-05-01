@@ -123,7 +123,8 @@ export default function AdminPage() {
     phone: '',
     cedula: '',
     points: '0',
-    is_cash_collector: false
+    is_cash_collector: false,
+    password: ''
   });
 
   const [uploading, setUploading] = useState(false);
@@ -696,7 +697,8 @@ export default function AdminPage() {
             phone: userForm.phone,
             cedula: userForm.cedula,
             points: Number(userForm.points),
-            is_cash_collector: userForm.is_cash_collector
+            is_cash_collector: userForm.is_cash_collector,
+            ...(userForm.password ? { password: userForm.password } : {})
           }}
         : {
             full_name: userForm.full_name,
@@ -704,7 +706,8 @@ export default function AdminPage() {
             phone: userForm.phone,
             cedula: userForm.cedula,
             points: Number(userForm.points),
-            is_cash_collector: userForm.is_cash_collector
+            is_cash_collector: userForm.is_cash_collector,
+            ...(userForm.password ? { password: userForm.password } : {})
           };
 
       const res = await fetch(url, {
@@ -717,7 +720,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false });
+        setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false, password: '' });
         setEditingUserId(null);
         fetchData();
         showToast(editingUserId ? 'Usuario actualizado' : 'Usuario creado', 'success');
@@ -737,14 +740,15 @@ export default function AdminPage() {
       phone: u.phone || '',
       cedula: u.cedula || '',
       points: String(u.points || 0),
-      is_cash_collector: !!u.is_cash_collector
+      is_cash_collector: !!u.is_cash_collector,
+      password: ''
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const cancelUserEdit = () => {
     setEditingUserId(null);
-    setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false });
+    setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false, password: '' });
   };
 
   // --- Dashboard Data Processing ---
@@ -1792,6 +1796,15 @@ export default function AdminPage() {
                   <label htmlFor="is-collab-check" style={{ margin: 0, cursor: 'pointer', color: userForm.is_cash_collector ? 'var(--success)' : 'inherit' }}>
                     ES COLABORADOR (Vendedor en efectivo)
                   </label>
+                </div>
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label>CONTRASEÑA (Dejar en blanco para no cambiar/crear)</label>
+                  <input className="admin-input" value={userForm.password} onChange={e => setUserForm({...userForm, password: e.target.value})} type="text" placeholder="Nueva Contraseña..." />
+                </div>
+                <div className="admin-form-group">
                 </div>
               </div>
 

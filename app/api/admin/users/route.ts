@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
+import bcrypt from 'bcrypt';
 
 // GET: Fetch all participants (users)
 export async function GET(request: Request) {
@@ -31,7 +32,12 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { full_name, email, phone, cedula, points, is_cash_collector } = body;
+    const { full_name, email, phone, cedula, points, is_cash_collector, password } = body;
+
+    let password_hash = null;
+    if (password) {
+      password_hash = await bcrypt.hash(password, 10);
+    }
 
     // Generate a customer code if not provided
     let customer_code = '001';
@@ -56,7 +62,8 @@ export async function POST(request: Request) {
         cedula,
         points: Number(points) || 0,
         is_cash_collector: !!is_cash_collector,
-        customer_code
+        customer_code,
+        ...(password_hash ? { password_hash } : {})
       }])
       .select()
       .single();
@@ -82,6 +89,11 @@ export async function PATCH(request: Request) {
 
     if (!userId || !updates) {
       return NextResponse.json({ error: 'Datos incompletos.' }, { status: 400 });
+    }
+
+    if (updates.password) {
+      updates.password_hash = await bcrypt.hash(updates.password, 10);
+      delete updates.password; // Do not send raw password to DB
     }
 
     const { error } = await supabaseAdmin

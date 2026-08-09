@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
-import { Target, Search, Trophy, Info, User, Gift, LogIn, LogOut } from 'lucide-react';
+import { Target, Search, Trophy, Info, User, Gift, LogIn, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 import ProfileModal from './ProfileModal';
@@ -14,6 +14,7 @@ export default function Header() {
   const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
   return (
@@ -41,8 +42,8 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Center: Main Navigation Links */}
-          <nav className="main-nav">
+          {/* Center: Main Navigation Links (Desktop) */}
+          <nav className="main-nav desktop-nav-only">
             <ul>
               <li>
                 <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
@@ -72,6 +73,7 @@ export default function Header() {
             </ul>
           </nav>
 
+          {/* Right Controls */}
           <div className="top-user-controls">
             {/* User Account / Profile */}
             {user ? (
@@ -112,8 +114,70 @@ export default function Header() {
             >
               <User size={16} />
             </button>
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="mobile-hamburger-btn"
+              aria-label="Abrir Menú"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Drawer Menu */}
+        {isMobileMenuOpen && (
+          <nav className="mobile-menu-dropdown animate-fade-in-down">
+            <ul>
+              <li>
+                <Link 
+                  href="/" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${pathname === '/' ? 'active' : ''}`}
+                >
+                  <Target size={20} className="nav-icon" /> RIFAS ACTIVAS
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/verificador" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${pathname === '/verificador' ? 'active' : ''}`}
+                >
+                  <Search size={20} className="nav-icon" /> VERIFICAR BOLETOS
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/ganadores" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${pathname === '/ganadores' ? 'active' : ''}`}
+                >
+                  <Trophy size={20} className="nav-icon" /> GANADORES
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/nosotros" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${pathname === '/nosotros' ? 'active' : ''}`}
+                >
+                  <Info size={20} className="nav-icon" /> SOBRE NOSOTROS
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/recompensas" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${pathname === '/recompensas' ? 'active' : ''}`}
+                >
+                  <Gift size={20} className="nav-icon" /> RECOMPENSAS DIARIAS
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </header>
   );

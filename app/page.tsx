@@ -6,11 +6,10 @@ import FAQ from './components/FAQ';
 import CountdownTimer from './components/CountdownTimer';
 import RouletteModal from './components/RouletteModal';
 import HeroSlider from './components/HeroSlider';
-import { LayoutGrid, Hash, Trophy, Users, Star, Flame, Crown } from 'lucide-react';
+import { Trophy, Users, Star, Flame, Crown, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const [raffles, setRaffles] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState({ active: 0, ticketsSold: 0, totalPossible: 0, prizesTotal: 'RD$0' });
   const [loading, setLoading] = useState(true);
   const [selectedRaffle, setSelectedRaffle] = useState<any>(null);
 
@@ -24,7 +23,6 @@ export default function Home() {
       const data = await res.json();
       if (data.success) {
         setRaffles(data.raffles || []);
-        setMetrics(data.metrics);
       }
     } catch (err) {
       console.error('Error fetching home data:', err);
@@ -32,10 +30,6 @@ export default function Home() {
       setLoading(false);
     }
   };
-
-  const soldPercentage = metrics.totalPossible > 0
-    ? Math.round((metrics.ticketsSold / metrics.totalPossible) * 100)
-    : 0;
 
   return (
     <div className="home-container">
@@ -48,58 +42,18 @@ export default function Home() {
         onSelectRaffle={(raffle) => setSelectedRaffle(raffle)} 
       />
 
-      {/* Metrics Section */}
-      <section className="metrics-grid mt-8 animate-fade-in-up">
-        <div className="metric-card-premium cyan">
-          <div className="metric-content">
-            <p>Rifas Activas</p>
-            <h3>{loading ? '...' : metrics.active}</h3>
-            <div className="metric-trend success">
-              <span>Sorteos disponibles</span>
-            </div>
-          </div>
-          <div className="metric-icon-box">
-            <LayoutGrid size={24} />
-          </div>
-        </div>
-
-        <div className="metric-card-premium blue">
-          <div className="metric-content">
-            <p>Boletos Vendidos</p>
-            <h3>{loading ? '...' : `${soldPercentage}%`}</h3>
-            <div className="metric-trend success">
-              <span>Progreso de ventas</span>
-            </div>
-          </div>
-          <div className="metric-icon-box">
-            <Hash size={24} />
-          </div>
-        </div>
-
-        <div className="metric-card-premium orange">
-          <div className="metric-content">
-            <p>En Premios</p>
-            <h3>{loading ? '...' : metrics.prizesTotal}</h3>
-            <div className="metric-trend warning">
-              <span>Acumulado total</span>
-            </div>
-          </div>
-          <div className="metric-icon-box">
-            <Trophy size={24} />
-          </div>
-        </div>
-      </section>
-
       {/* Raffles Section */}
       <section id="rifas-sec" className="raffles-section animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-        <div className="section-header flex-center">
-          <h2>🎟️ RIFAS DISPONIBLES 🎟️</h2>
-        </div>
-
-        <div className="announcement-banner">
-          <p className="announcement-text">
-            📢 EL SORTEO SE EFECTUARÁ AL ALCANZAR EL 75% DE VENTAS 📢
-          </p>
+        <div className="raffles-header-wrapper">
+          <div className="raffles-title-badge">
+            <Sparkles size={13} />
+            <span>SORTEOS OFICIALES</span>
+          </div>
+          <h2 className="raffles-main-title">RIFAS DISPONIBLES</h2>
+          <div className="raffles-notice-pill">
+            <span className="notice-dot"></span>
+            <span>Todos los sorteos se efectuarán al alcanzar el 75% de ventas</span>
+          </div>
         </div>
 
         {loading ? (

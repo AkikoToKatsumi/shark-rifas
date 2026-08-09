@@ -165,7 +165,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <User size={18} className="input-icon" />
               <input 
                 type="text" 
-                placeholder="Cédula, Teléfono o Correo" 
+                placeholder="Teléfono o Correo" 
                 required 
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}
@@ -199,10 +199,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <div className="input-group">
                 <Mail size={18} className="input-icon" />
                 <input type="email" placeholder="Correo Electrónico" required value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div className="input-group">
-                <User size={18} className="input-icon" />
-                <input type="text" placeholder="Cédula de Identidad" required value={cedula} onChange={(e) => setCedula(e.target.value)} />
               </div>
             </>
           )}

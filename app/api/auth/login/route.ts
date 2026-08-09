@@ -13,11 +13,11 @@ export async function POST(request: Request) {
 
     const cleanLoginId = loginId.toLowerCase().trim().replace(/[-\s]+/g, '');
 
-    // The user might login with cedula or phone
+    // The user might login with phone, email or cedula
     const { data: participant } = await supabaseAdmin
       .from('participants')
       .select('*')
-      .or(`cedula.eq.${cleanLoginId},phone.eq.${cleanLoginId}`)
+      .or(`phone.eq.${cleanLoginId},email.eq.${cleanLoginId},cedula.eq.${cleanLoginId}`)
       .not('password_hash', 'is', null)
       .order('created_at', { ascending: false })
       .limit(1)

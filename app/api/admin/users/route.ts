@@ -10,6 +10,38 @@ export async function GET(request: Request) {
   }
 
   try {
+    // 1. Auto-assign customer_code for existing participants missing one
+    const { data: missingCodes } = await supabaseAdmin
+      .from('participants')
+      .select('id, created_at')
+      .is('customer_code', null)
+      .order('created_at', { ascending: true });
+
+    if (missingCodes && missingCodes.length > 0) {
+      const { data: maxPart } = await supabaseAdmin
+        .from('participants')
+        .select('customer_code')
+        .not('customer_code', 'is', null)
+        .order('customer_code', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      let nextNum = 1;
+      if (maxPart?.customer_code) {
+        const parsed = parseInt(maxPart.customer_code, 10);
+        if (!isNaN(parsed)) nextNum = parsed + 1;
+      }
+
+      for (const p of missingCodes) {
+        const codeStr = nextNum.toString().padStart(3, '0');
+        await supabaseAdmin
+          .from('participants')
+          .update({ customer_code: codeStr })
+          .eq('id', p.id);
+        nextNum++;
+      }
+    }
+
     const { data: users, error } = await supabaseAdmin
       .from('participants')
       .select('*')

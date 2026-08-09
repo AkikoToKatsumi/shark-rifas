@@ -1417,7 +1417,25 @@ export default function AdminPage() {
                         {group.status === 'paid' ? 'PAGADO ✓' : (group.status === 'pending' ? 'PENDIENTE ⏳' : 'MIXTO ⚠️')}
                       </span>
                 </td>
-                <td>{participant?.full_name || 'Desconocido'}</td>
+                <td>
+                  <div style={{ fontWeight: 'bold', color: '#fff' }}>{participant?.full_name || 'Desconocido'}</div>
+                  {participant?.customer_code && (
+                    <div style={{ marginTop: '3px' }}>
+                      <span style={{ 
+                        background: 'rgba(0, 242, 254, 0.12)', 
+                        color: 'var(--primary-cyan)', 
+                        border: '1px solid rgba(0, 242, 254, 0.3)', 
+                        fontSize: '0.7rem', 
+                        fontWeight: 'bold', 
+                        padding: '2px 6px', 
+                        borderRadius: '4px',
+                        display: 'inline-block'
+                      }}>
+                        ID: #{participant.customer_code}
+                      </span>
+                    </div>
+                  )}
+                </td>
                 <td className="text-sm bold" style={{ color: 'var(--primary-cyan)' }}>
                   {participant?.phone ? (
                     <a 
@@ -1659,6 +1677,19 @@ export default function AdminPage() {
                 }}>
                   <p style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold', color: '#fff' }}>
                     {viewingTickets.participant.full_name}
+                    {viewingTickets.participant.customer_code && (
+                      <span style={{ 
+                        marginLeft: '8px',
+                        background: 'rgba(0, 242, 254, 0.15)', 
+                        color: 'var(--primary-cyan)', 
+                        padding: '2px 8px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.8rem',
+                        fontWeight: 'bold'
+                      }}>
+                        ID: #{viewingTickets.participant.customer_code}
+                      </span>
+                    )}
                   </p>
                   <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     Cédula: <span style={{ color: '#fff', fontWeight: 'bold' }}>{viewingTickets.participant.cedula || '---'}</span>
@@ -1854,6 +1885,7 @@ export default function AdminPage() {
             <table className="admin-table-premium">
               <thead>
                 <tr>
+                  <th>ID User</th>
                   <th>Nombre</th>
                   <th>Cédula</th>
                   <th>Teléfono</th>
@@ -1868,6 +1900,7 @@ export default function AdminPage() {
                     const search = userSearch.toLowerCase();
                     return (
                       u.full_name?.toLowerCase().includes(search) ||
+                      u.customer_code?.toLowerCase().includes(search) ||
                       u.phone?.includes(search) ||
                       u.cedula?.includes(search) ||
                       u.email?.toLowerCase().includes(search)
@@ -1875,6 +1908,19 @@ export default function AdminPage() {
                   })
                   .map(user => (
                     <tr key={user.id}>
+                      <td>
+                        <span style={{ 
+                          background: 'rgba(0, 242, 254, 0.12)', 
+                          color: 'var(--primary-cyan)', 
+                          border: '1px solid rgba(0, 242, 254, 0.25)', 
+                          fontSize: '0.8rem', 
+                          fontWeight: 'bold', 
+                          padding: '3px 8px', 
+                          borderRadius: '6px' 
+                        }}>
+                          #{user.customer_code || '---'}
+                        </span>
+                      </td>
                       <td>
                         <div style={{ fontWeight: 'bold', color: '#fff' }}>{user.full_name}</div>
                         <div style={{ fontSize: '0.7rem', opacity: 0.5 }}>{user.email}</div>

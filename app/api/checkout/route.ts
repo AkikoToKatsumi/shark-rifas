@@ -79,14 +79,33 @@ export async function POST(request: Request) {
 
     if (existingParticipant) {
       participantId = existingParticipant.id;
-      // Update info (phone, name, email might change, cedula might be added to old phone-only record)
+
+      // Assign customer_code if participant is missing one
+      let existingCode = (existingParticipant as any).customer_code;
+      if (!existingCode) {
+        let nextCode = '001';
+        const { data: maxP } = await supabaseAdmin
+          .from('participants')
+          .select('customer_code')
+          .not('customer_code', 'is', null)
+          .order('customer_code', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (maxP?.customer_code) {
+          const parsed = parseInt(maxP.customer_code, 10);
+          if (!isNaN(parsed)) nextCode = (parsed + 1).toString().padStart(3, '0');
+        }
+        existingCode = nextCode;
+      }
+
       await supabaseAdmin
         .from('participants')
         .update({ 
           full_name: fullName, 
           email: email ? email.toLowerCase().trim() : `no-email-${cleanPhone}@sharkrifas.com`, 
-          cedula: cleanCedula || cedula, // Use cleaned if possible
-          phone: cleanPhone
+          cedula: cleanCedula || cedula,
+          phone: cleanPhone,
+          customer_code: existingCode
         })
         .eq('id', participantId);
     } else {

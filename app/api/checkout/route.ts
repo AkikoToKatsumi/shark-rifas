@@ -23,8 +23,7 @@ export async function POST(request: Request) {
     }
 
     // 0. Basic Validation
-    const isEmailRequired = paymentMethod !== 'cash';
-    if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || (isEmailRequired && !email) || !paymentMethod) {
+    if (!raffleId || !quantity || quantity < 1 || !fullName || !phone || !paymentMethod) {
       console.warn(`[${requestId}] Missing required fields`);
       return NextResponse.json({ error: 'Faltan campos obligatorios para procesar la compra.' }, { status: 400 });
     }

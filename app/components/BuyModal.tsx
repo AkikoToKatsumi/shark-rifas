@@ -50,8 +50,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
     e.preventDefault();
     setErrorMsg('');
 
-    if (!formData.fullName || !formData.phone || (!formData.email && !user?.is_cash_collector) || !formData.cedula) {
-      setErrorMsg("Por favor completa todos tus datos personales (el correo es opcional para pago en efectivo).");
+    if (!formData.fullName || !formData.phone) {
+      setErrorMsg("Por favor completa tu nombre y número de teléfono.");
       return;
     }
     if (!acceptedTerms) {
@@ -418,17 +418,6 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
           </div>
 
           <div className="form-section">
-            <label>CÉDULA DE IDENTIDAD</label>
-            <input
-              type="text"
-              value={formData.cedula}
-              onChange={e => setFormData({ ...formData, cedula: e.target.value })}
-              placeholder="Ej: 402-XXXXXXX-X"
-              required
-            />
-          </div>
-
-          <div className="form-section">
             <label>TELÉFONO / WHATSAPP</label>
             <input
               type="text"
@@ -436,17 +425,6 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
               onChange={e => setFormData({ ...formData, phone: e.target.value })}
               placeholder="809-XXX-XXXX"
               required
-            />
-          </div>
-
-          <div className="form-section">
-            <label>CORREO ELECTRÓNICO {user?.is_cash_collector && "(OPCIONAL)"}</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={e => setFormData({ ...formData, email: e.target.value })}
-              placeholder={user?.is_cash_collector ? "Opcional" : "tu@correo.com"}
-              required={!user?.is_cash_collector}
             />
           </div>
 

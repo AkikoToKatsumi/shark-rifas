@@ -79,7 +79,8 @@ export default function AdminPage() {
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'users'>('dashboard');
+  const [heroSlides, setHeroSlides] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'hero'>('dashboard');
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [loading, setLoading] = useState(false);
   const [ticketSearch, setTicketSearch] = useState('');
@@ -125,6 +126,20 @@ export default function AdminPage() {
     points: '0',
     is_cash_collector: false,
     password: ''
+  });
+
+  // Hero Slide Form State
+  const [editingHeroId, setEditingHeroId] = useState<string | null>(null);
+  const [heroForm, setHeroForm] = useState({
+    badge: '⚡ NUEVO BANNER',
+    badge_color: '#00f2fe',
+    title: '',
+    subtitle: '',
+    image_url: '',
+    cta_text: '⚡ COMPRAR BOLETOS',
+    link_href: '#buy',
+    display_order: '1',
+    is_active: true
   });
 
   const [uploading, setUploading] = useState(false);
@@ -244,6 +259,15 @@ export default function AdminPage() {
         setUsers(data.users || []);
       } else {
         showToast('Error cargando usuarios', 'error');
+      }
+    } catch (e) { console.error(e); }
+
+    // Fetch Hero Slides
+    try {
+      const resHero = await fetch(`/api/admin/hero?t=${Date.now()}`);
+      if (resHero.ok) {
+        const data = await resHero.json();
+        setHeroSlides(data.slides || []);
       }
     } catch (e) { console.error(e); }
 
@@ -751,6 +775,105 @@ export default function AdminPage() {
     setUserForm({ full_name: '', email: '', phone: '', cedula: '', points: '0', is_cash_collector: false, password: '' });
   };
 
+  const handleSaveHeroSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const url = '/api/admin/hero';
+      const method = editingHeroId ? 'PATCH' : 'POST';
+      const bodyData = editingHeroId
+        ? { slideId: editingHeroId, updates: {
+            badge: heroForm.badge,
+            badge_color: heroForm.badge_color,
+            title: heroForm.title,
+            subtitle: heroForm.subtitle,
+            image_url: heroForm.image_url,
+            cta_text: heroForm.cta_text,
+            link_href: heroForm.link_href,
+            display_order: Number(heroForm.display_order),
+            is_active: heroForm.is_active
+          }}
+        : {
+            badge: heroForm.badge,
+            badge_color: heroForm.badge_color,
+            title: heroForm.title,
+            subtitle: heroForm.subtitle,
+            image_url: heroForm.image_url,
+            cta_text: heroForm.cta_text,
+            link_href: heroForm.link_href,
+            display_order: Number(heroForm.display_order),
+            is_active: heroForm.is_active
+          };
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData)
+      });
+
+      if (res.ok) {
+        setHeroForm({
+          badge: '⚡ NUEVO BANNER',
+          badge_color: '#00f2fe',
+          title: '',
+          subtitle: '',
+          image_url: '',
+          cta_text: '⚡ COMPRAR BOLETOS',
+          link_href: '#buy',
+          display_order: '1',
+          is_active: true
+        });
+        setEditingHeroId(null);
+        fetchData();
+        showToast(editingHeroId ? 'Banner actualizado' : 'Banner creado', 'success');
+      } else {
+        showToast('Error al guardar el banner', 'error');
+      }
+    } catch (err) {
+      showToast('Error de conexión', 'error');
+    }
+  };
+
+  const handleEditHeroSlide = (slide: any) => {
+    setEditingHeroId(slide.id);
+    setHeroForm({
+      badge: slide.badge || '',
+      badge_color: slide.badge_color || '#00f2fe',
+      title: slide.title || '',
+      subtitle: slide.subtitle || '',
+      image_url: slide.image_url || '',
+      cta_text: slide.cta_text || '',
+      link_href: slide.link_href || '',
+      display_order: String(slide.display_order || 1),
+      is_active: slide.is_active !== false
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDeleteHeroSlide = (id: string) => {
+    showConfirm(
+      '¿Eliminar Banner?',
+      '¿Estás seguro de eliminar este banner del carrusel?',
+      async () => {
+        try {
+          const res = await fetch('/api/admin/hero', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slideId: id })
+          });
+          if (res.ok) {
+            fetchData();
+            showToast('Banner eliminado', 'success');
+          } else {
+            showToast('Error al eliminar banner', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      'Eliminar'
+    );
+  };
+
   // --- Dashboard Data Processing ---
   const dashboardData: DashboardData = useMemo(() => {
     const paidTickets = tickets.filter(t => t.status === 'paid');
@@ -959,6 +1082,12 @@ export default function AdminPage() {
               className={`admin-tab-btn ${activeTab === 'users' ? 'admin-tab-active' : 'admin-tab-inactive'}`}
             >
               👥 USUARIOS
+            </button>
+            <button 
+              onClick={() => setActiveTab('hero')}
+              className={`admin-tab-btn ${activeTab === 'hero' ? 'admin-tab-active' : 'admin-tab-inactive'}`}
+            >
+              🎯 BANNER HERO
             </button>
           </div>
           <button onClick={fetchData} className="btn-secondary flex items-center gap-8">
@@ -2093,6 +2222,208 @@ export default function AdminPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'hero' && (
+        <div className="admin-content-grid">
+          {/* Form to Create / Edit Hero Slide */}
+          <div className="card shadow-lg" style={{ marginBottom: '2.5rem' }}>
+            <div className="form-header-between">
+              <h3 className="form-title-premium">
+                {editingHeroId ? '✏️ EDITAR BANNER HERO' : '➕ NUEVO BANNER HERO'}
+              </h3>
+              {editingHeroId && (
+                <button onClick={() => { setEditingHeroId(null); setHeroForm({ badge: '⚡ NUEVO BANNER', badge_color: '#00f2fe', title: '', subtitle: '', image_url: '', cta_text: '⚡ COMPRAR BOLETOS', link_href: '#buy', display_order: '1', is_active: true }); }} className="btn-secondary">
+                  CANCELAR EDICIÓN
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveHeroSlide}>
+              <div className="admin-grid-2">
+                <div className="admin-form-group">
+                  <label>DISTINTIVO / BADGE (ENCABEZADO)</label>
+                  <input 
+                    className="admin-input" 
+                    value={heroForm.badge} 
+                    onChange={e => setHeroForm({...heroForm, badge: e.target.value})} 
+                    placeholder="Ej: ⚡ RIFA DESTACADA EN VIVO" 
+                    required 
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label>COLOR DEL DISTINTIVO</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input 
+                      type="color" 
+                      value={heroForm.badge_color} 
+                      onChange={e => setHeroForm({...heroForm, badge_color: e.target.value})}
+                      style={{ width: '45px', height: '42px', border: 'none', borderRadius: '8px', cursor: 'pointer', background: 'transparent' }}
+                    />
+                    <input 
+                      className="admin-input" 
+                      value={heroForm.badge_color} 
+                      onChange={e => setHeroForm({...heroForm, badge_color: e.target.value})} 
+                      placeholder="#00f2fe" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label>TÍTULO PRINCIPAL DEL BANNER</label>
+                <input 
+                  className="admin-input" 
+                  value={heroForm.title} 
+                  onChange={e => setHeroForm({...heroForm, title: e.target.value})} 
+                  placeholder="Ej: YAMAHA YZ • SUPER GATO • RD$50,000" 
+                  required 
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label>SUBTÍTULO / DESCRIPCIÓN CORTA</label>
+                <textarea 
+                  className="admin-input" 
+                  rows={2}
+                  value={heroForm.subtitle} 
+                  onChange={e => setHeroForm({...heroForm, subtitle: e.target.value})} 
+                  placeholder="Ej: Solo RD$100 por boleto. Sorteo oficial Pick 4 Florida..." 
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label>IMAGEN DE FONDO DEL BANNER</label>
+                <div className="image-upload-wrapper">
+                  <div 
+                    className="image-preview-box"
+                    onClick={() => document.getElementById('hero-img-upload')?.click()}
+                  >
+                    {heroForm.image_url ? (
+                      <img src={heroForm.image_url} alt="Preview Hero" />
+                    ) : (
+                      <div className="text-center">
+                        <span className="text-2xl block">+</span>
+                        <span className="text-xs opacity-5">SUBIR FOTO</span>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ flexGrow: 1 }}>
+                    <input id="hero-img-upload" type="file" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploading(true);
+                      try {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (data.success) {
+                          setHeroForm(prev => ({ ...prev, image_url: data.publicUrl }));
+                          showToast('Imagen subida', 'success');
+                        }
+                      } catch (err) { showToast('Error al subir', 'error'); }
+                      finally { setUploading(false); }
+                    }} className="hidden" accept="image/*" />
+                    <input 
+                      className="admin-input mb-10" 
+                      value={heroForm.image_url} 
+                      onChange={e => setHeroForm({...heroForm, image_url: e.target.value})} 
+                      placeholder="O pega una URL de imagen directa (ej: https://...)" 
+                    />
+                    <button type="button" onClick={() => document.getElementById('hero-img-upload')?.click()} className="btn-secondary text-sm">
+                      {uploading ? 'SUBIENDO...' : '📁 SELECCIONAR FOTO LOCAL'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-grid-3">
+                <div className="admin-form-group">
+                  <label>TEXTO DEL BOTÓN (CTA)</label>
+                  <input 
+                    className="admin-input" 
+                    value={heroForm.cta_text} 
+                    onChange={e => setHeroForm({...heroForm, cta_text: e.target.value})} 
+                    placeholder="Ej: ⚡ COMPRAR BOLETOS AHORA" 
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label>ENLACE / DESTINO AL HACER CLIC</label>
+                  <input 
+                    className="admin-input" 
+                    value={heroForm.link_href} 
+                    onChange={e => setHeroForm({...heroForm, link_href: e.target.value})} 
+                    placeholder="#buy, /recompensas, /verificador" 
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label>ORDEN DE POSICIÓN</label>
+                  <input 
+                    className="admin-input" 
+                    type="number"
+                    value={heroForm.display_order} 
+                    onChange={e => setHeroForm({...heroForm, display_order: e.target.value})} 
+                    placeholder="1, 2, 3..." 
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn-primary w-full mt-4">
+                {editingHeroId ? '⚡ ACTUALIZAR BANNER HERO' : '➕ GUARDAR NUEVO BANNER'}
+              </button>
+            </form>
+          </div>
+
+          {/* Table / List of Hero Slides */}
+          <div className="table-wrapper">
+            <h3 style={{ color: 'var(--primary-cyan)', marginBottom: '1rem' }}>🎯 BANNERS Y SLIDES ACTIVOS</h3>
+            <table className="admin-table-premium">
+              <thead>
+                <tr>
+                  <th>Vista Previa</th>
+                  <th>Encabezado / Título</th>
+                  <th>Botón / Destino</th>
+                  <th>Orden</th>
+                  <th style={{ textAlign: 'right' }}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {heroSlides.map(slide => (
+                  <tr key={slide.id}>
+                    <td>
+                      <img src={slide.image_url} alt={slide.title} style={{ width: '80px', height: '48px', objectFit: 'cover', borderRadius: '8px' }} />
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '0.75rem', color: slide.badge_color || 'var(--primary-cyan)', fontWeight: 'bold' }}>{slide.badge}</div>
+                      <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '0.95rem' }}>{slide.title}</div>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 'bold', color: 'var(--primary-cyan)', fontSize: '0.85rem' }}>{slide.cta_text}</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{slide.link_href}</div>
+                    </td>
+                    <td><span style={{ fontWeight: 'bold' }}>#{slide.display_order || 1}</span></td>
+                    <td style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <button onClick={() => handleEditHeroSlide(slide)} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '0.75rem' }}>✏️ Editar</button>
+                        <button onClick={() => handleDeleteHeroSlide(slide.id)} style={{ color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '6px 10px', borderRadius: '6px', background: 'none', cursor: 'pointer', fontSize: '0.75rem' }}>🗑️</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {heroSlides.length === 0 && (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                      Mostrando banners por defecto. Puedes agregar tus propios banners arriba.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

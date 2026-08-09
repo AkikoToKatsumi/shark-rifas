@@ -5,6 +5,7 @@ import BuyModal from './components/BuyModal';
 import FAQ from './components/FAQ';
 import CountdownTimer from './components/CountdownTimer';
 import RouletteModal from './components/RouletteModal';
+import HeroSlider from './components/HeroSlider';
 import { LayoutGrid, Hash, Trophy, Users, Star, Flame, Crown } from 'lucide-react';
 
 export default function Home() {
@@ -41,8 +42,14 @@ export default function Home() {
       {/* Daily Roulette Pop-up */}
       <RouletteModal />
 
+      {/* Hero Slider Section */}
+      <HeroSlider 
+        raffles={raffles} 
+        onSelectRaffle={(raffle) => setSelectedRaffle(raffle)} 
+      />
+
       {/* Metrics Section */}
-      <section className="metrics-grid mt-8">
+      <section className="metrics-grid mt-8 animate-fade-in-up">
         <div className="metric-card-premium cyan">
           <div className="metric-content">
             <p>Rifas Activas</p>
@@ -84,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* Raffles Section */}
-      <section className="raffles-section">
+      <section id="rifas-sec" className="raffles-section animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         <div className="section-header flex-center">
           <h2>🎟️ RIFAS DISPONIBLES 🎟️</h2>
         </div>
@@ -101,10 +108,10 @@ export default function Home() {
           <div className="text-center p-3 text-muted">No hay rifas activas en este momento. Vuelve pronto.</div>
         ) : (
           <div className="raffles-grid">
-            {raffles.map((raffle) => {
+            {raffles.map((raffle, idx) => {
               const progress = (raffle.sold / raffle.total_tickets) * 100;
               return (
-                <div key={raffle.id} className="raffle-card">
+                <div key={raffle.id} className="raffle-card animate-fade-in-up" style={{ animationDelay: `${(idx + 1) * 0.1}s` }}>
                   <div className="raffle-image raffle-img-container">
                     {raffle.image_url ? (
                       <img
@@ -176,7 +183,7 @@ export default function Home() {
       </section>
 
       {/* Incentives Section */}
-      <section className="incentives-section">
+      <section id="premios-sec" className="incentives-section">
         <div className="section-header flex-center">
           <h2>🔥 PREMIOS 🔥</h2>
         </div>

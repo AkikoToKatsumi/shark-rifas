@@ -57,7 +57,7 @@ export async function GET() {
         badge_color: '#a855f7',
         title: '¡GIRA LA RULETA CADA DÍA Y ACUMULA PUNTOS!',
         subtitle: 'Ingresa solo con tu número de teléfono y obtén giros diarios gratis. Acumula puntos canjeables por boletos para las rifas.',
-        image_url: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=1200&q=80',
+        image_url: '/roulette-hero.png',
         cta_text: '🎰 JUGAR RULETA GRATIS',
         link_href: '/recompensas',
         display_order: 4,

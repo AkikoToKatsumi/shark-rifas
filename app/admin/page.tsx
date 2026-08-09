@@ -846,7 +846,13 @@ export default function AdminPage() {
       display_order: String(slide.display_order || 1),
       is_active: slide.is_active !== false
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setTimeout(() => {
+      const formEl = document.getElementById('hero-slide-form-container');
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleDeleteHeroSlide = (id: string) => {
@@ -2229,7 +2235,7 @@ export default function AdminPage() {
       {activeTab === 'hero' && (
         <div className="admin-content-grid">
           {/* Form to Create / Edit Hero Slide */}
-          <div className="card shadow-lg" style={{ marginBottom: '2.5rem' }}>
+          <div id="hero-slide-form-container" className="card shadow-lg" style={{ marginBottom: '2.5rem' }}>
             <div className="form-header-between">
               <h3 className="form-title-premium">
                 {editingHeroId ? '✏️ EDITAR BANNER HERO' : '➕ NUEVO BANNER HERO'}
@@ -2314,18 +2320,37 @@ export default function AdminPage() {
                     <input id="hero-img-upload" type="file" onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
+                      
+                      if (file.size > 15 * 1024 * 1024) {
+                        showToast('La imagen es demasiado pesada (máx 15MB)', 'error');
+                        return;
+                      }
+
                       setUploading(true);
                       try {
+                        let fileToUpload: Blob | File = file;
+                        if (file.size > 1 * 1024 * 1024) {
+                          showToast('Optimizando imagen...', 'info');
+                          fileToUpload = await compressImage(file);
+                        }
+
                         const formData = new FormData();
-                        formData.append('file', file);
+                        formData.append('file', fileToUpload, file.name.replace(/\.[^/.]+$/, "") + ".jpg");
+                        
                         const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
                         const data = await res.json();
                         if (data.success) {
                           setHeroForm(prev => ({ ...prev, image_url: data.publicUrl }));
-                          showToast('Imagen subida', 'success');
+                          showToast('Imagen subida correctamente', 'success');
+                        } else {
+                          showToast('Error al subir imagen', 'error');
                         }
-                      } catch (err) { showToast('Error al subir', 'error'); }
-                      finally { setUploading(false); }
+                      } catch (err) { 
+                        console.error(err);
+                        showToast('Error al procesar la imagen', 'error'); 
+                      } finally { 
+                        setUploading(false); 
+                      }
                     }} className="hidden" accept="image/*" />
                     <input 
                       className="admin-input mb-10" 
@@ -2333,9 +2358,16 @@ export default function AdminPage() {
                       onChange={e => setHeroForm({...heroForm, image_url: e.target.value})} 
                       placeholder="O pega una URL de imagen directa (ej: https://...)" 
                     />
-                    <button type="button" onClick={() => document.getElementById('hero-img-upload')?.click()} className="btn-secondary text-sm">
-                      {uploading ? 'SUBIENDO...' : '📁 SELECCIONAR FOTO LOCAL'}
-                    </button>
+                    <div className="flex gap-10">
+                      <button type="button" onClick={() => document.getElementById('hero-img-upload')?.click()} className="btn-secondary text-sm p-10">
+                        {uploading ? 'SUBIENDO...' : '📁 SELECCIONAR FOTO LOCAL'}
+                      </button>
+                      {heroForm.image_url && (
+                        <button type="button" onClick={() => setHeroForm(prev => ({ ...prev, image_url: '' }))} className="btn-delete-img">
+                          ELIMINAR FOTO
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

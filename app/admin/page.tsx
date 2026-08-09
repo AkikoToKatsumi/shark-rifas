@@ -1375,6 +1375,7 @@ export default function AdminPage() {
               <th>Vendedor / Info</th>
               <th>Estado</th>
               <th>Cliente</th>
+              <th>Teléfono</th>
               <th>Cédula</th>
               <th>Precio Total</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -1417,6 +1418,19 @@ export default function AdminPage() {
                       </span>
                 </td>
                 <td>{participant?.full_name || 'Desconocido'}</td>
+                <td className="text-sm bold" style={{ color: 'var(--primary-cyan)' }}>
+                  {participant?.phone ? (
+                    <a 
+                      href={`https://wa.me/${participant.phone.replace(/[^0-9]/g, '')}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ color: 'var(--primary-cyan)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      title="Abrir WhatsApp para contactar"
+                    >
+                      📱 {participant.phone}
+                    </a>
+                  ) : '-'}
+                </td>
                 <td className="text-sm text-main bold">{participant?.cedula || '-'}</td>
                 <td className="bold">RD${group.totalPrice}</td>
                 <td style={{ textAlign: 'right' }}>
@@ -1647,12 +1661,18 @@ export default function AdminPage() {
                     {viewingTickets.participant.full_name}
                   </p>
                   <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    ID: {viewingTickets.participant.cedula ? (
-                      viewingTickets.participant.cedula.substring(0, 5) + '****' + viewingTickets.participant.cedula.substring(viewingTickets.participant.cedula.length - 2)
-                    ) : '---'} 
+                    Cédula: <span style={{ color: '#fff', fontWeight: 'bold' }}>{viewingTickets.participant.cedula || '---'}</span>
                     <span style={{ margin: '0 8px', opacity: 0.3 }}>|</span>
                     Tel: {viewingTickets.participant.phone ? (
-                      viewingTickets.participant.phone.substring(0, 4) + '****' + viewingTickets.participant.phone.substring(viewingTickets.participant.phone.length - 2)
+                      <a 
+                        href={`https://wa.me/${viewingTickets.participant.phone.replace(/[^0-9]/g, '')}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        style={{ color: 'var(--primary-cyan)', fontWeight: 'bold', textDecoration: 'none' }}
+                        title="Abrir en WhatsApp"
+                      >
+                        📱 {viewingTickets.participant.phone}
+                      </a>
                     ) : '---'}
                   </p>
                 </div>

@@ -78,12 +78,12 @@ export default function HeroSlider({ raffles, onSelectRaffle }: HeroSliderProps)
 
   const activeSlides = slides.length > 0 ? slides : defaultSlides;
 
-  // Autoplay slider every 9.5 seconds (slower & more readable)
+  // Autoplay slider every 6 seconds
   useEffect(() => {
     if (activeSlides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % activeSlides.length);
-    }, 9500);
+    }, 6000);
     return () => clearInterval(timer);
   }, [activeSlides.length]);
 

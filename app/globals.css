@@ -798,28 +798,28 @@ a {
 }
 
 .raffle-card {
-  background: var(--bg-card);
+  background: linear-gradient(180deg, #0f1626 0%, #0a0e19 100%);
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   height: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  position: relative;
 }
 
 .raffle-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(0, 242, 254, 0.3);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.1);
+  transform: translateY(-6px);
+  border-color: rgba(0, 242, 254, 0.35);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 242, 254, 0.15);
 }
 
 .raffle-image {
   overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-
-/* Removido el height fijo en moviles para que la imagen se vea completa */
 
 .raffle-content {
   padding: var(--spacing-lg);
@@ -829,25 +829,72 @@ a {
 }
 
 .raffle-content h3 {
-  color: var(--accent-orange);
-  font-size: 1.4rem;
-  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-heading), 'Inter', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #ff9f43 0%, #ff5252 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(255, 140, 0, 0.25));
 }
 
 .raffle-desc {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  color: #d1d5db;
+  font-size: 0.92rem;
   margin-bottom: var(--spacing-md);
-  line-height: 1.4;
-  /* Removido texto cortado para que se lea todo */
+  line-height: 1.6;
+  background: rgba(13, 18, 31, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.raffle-desc p {
+  margin-bottom: 0.5rem;
+}
+
+.raffle-desc p:last-child {
+  margin-bottom: 0;
+}
+
+.raffle-desc strong,
+.raffle-desc b {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.raffle-desc u {
+  text-decoration: none;
+  color: var(--primary-cyan);
+  font-weight: 700;
+  border-bottom: 1px dashed rgba(0, 242, 254, 0.5);
+  padding-bottom: 1px;
+}
+
+.raffle-desc ol,
+.raffle-desc ul {
+  padding-left: 1.2rem;
+  margin: 0.4rem 0;
+}
+
+.raffle-desc li {
+  margin-bottom: 0.35rem;
+  color: #cbd5e1;
 }
 
 .raffle-info-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .info-block {
@@ -861,15 +908,53 @@ a {
 
 .info-block .price {
   color: var(--primary-cyan);
-  font-size: 1.4rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  font-weight: 800;
   font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
 }
 
 .info-block .label {
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-block .date {
+  color: #ff9f43;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.progress-container {
+  margin-bottom: var(--spacing-md);
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+  transition: width 0.6s ease;
 }
 
 /* Announcement Banner */

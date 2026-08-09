@@ -56,12 +56,12 @@ export default function HeroSlider({ raffles, onSelectRaffle }: HeroSliderProps)
     },
     {
       id: 'prizes-info',
-      badge: '🏆 MÁS DE RD$1,500,000 EN PREMIOS',
+      badge: '⚡ PREMIOS INSTANTÁNEOS EN EFECTIVO',
       badge_color: '#ff8c00',
-      title: 'YAMAHA YZ • SUPER GATO • RD$50,000',
-      subtitle: '¡Gana RD$3,000 instantáneos con los números 1111, 2222, 3333, 4444, 5555! Además bono de RD$10,000 al Mayor Comprador.',
-      image_url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=1200&q=80',
-      cta_text: '🔥 VER DETALLES DE PREMIOS',
+      title: '¡GANA RD$3,000 AL INSTANTE CON NÚMEROS ESPECIALES!',
+      subtitle: 'Si obtienes los números 1111, 2222, 3333, 4444 o 5555 al comprar tus boletos, ¡cobras inmediatamente en efectivo! Más RD$10,000 al mayor comprador.',
+      image_url: '/instant-prizes-hero.png',
+      cta_text: '🔥 VER PREMIOS Y NÚMEROS',
       link_href: '#premios-sec'
     },
     {

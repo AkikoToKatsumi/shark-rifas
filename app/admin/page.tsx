@@ -1419,7 +1419,7 @@ export default function AdminPage() {
                 </td>
                 <td>
                   <div style={{ fontWeight: 'bold', color: '#fff' }}>{participant?.full_name || 'Desconocido'}</div>
-                  {participant?.customer_code && (
+                  {participant?.customer_code && !participant.customer_code.includes('NaN') && (
                     <div style={{ marginTop: '3px' }}>
                       <span style={{ 
                         background: 'rgba(0, 242, 254, 0.12)', 
@@ -1677,7 +1677,7 @@ export default function AdminPage() {
                 }}>
                   <p style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold', color: '#fff' }}>
                     {viewingTickets.participant.full_name}
-                    {viewingTickets.participant.customer_code && (
+                    {viewingTickets.participant.customer_code && !viewingTickets.participant.customer_code.includes('NaN') && (
                       <span style={{ 
                         marginLeft: '8px',
                         background: 'rgba(0, 242, 254, 0.15)', 
@@ -1918,7 +1918,7 @@ export default function AdminPage() {
                           padding: '3px 8px', 
                           borderRadius: '6px' 
                         }}>
-                          #{user.customer_code || '---'}
+                          #{user.customer_code && !user.customer_code.includes('NaN') ? user.customer_code : '---'}
                         </span>
                       </td>
                       <td>

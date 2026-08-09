@@ -3,6 +3,26 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { sendPaymentPendingEmail, sendAdminReceiptEmail } from '@/lib/email';
 import { getSession } from '@/lib/session';
 
+async function getNextCustomerCode(): Promise<string> {
+  const { data: participants } = await supabaseAdmin
+    .from('participants')
+    .select('customer_code');
+
+  let maxNum = 0;
+  if (participants) {
+    for (const p of participants) {
+      if (p.customer_code) {
+        const clean = p.customer_code.replace(/\D/g, '');
+        const parsed = parseInt(clean, 10);
+        if (!isNaN(parsed) && parsed > maxNum) {
+          maxNum = parsed;
+        }
+      }
+    }
+  }
+  return (maxNum + 1).toString().padStart(3, '0');
+}
+
 export async function POST(request: Request) {
   const requestId = Math.random().toString(36).substring(7);
   console.log(`[${requestId}] Checkout attempt started`);
@@ -80,22 +100,11 @@ export async function POST(request: Request) {
     if (existingParticipant) {
       participantId = existingParticipant.id;
 
-      // Assign customer_code if participant is missing one
+      // Assign customer_code if participant is missing one or has invalid/NaN code
       let existingCode = (existingParticipant as any).customer_code;
-      if (!existingCode) {
-        let nextCode = '001';
-        const { data: maxP } = await supabaseAdmin
-          .from('participants')
-          .select('customer_code')
-          .not('customer_code', 'is', null)
-          .order('customer_code', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (maxP?.customer_code) {
-          const parsed = parseInt(maxP.customer_code, 10);
-          if (!isNaN(parsed)) nextCode = (parsed + 1).toString().padStart(3, '0');
-        }
-        existingCode = nextCode;
+      const cleanDigits = existingCode ? existingCode.replace(/\D/g, '') : '';
+      if (!existingCode || existingCode.includes('NaN') || cleanDigits === '') {
+        existingCode = await getNextCustomerCode();
       }
 
       await supabaseAdmin
@@ -110,19 +119,7 @@ export async function POST(request: Request) {
         .eq('id', participantId);
     } else {
       // 3.1 Generate Customer Code (sequential)
-      let customerCode = '001';
-      const { data: lastParticipant, error: lastError } = await supabaseAdmin
-        .from('participants')
-        .select('customer_code')
-        .not('customer_code', 'is', null)
-        .order('customer_code', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      
-      if (lastParticipant && lastParticipant.customer_code) {
-        const lastNum = parseInt(lastParticipant.customer_code, 10);
-        customerCode = (lastNum + 1).toString().padStart(3, '0');
-      }
+      const customerCode = await getNextCustomerCode();
 
       const { data: newParticipant, error: pError } = await supabaseAdmin
         .from('participants')

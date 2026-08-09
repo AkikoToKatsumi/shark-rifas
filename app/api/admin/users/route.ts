@@ -3,6 +3,26 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { validateAdminSession, unauthorizedResponse } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 
+async function getNextCustomerCode(): Promise<string> {
+  const { data: participants } = await supabaseAdmin
+    .from('participants')
+    .select('customer_code');
+
+  let maxNum = 0;
+  if (participants) {
+    for (const p of participants) {
+      if (p.customer_code) {
+        const clean = p.customer_code.replace(/\D/g, '');
+        const parsed = parseInt(clean, 10);
+        if (!isNaN(parsed) && parsed > maxNum) {
+          maxNum = parsed;
+        }
+      }
+    }
+  }
+  return (maxNum + 1).toString().padStart(3, '0');
+}
+
 // GET: Fetch all participants (users)
 export async function GET(request: Request) {
   if (!await validateAdminSession()) {
@@ -10,35 +30,31 @@ export async function GET(request: Request) {
   }
 
   try {
-    // 1. Auto-assign customer_code for existing participants missing one
-    const { data: missingCodes } = await supabaseAdmin
+    // 1. Clean and auto-repair any missing or "NaN" customer_codes ordered by creation date
+    const { data: allParts } = await supabaseAdmin
       .from('participants')
-      .select('id, created_at')
-      .is('customer_code', null)
+      .select('id, customer_code, created_at')
       .order('created_at', { ascending: true });
 
-    if (missingCodes && missingCodes.length > 0) {
-      const { data: maxPart } = await supabaseAdmin
-        .from('participants')
-        .select('customer_code')
-        .not('customer_code', 'is', null)
-        .order('customer_code', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+    if (allParts && allParts.length > 0) {
+      let counter = 1;
+      for (const p of allParts) {
+        const cleanDigits = p.customer_code ? p.customer_code.replace(/\D/g, '') : '';
+        const isInvalid = !p.customer_code || p.customer_code.includes('NaN') || cleanDigits === '';
 
-      let nextNum = 1;
-      if (maxPart?.customer_code) {
-        const parsed = parseInt(maxPart.customer_code, 10);
-        if (!isNaN(parsed)) nextNum = parsed + 1;
-      }
-
-      for (const p of missingCodes) {
-        const codeStr = nextNum.toString().padStart(3, '0');
-        await supabaseAdmin
-          .from('participants')
-          .update({ customer_code: codeStr })
-          .eq('id', p.id);
-        nextNum++;
+        if (isInvalid) {
+          const assignedCode = counter.toString().padStart(3, '0');
+          await supabaseAdmin
+            .from('participants')
+            .update({ customer_code: assignedCode })
+            .eq('id', p.id);
+          counter++;
+        } else {
+          const num = parseInt(cleanDigits, 10);
+          if (num >= counter) {
+            counter = num + 1;
+          }
+        }
       }
     }
 
@@ -71,19 +87,8 @@ export async function POST(request: Request) {
       password_hash = await bcrypt.hash(password, 10);
     }
 
-    // Generate a customer code if not provided
-    let customer_code = '001';
-    const { data: lastParticipant } = await supabaseAdmin
-      .from('participants')
-      .select('customer_code')
-      .not('customer_code', 'is', null)
-      .order('customer_code', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    
-    if (lastParticipant && lastParticipant.customer_code) {
-      customer_code = (parseInt(lastParticipant.customer_code, 10) + 1).toString().padStart(3, '0');
-    }
+    // Generate a secure customer code
+    const customer_code = await getNextCustomerCode();
 
     const { data, error } = await supabaseAdmin
       .from('participants')

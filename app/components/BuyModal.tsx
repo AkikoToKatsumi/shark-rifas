@@ -466,7 +466,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                     onClick={() => setPaymentMethod('paypal')}
                     style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '15px 5px' }}
                   >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
+                    <img src="/paypal.svg" alt="PayPal" style={{ height: '24px', objectFit: 'contain' }} />
                     <span style={{ fontSize: '0.7rem' }}>PAYPAL</span>
                   </button>
                   <button

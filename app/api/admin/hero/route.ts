@@ -35,30 +35,6 @@ export async function GET(request: Request) {
       },
       {
         id: 'default-2',
-        badge: '🏆 MÁS DE RD$1,500,000 EN PREMIOS',
-        badge_color: '#ff8c00',
-        title: 'YAMAHA YZ • SUPER GATO • RD$50,000',
-        subtitle: '¡Gana RD$3,000 instantáneos con los números 1111, 2222, 3333, 4444, 5555! Además bono de RD$10,000 al Mayor Comprador.',
-        image_url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=1200&q=80',
-        cta_text: '🔥 VER DETALLES DE PREMIOS',
-        link_href: '#premios-sec',
-        display_order: 2,
-        is_active: true
-      },
-      {
-        id: 'default-3',
-        badge: '🔍 100% TRANSPARENTE Y VERIFICABLE',
-        badge_color: '#22c55e',
-        title: 'CONSULTA TUS BOLETOS EN TIEMPO REAL',
-        subtitle: 'Introduce tu número de teléfono en nuestro verificador de boletos para ver tus números asignados y estado de pago de forma inmediata.',
-        image_url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
-        cta_text: '🔍 VERIFICAR BOLETOS AHORA',
-        link_href: '/verificador',
-        display_order: 3,
-        is_active: true
-      },
-      {
-        id: 'default-4',
         badge: '🎁 RECOMPENSAS DIARIAS GRATIS',
         badge_color: '#a855f7',
         title: '¡GIRA LA RULETA CADA DÍA Y ACUMULA PUNTOS!',
@@ -66,6 +42,30 @@ export async function GET(request: Request) {
         image_url: '/roulette-hero.png',
         cta_text: '🎰 JUGAR RULETA GRATIS',
         link_href: '/recompensas',
+        display_order: 2,
+        is_active: true
+      },
+      {
+        id: 'default-3',
+        badge: '🏆 MÁS DE RD$1,500,000 EN PREMIOS',
+        badge_color: '#ff8c00',
+        title: 'YAMAHA YZ • SUPER GATO • RD$50,000',
+        subtitle: '¡Gana RD$3,000 instantáneos con los números 1111, 2222, 3333, 4444, 5555! Además bono de RD$10,000 al Mayor Comprador.',
+        image_url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=1200&q=80',
+        cta_text: '🔥 VER DETALLES DE PREMIOS',
+        link_href: '#premios-sec',
+        display_order: 3,
+        is_active: true
+      },
+      {
+        id: 'default-4',
+        badge: '🔍 100% TRANSPARENTE Y VERIFICABLE',
+        badge_color: '#22c55e',
+        title: 'CONSULTA TUS BOLETOS EN TIEMPO REAL',
+        subtitle: 'Introduce tu número de teléfono en nuestro verificador de boletos para ver tus números asignados y estado de pago de forma inmediata.',
+        image_url: '/verifier-hero.png',
+        cta_text: '🔍 VERIFICAR BOLETOS AHORA',
+        link_href: '/verificador',
         display_order: 4,
         is_active: true
       }

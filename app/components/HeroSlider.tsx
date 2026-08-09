@@ -45,6 +45,16 @@ export default function HeroSlider({ raffles, onSelectRaffle }: HeroSliderProps)
       isRaffleCta: true
     },
     {
+      id: 'roulette-info',
+      badge: '🎁 RECOMPENSAS DIARIAS GRATIS',
+      badge_color: '#a855f7',
+      title: '¡GIRA LA RULETA CADA DÍA Y ACUMULA PUNTOS!',
+      subtitle: 'Ingresa solo con tu número de teléfono y obtén giros diarios gratis. Acumula puntos canjeables por boletos para las rifas.',
+      image_url: '/roulette-hero.png',
+      cta_text: '🎰 JUGAR RULETA GRATIS',
+      link_href: '/recompensas'
+    },
+    {
       id: 'prizes-info',
       badge: '🏆 MÁS DE RD$1,500,000 EN PREMIOS',
       badge_color: '#ff8c00',
@@ -60,19 +70,9 @@ export default function HeroSlider({ raffles, onSelectRaffle }: HeroSliderProps)
       badge_color: '#22c55e',
       title: 'CONSULTA TUS BOLETOS EN TIEMPO REAL',
       subtitle: 'Introduce tu número de teléfono en nuestro verificador de boletos para ver tus números asignados y estado de pago de forma inmediata.',
-      image_url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
+      image_url: '/verifier-hero.png',
       cta_text: '🔍 VERIFICAR BOLETOS AHORA',
       link_href: '/verificador'
-    },
-    {
-      id: 'roulette-info',
-      badge: '🎁 RECOMPENSAS DIARIAS GRATIS',
-      badge_color: '#a855f7',
-      title: '¡GIRA LA RULETA CADA DÍA Y ACUMULA PUNTOS!',
-      subtitle: 'Ingresa solo con tu número de teléfono y obtén giros diarios gratis. Acumula puntos canjeables por boletos para las rifas.',
-      image_url: '/roulette-hero.png',
-      cta_text: '🎰 JUGAR RULETA GRATIS',
-      link_href: '/recompensas'
     }
   ];
 

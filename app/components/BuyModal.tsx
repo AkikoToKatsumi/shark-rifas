@@ -5,7 +5,8 @@ import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 
 export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: () => void }) {
-  const [quantity, setQuantity] = useState(raffle.min_tickets || 1);
+  const [quantity, setQuantity] = useState<number | string>(raffle.min_tickets || 1);
+  const numQuantity = typeof quantity === 'number' ? quantity : (parseInt(quantity, 10) || 0);
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', cedula: '' });
   const [paymentMethod, setPaymentMethod] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
@@ -57,7 +58,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
       setErrorMsg("Debe leer y aceptar los Términos y Condiciones para continuar.");
       return;
     }
-    if (quantity < (raffle.min_tickets || 1)) {
+    if (numQuantity < (raffle.min_tickets || 1)) {
       setErrorMsg(`La cantidad mínima es ${raffle.min_tickets || 1} boletos.`);
       return;
     }
@@ -71,8 +72,8 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         setErrorMsg("Debes iniciar sesión para usar puntos.");
         return;
       }
-      if (user.points < quantity * POINTS_PER_TICKET) {
-        setErrorMsg(`Puntos insuficientes. Necesitas ${quantity * POINTS_PER_TICKET} puntos.`);
+      if (user.points < numQuantity * POINTS_PER_TICKET) {
+        setErrorMsg(`Puntos insuficientes. Necesitas ${numQuantity * POINTS_PER_TICKET} puntos.`);
         return;
       }
     } else {
@@ -103,7 +104,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
         },
         body: JSON.stringify({
           raffleId: raffle.id,
-          quantity,
+          quantity: numQuantity,
           fullName: formData.fullName,
           phone: formData.phone,
           email: formData.email,
@@ -319,14 +320,37 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   }}
                   onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
                   onMouseOut={e => e.currentTarget.style.backgroundColor = 'var(--bg-panel)'}
-                  onClick={() => setQuantity(Math.max(raffle.min_tickets || 1, quantity - 1))}
+                  onClick={() => {
+                    const current = typeof quantity === 'number' ? quantity : (parseInt(quantity, 10) || (raffle.min_tickets || 1));
+                    setQuantity(Math.max(raffle.min_tickets || 1, current - 1));
+                  }}
                 >
                   -
                 </button>
                 <input
                   type="number"
                   value={quantity}
-                  onChange={e => setQuantity(Math.max(raffle.min_tickets || 1, parseInt(e.target.value) || (raffle.min_tickets || 1)))}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setQuantity('');
+                    } else {
+                      const parsed = parseInt(val, 10);
+                      if (isNaN(parsed)) {
+                        setQuantity('');
+                      } else {
+                        setQuantity(parsed);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    const parsed = typeof quantity === 'number' ? quantity : parseInt(quantity, 10);
+                    const min = raffle.min_tickets || 1;
+                    if (isNaN(parsed) || parsed < min) {
+                      setQuantity(min);
+                    }
+                  }}
                   style={{
                     fontSize: '1.8rem',
                     fontFamily: 'var(--font-heading)',
@@ -360,14 +384,17 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   }}
                   onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
                   onMouseOut={e => e.currentTarget.style.backgroundColor = 'var(--bg-panel)'}
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => {
+                    const current = typeof quantity === 'number' ? quantity : (parseInt(quantity, 10) || (raffle.min_tickets || 1));
+                    setQuantity(current + 1);
+                  }}
                 >
                   +
                 </button>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Subtotal</span>
-                <span style={{ fontSize: '1.8rem', color: 'var(--accent-orange)', fontWeight: 'bold' }}>RD${(raffle.price * quantity).toLocaleString()}</span>
+                <span style={{ fontSize: '1.8rem', color: 'var(--accent-orange)', fontWeight: 'bold' }}>RD${(raffle.price * numQuantity).toLocaleString()}</span>
               </div>
             </div>
             <p className="status-msg text-cyan" style={{ fontSize: '0.8rem' }}>Los números serán asignados automáticamente por el sistema.</p>
@@ -584,11 +611,11 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
                   onClick={() => setPaymentMethod('points')}
                 >
                   <Gift size={20} color="var(--primary-cyan)" />
-                  <span>Pagar con Puntos (Total: {quantity * POINTS_PER_TICKET} pts)</span>
+                  <span>Pagar con Puntos (Total: {numQuantity * POINTS_PER_TICKET} pts)</span>
                 </button>
                 {paymentMethod === 'points' && (
-                  <p className="mt-2 text-center" style={{ fontSize: '0.9rem', color: user.points >= quantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)', fontWeight: 'bold' }}>
-                    {user.points >= quantity * POINTS_PER_TICKET
+                  <p className="mt-2 text-center" style={{ fontSize: '0.9rem', color: user.points >= numQuantity * POINTS_PER_TICKET ? 'var(--success)' : 'var(--error)', fontWeight: 'bold' }}>
+                    {user.points >= numQuantity * POINTS_PER_TICKET
                       ? `✓ Tienes puntos suficientes (${user.points} pts)`
                       : `❌ Puntos insuficientes (${user.points} pts)`}
                   </p>
@@ -645,7 +672,7 @@ export default function BuyModal({ raffle, onClose }: { raffle: any, onClose: ()
 
           <div className="total-box">
             <span>TOTAL A PAGAR</span>
-            <span className="amount">RD${(raffle.price * quantity).toLocaleString()}</span>
+            <span className="amount">RD${(raffle.price * numQuantity).toLocaleString()}</span>
           </div>
 
           <button type="submit" className="btn-accent w-full mt-4 flex items-center justify-center gap-2" disabled={isSubmitting}>
